@@ -11,6 +11,6 @@
     <title>$Title$</title>
   </head>
   <body>
-  Hello, Tomcat@9
+  Hello, ${name}
   </body>
 </html>
