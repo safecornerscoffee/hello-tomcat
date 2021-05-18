@@ -64,7 +64,7 @@ dispatcher-servlet.xml
 </beans>
 ```
 - [context:component-scan](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-controller)
-- [mvc:annotation-driven](<mvc:annotation-driven/>)
+- [mvc:annotation-driven](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-config>)
 
 
 
