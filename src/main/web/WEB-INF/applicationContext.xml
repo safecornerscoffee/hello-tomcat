@@ -19,5 +19,7 @@
         <property name="dataSource" ref="datasource"/>
     </bean>
 
-
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <constructor-arg ref="datasource" />
+    </bean>
 </beans>
