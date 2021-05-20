@@ -107,10 +107,48 @@ dispatcher-servlet.xml
 ```
 
 
+## JSP and JSTL
+[MVC View - JSP and JSTL](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-view-jsp)
+
+### Maven Dependencies
+[Apache Tomcat 9.x is the current focus of development. It builds on Tomcat 8.0.x and 8.5.x and implements the Servlet 4.0, JSP 2.3, EL 3.0, WebSocket 1.1 and JASPIC 1.1](http://tomcat.apache.org/whichversion.html)
+```xml
+<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+    <scope>provided</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
+<dependency>
+    <groupId>javax.servlet.jsp</groupId>
+    <artifactId>javax.servlet.jsp-api</artifactId>
+    <version>2.3.3</version>
+    <scope>provided</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/javax.servlet.jsp.jstl-api -->
+<dependency>
+    <groupId>javax.servlet.jsp.jstl</groupId>
+    <artifactId>javax.servlet.jsp.jstl-api</artifactId>
+    <version>1.2.2</version>
+</dependency>
+```
+add libs to project artifacts
+
+### Servlet View Config
+dispatcher-servlet.xml
+```xml
+<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+    <property name="prefix" value="/WEB-INF/jsp/"/>
+    <property name="suffix" value=".jsp"/>
+</bean>
+```
 
 ## JDBC
 
-[Add JDBC, MyBatis, MyBatis-Spring](https://mybatis.org/spring/)
+[Add JDBC, MyBatis, MyBatis-Spring](https://mybatis.org/spring/) Dependencies
 
 ```xml
 <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
@@ -133,5 +171,27 @@ dispatcher-servlet.xml
     <version>2.0.3</version>
 </dependency>
 
+```
+### Set up DataSource
+applicationContext.xml
+```xml
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="org.postgresql.ds.PGSimpleDataSource"/>
+    <property name="url" value="jdbc:postgresql://localhost:5432/postgres"/>
+    <property name="username" value="postgres"/>
+    <property name="password" value="postgres"/>
+</bean>
+```
+
+### Configure SQLSessionFactory
+applicationContext.xml
+```xml
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="configLocation" value="classpath:/mybatis-config.xml"/>
+    <property name="mapperLocations" value="classpath:/mapper/*.xml"/>
+</bean>
+
+<mybatis-spring:scan base-package="com.safecornerscoffee.dao"/>
 ```
 
