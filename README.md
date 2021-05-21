@@ -223,3 +223,86 @@ applicationContext.xml
     <tx:annotation-driven transaction-manager="transactionManager"/>
 ```
 
+## UserService
+
+### Create a model
+```java
+public class User {
+    private Long id;
+    private String email;
+    private String name;
+    private String password;
+}
+```
+users.sql
+```postgresql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+```
+
+### UserDao Interface and Mapper
+UserDao.java
+```java
+public interface UserDao {
+    List<User> selectAllUsers();
+    User selectUserById(Long id);
+    User selectUserByEmail(String email);
+
+    Long insertUser(User user);
+    void updateUser(User user);
+    void deleteUser(User user);
+}
+```
+UserDaoMapper.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecornerscoffee.dao.UserDao">
+    <select id="selectAllUsers" resultType="com.safecornerscoffee.domain.User">
+        SELECT id, email, name, password FROM users
+    </select>
+    <select id="selectUserById"
+            parameterType="Long"
+            resultType="com.safecornerscoffee.domain.User">
+        SELECT id, email, name, password
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectUserByEmail"
+            parameterType="string"
+            resultType="com.safecornerscoffee.domain.User">
+        SELECT id, email, name, password
+        FROM users
+        WHERE email = #{email}
+    </select>
+
+    <select id="insertUser"
+            parameterType="com.safecornerscoffee.domain.User"
+            resultType="Long"
+    >
+        INSERT INTO users(email, name, password)
+        VALUES(#{email}, #{name}, #{password})
+        RETURNING id
+    </select>
+
+    <update id="updateUser"
+            parameterType="com.safecornerscoffee.domain.User">
+        UPDATE users
+        SET
+            email = #{email},
+            name = #{name},
+            password = #{password}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteUser" parameterType="com.safecornerscoffee.domain.User">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+</mapper>
+```
+Use `<select>` Clause instead of `<insert>` for Returning auto-generated sequence.
