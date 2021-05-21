@@ -127,11 +127,11 @@ dispatcher-servlet.xml
     <version>2.3.3</version>
     <scope>provided</scope>
 </dependency>
-<!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/javax.servlet.jsp.jstl-api -->
+<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
 <dependency>
-    <groupId>javax.servlet.jsp.jstl</groupId>
-    <artifactId>javax.servlet.jsp.jstl-api</artifactId>
-    <version>1.2.2</version>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+    <version>1.2</version>
 </dependency>
 ```
 add libs to project artifacts
