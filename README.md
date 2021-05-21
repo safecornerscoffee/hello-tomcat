@@ -146,9 +146,10 @@ dispatcher-servlet.xml
 </bean>
 ```
 
-## JDBC
+## Persistence layer
 
-[Add JDBC, MyBatis, MyBatis-Spring](https://mybatis.org/spring/) Dependencies
+### Maven Dependencies
+[Add JDBC, MyBatis, MyBatis-Spring and Database Driver](https://mybatis.org/spring/)
 
 ```xml
 <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
@@ -170,9 +171,16 @@ dispatcher-servlet.xml
     <artifactId>mybatis-spring</artifactId>
     <version>2.0.3</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.2.20</version>
+</dependency>
 
 ```
-### Set up DataSource
+
+### Configure DataSource
 applicationContext.xml
 ```xml
 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -183,7 +191,7 @@ applicationContext.xml
 </bean>
 ```
 
-### Configure SQLSessionFactory
+### Configure SQLSessionFactory and Component Scan
 applicationContext.xml
 ```xml
 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -193,5 +201,25 @@ applicationContext.xml
 </bean>
 
 <mybatis-spring:scan base-package="com.safecornerscoffee.dao"/>
+```
+mybatis-config.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        
+    </typeAliases>
+</configuration>
+```
+
+### Set up Transaction Manager
+applicationContext.xml
+```
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <constructor-arg ref="dataSource" />
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 ```
 
