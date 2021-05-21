@@ -3,8 +3,8 @@ package com.safecornerscoffee.domain;
 public class User {
     private Long id;
     private String email;
-    private String password;
     private String name;
+    private String password;
 
     public Long getId() {
         return id;
