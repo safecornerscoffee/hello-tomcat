@@ -107,10 +107,49 @@ dispatcher-servlet.xml
 ```
 
 
+## JSP and JSTL
+[MVC View - JSP and JSTL](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-view-jsp)
 
-## JDBC
+### Maven Dependencies
+[Apache Tomcat 9.x is the current focus of development. It builds on Tomcat 8.0.x and 8.5.x and implements the Servlet 4.0, JSP 2.3, EL 3.0, WebSocket 1.1 and JASPIC 1.1](http://tomcat.apache.org/whichversion.html)
+```xml
+<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+    <scope>provided</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
+<dependency>
+    <groupId>javax.servlet.jsp</groupId>
+    <artifactId>javax.servlet.jsp-api</artifactId>
+    <version>2.3.3</version>
+    <scope>provided</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+    <version>1.2</version>
+</dependency>
+```
+add libs to project artifacts
 
-[Add JDBC, MyBatis, MyBatis-Spring](https://mybatis.org/spring/)
+### Servlet View Config
+dispatcher-servlet.xml
+```xml
+<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+    <property name="prefix" value="/WEB-INF/jsp/"/>
+    <property name="suffix" value=".jsp"/>
+</bean>
+```
+
+## Persistence layer
+
+### Maven Dependencies
+[Add JDBC, MyBatis, MyBatis-Spring and Database Driver](https://mybatis.org/spring/)
 
 ```xml
 <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
@@ -132,6 +171,138 @@ dispatcher-servlet.xml
     <artifactId>mybatis-spring</artifactId>
     <version>2.0.3</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.2.20</version>
+</dependency>
 
 ```
 
+### Configure DataSource
+applicationContext.xml
+```xml
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="org.postgresql.ds.PGSimpleDataSource"/>
+    <property name="url" value="jdbc:postgresql://localhost:5432/postgres"/>
+    <property name="username" value="postgres"/>
+    <property name="password" value="postgres"/>
+</bean>
+```
+
+### Configure SQLSessionFactory and Component Scan
+applicationContext.xml
+```xml
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="configLocation" value="classpath:/mybatis-config.xml"/>
+    <property name="mapperLocations" value="classpath:/mapper/*.xml"/>
+</bean>
+
+<mybatis-spring:scan base-package="com.safecornerscoffee.dao"/>
+```
+mybatis-config.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        
+    </typeAliases>
+</configuration>
+```
+
+### Set up Transaction Manager
+applicationContext.xml
+```
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <constructor-arg ref="dataSource" />
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+```
+
+## UserService
+
+### Create a model
+```java
+public class User {
+    private Long id;
+    private String email;
+    private String name;
+    private String password;
+}
+```
+users.sql
+```postgresql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+```
+
+### UserDao Interface and Mapper
+UserDao.java
+```java
+public interface UserDao {
+    List<User> selectAllUsers();
+    User selectUserById(Long id);
+    User selectUserByEmail(String email);
+
+    Long insertUser(User user);
+    void updateUser(User user);
+    void deleteUser(User user);
+}
+```
+UserDaoMapper.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecornerscoffee.dao.UserDao">
+    <select id="selectAllUsers" resultType="com.safecornerscoffee.domain.User">
+        SELECT id, email, name, password FROM users
+    </select>
+    <select id="selectUserById"
+            parameterType="Long"
+            resultType="com.safecornerscoffee.domain.User">
+        SELECT id, email, name, password
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectUserByEmail"
+            parameterType="string"
+            resultType="com.safecornerscoffee.domain.User">
+        SELECT id, email, name, password
+        FROM users
+        WHERE email = #{email}
+    </select>
+
+    <select id="insertUser"
+            parameterType="com.safecornerscoffee.domain.User"
+            resultType="Long"
+    >
+        INSERT INTO users(email, name, password)
+        VALUES(#{email}, #{name}, #{password})
+        RETURNING id
+    </select>
+
+    <update id="updateUser"
+            parameterType="com.safecornerscoffee.domain.User">
+        UPDATE users
+        SET
+            email = #{email},
+            name = #{name},
+            password = #{password}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteUser" parameterType="com.safecornerscoffee.domain.User">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+</mapper>
+```
+Use `<select>` Clause instead of `<insert>` for Returning auto-generated sequence.
