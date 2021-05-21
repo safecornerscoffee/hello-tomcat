@@ -12,8 +12,11 @@
 </head>
 <body>
 <div class="container">
-  <a href="/signup">Sign Up</a>
-  <a href="/users">User List</a>
+  <c:forEach var="user" items="${users}">
+    <p><c:out value="${user.id} ${user.email} ${user.password} ${user.name}"/></p>
+  </c:forEach>
 </div>
 </body>
 </html>
+
+
