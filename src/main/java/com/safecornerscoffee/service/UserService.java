@@ -6,6 +6,10 @@ import com.safecornerscoffee.service.dto.UserDTO;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +41,7 @@ public class UserService {
         Long returnedId = userDao.insertUser(user);
         user.setId(returnedId);
 
+
         return UserDTO.fromUser(user);
     }
 
@@ -51,9 +56,19 @@ public class UserService {
             throw new IllegalStateException("invalid email or password");
         }
 
-        return UserDTO.fromUser(user);
+        String token = generateJWT(user.getEmail());
+        UserDTO userDTO = UserDTO.fromUser(user);
+        userDTO.setToken(token);
+        return userDTO;
     }
 
+    private String generateJWT(String email) {
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+        String jws = Jwts.builder().setSubject(email).signWith(key).compact();
+
+        return jws;
+    }
     private boolean isExistEmailAddress(String email) {
         User existUser = userDao.selectUserByEmail(email);
 

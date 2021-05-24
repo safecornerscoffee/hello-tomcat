@@ -34,7 +34,7 @@ public class UserController {
     public String signUp(UserDTO userDTO, Model model) {
         try {
             userService.signUp(userDTO.getEmail(), userDTO.getName(), userDTO.getPassword());
-            return "index";
+            return "redirect:/";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "error";

@@ -12,7 +12,28 @@
 </head>
 <body>
 <div class="container">
-    <p><c:out value="${user.id} ${user.email} ${user.password} ${user.name}"/></p>
+
+    <div class="field">
+        <label class="label" class="label" for="userId">Id</label>
+        <input class="input" class="input" type="text" id="userId" value="${user.id}" readonly>
+    </div>
+    <div class="field">
+        <label class="label" for="userEmail">Email</label>
+        <input class="input" type="text" id="userEmail" value="${user.email}" readonly>
+    </div>
+    <div class="field">
+        <label class="label" for="userPassword">Password</label>
+        <input class="input" type="text" id="userPassword" value="${user.password}" readonly>
+    </div>
+    <div class="field">
+        <label class="label" for="userName">Name</label>
+        <input class="input" type="text" id="userName" value="${user.name}" readonly>
+    </div>
+    <div class="field">
+        <label class="label" for="userToken">JWT</label>
+        <input class="input" type="text" id="userToken" value="${user.token}" readonly>
+    </div>
+
 </div>
 </body>
 </html>

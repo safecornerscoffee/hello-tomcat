@@ -7,6 +7,8 @@ public class UserDTO {
     String email;
     String name;
     String password;
+    String token;
+
 
     public Long getId() {
         return id;
@@ -38,6 +40,14 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public static UserDTO fromUser(User user) {
