@@ -12,9 +12,9 @@
 </head>
 <body>
 <div class="container">
-  <a href="/signup">Sign Up</a>
-  <a href="/signin">Sign In</a>
-  <a href="/users">User List</a>
+  <p><c:out value="${error}"/></p>
 </div>
 </body>
 </html>
+
+

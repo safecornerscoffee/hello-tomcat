@@ -48,4 +48,14 @@ public class UserDTO {
         userDto.setPassword(user.getPassword());
         return userDto;
     }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

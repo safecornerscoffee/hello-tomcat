@@ -47,11 +47,11 @@ public class UserDaoTest {
 
 
     @Test
-    public void selectUserByEmailAddressTest() {
+    public void selectUserByEmailTest() {
         User user = new User();
-        user.setEmail("latte@safecornerscoffee.com");
-        user.setName("latte");
-        user.setPassword("latte");
+        user.setEmail("coffee@safecornerscoffee.com");
+        user.setName("coffee");
+        user.setPassword("coffee");
 
         Long returnedId = userDao.insertUser(user);
         User returnedUser =  userDao.selectUserById(returnedId);

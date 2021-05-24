@@ -3,6 +3,7 @@ package com.safecornerscoffee.service;
 import com.safecornerscoffee.dao.UserDao;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.service.dto.UserDTO;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +30,26 @@ public class UserService {
         User user = new User();
         user.setEmail(email);
         user.setName(name);
-        user.setPassword(password);
+
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        user.setPassword(hashedPassword);
 
         Long returnedId = userDao.insertUser(user);
         user.setId(returnedId);
+
+        return UserDTO.fromUser(user);
+    }
+
+    public UserDTO signIn(String email, String candidatePassword) {
+
+        User user = userDao.selectUserByEmail(email);
+        if (user == null) {
+            throw new IllegalStateException("invalid email or password");
+        }
+        String hashedPassword = user.getPassword();
+        if(!BCrypt.checkpw(candidatePassword, hashedPassword)) {
+            throw new IllegalStateException("invalid email or password");
+        }
 
         return UserDTO.fromUser(user);
     }

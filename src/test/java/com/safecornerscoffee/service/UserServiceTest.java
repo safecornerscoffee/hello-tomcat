@@ -6,6 +6,7 @@ import com.safecornerscoffee.service.dto.UserDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,53 @@ public class UserServiceTest {
 
         assertEquals(email, userDTO.getEmail());
         assertEquals(name, userDTO.getName());
-        assertEquals(password, userDTO.getPassword());
-
     }
+
+    @Test
+    public void HashingPasswordWithBcryptWhenSignUpTest() {
+        String email = "coffe@safecornerscoffee.com";
+        String name = "coffee";
+        String password = "coffee";
+
+        UserDTO userDTO = userService.signUp(email, name, password);
+
+        User user = userDao.selectUserById(userDTO.getId());
+
+        assertTrue(BCrypt.checkpw(password, user.getPassword()));
+   }
+
+   @Test
+   @Transactional
+   public void signInTest() {
+       String email = "coffe@safecornerscoffee.com";
+       String name = "coffee";
+       String password = "coffee";
+
+       UserDTO userDTO = userService.signUp(email, name, password);
+       System.out.println(userDTO);
+
+       UserDTO signedUserDTO = userService.signIn(email, password);
+        System.out.println(signedUserDTO);
+
+        assertEquals(email, signedUserDTO.getEmail());
+        assertEquals(name, signedUserDTO.getName());
+        assertTrue(BCrypt.checkpw(password, signedUserDTO.getPassword()));
+   }
+
+   @Test(expected = IllegalStateException.class)
+   public void ThrowErrorWhenSignInWithInvalidUserTest() {
+       String email = "coffe@safecornerscoffee.com";
+       String name = "coffee";
+       String password = "coffee";
+       String invalidPassword = "invalid-coffee";
+       userService.signUp(email, name, password);
+
+       try {
+           userService.signIn(email, invalidPassword);
+       } catch (Exception e) {
+           assertEquals(IllegalStateException.class, e.getClass());
+           assertEquals(e.getMessage(), "invalid email or password");
+       }
+
+   }
 }
