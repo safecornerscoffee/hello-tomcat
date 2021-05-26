@@ -314,3 +314,9 @@ https://docs.spring.io/spring-security/site/docs/current/api/org/springframework
 https://github.com/jwtk/jjwt
 
 [javax.servlet.http.HttpSession](https://tomcat.apache.org/tomcat-9.0-doc/servletapi/javax/servlet/http/HttpSession.html)
+
+
+## Logger
+SLF4J: No SLF4J providers were found.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#noProviders for further details.
