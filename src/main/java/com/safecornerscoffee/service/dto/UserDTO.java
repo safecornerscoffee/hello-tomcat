@@ -7,6 +7,8 @@ public class UserDTO {
     String email;
     String name;
     String password;
+    String token;
+
 
     public Long getId() {
         return id;
@@ -40,6 +42,14 @@ public class UserDTO {
         this.password = password;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public static UserDTO fromUser(User user) {
         UserDTO userDto = new UserDTO();
         userDto.setId(user.getId());
@@ -47,5 +57,15 @@ public class UserDTO {
         userDto.setName(user.getName());
         userDto.setPassword(user.getPassword());
         return userDto;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

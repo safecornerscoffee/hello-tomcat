@@ -14,7 +14,7 @@
     </select>
 
     <select id="selectUserByEmail"
-            parameterType="string"
+            parameterType="String"
             resultType="com.safecornerscoffee.domain.User">
         SELECT id, email, name, password
         FROM users
@@ -42,4 +42,7 @@
     <delete id="deleteUser" parameterType="com.safecornerscoffee.domain.User">
         DELETE FROM users WHERE id = #{id}
     </delete>
+
+    <select id="nextId" resultType="Long">
+    </select>
 </mapper>

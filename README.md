@@ -306,3 +306,11 @@ UserDaoMapper.xml
 </mapper>
 ```
 Use `<select>` Clause instead of `<insert>` for Returning auto-generated sequence.
+
+### Bcrypt
+https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/crypto/bcrypt/BCrypt.html
+
+### JWT
+https://github.com/jwtk/jjwt
+
+[javax.servlet.http.HttpSession](https://tomcat.apache.org/tomcat-9.0-doc/servletapi/javax/servlet/http/HttpSession.html)

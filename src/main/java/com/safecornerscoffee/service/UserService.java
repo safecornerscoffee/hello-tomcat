@@ -3,8 +3,13 @@ package com.safecornerscoffee.service;
 import com.safecornerscoffee.dao.UserDao;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.service.dto.UserDTO;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,12 +34,40 @@ public class UserService {
         User user = new User();
         user.setEmail(email);
         user.setName(name);
-        user.setPassword(password);
+
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        user.setPassword(hashedPassword);
 
         Long returnedId = userDao.insertUser(user);
         user.setId(returnedId);
 
+
         return UserDTO.fromUser(user);
+    }
+
+    public UserDTO signIn(String email, String candidatePassword) {
+
+        User user = userDao.selectUserByEmail(email);
+        if (user == null) {
+            throw new IllegalStateException("invalid email or password");
+        }
+        String hashedPassword = user.getPassword();
+        if(!BCrypt.checkpw(candidatePassword, hashedPassword)) {
+            throw new IllegalStateException("invalid email or password");
+        }
+
+        String token = generateJWT(user.getEmail());
+        UserDTO userDTO = UserDTO.fromUser(user);
+        userDTO.setToken(token);
+        return userDTO;
+    }
+
+    private String generateJWT(String email) {
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+        String jws = Jwts.builder().setSubject(email).signWith(key).compact();
+
+        return jws;
     }
 
     private boolean isExistEmailAddress(String email) {
@@ -43,11 +76,15 @@ public class UserService {
         if (existUser == null) {
             return false;
         }
-        System.out.println("existUser: " + existUser.getId() + " " + existUser.getEmail() + " "
-            + existUser.getName() + " " + existUser.getPassword());
-
         return true;
+    }
 
+    public UserDTO getUser(Long id) {
+        User user = userDao.selectUserById(id);
+        if (user == null) {
+            throw new IllegalStateException("invalid email or password");
+        }
+        return UserDTO.fromUser(user);
     }
 
     public List<UserDTO> getAllUsers() {
