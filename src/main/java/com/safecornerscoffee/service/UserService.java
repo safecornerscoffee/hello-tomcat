@@ -69,17 +69,22 @@ public class UserService {
 
         return jws;
     }
+
     private boolean isExistEmailAddress(String email) {
         User existUser = userDao.selectUserByEmail(email);
 
         if (existUser == null) {
             return false;
         }
-        System.out.println("existUser: " + existUser.getId() + " " + existUser.getEmail() + " "
-            + existUser.getName() + " " + existUser.getPassword());
-
         return true;
+    }
 
+    public UserDTO getUser(Long id) {
+        User user = userDao.selectUserById(id);
+        if (user == null) {
+            throw new IllegalStateException("invalid email or password");
+        }
+        return UserDTO.fromUser(user);
     }
 
     public List<UserDTO> getAllUsers() {

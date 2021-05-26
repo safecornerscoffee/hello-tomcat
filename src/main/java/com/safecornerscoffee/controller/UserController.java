@@ -1,12 +1,16 @@
 package com.safecornerscoffee.controller;
 
 import com.safecornerscoffee.service.UserService;
+import com.safecornerscoffee.service.dto.ErrorResponse;
 import com.safecornerscoffee.service.dto.UserDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @Controller
@@ -56,5 +60,20 @@ public class UserController {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
+    }
+
+    @GetMapping("/users/{userId}")
+    @ResponseBody
+    public ResponseEntity<Object> getUser(@PathVariable Long userId, HttpServletResponse HttpResponse) {
+        UserDTO user = userService.getUser(userId);
+        return ResponseEntity.ok(user);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleErrors(Exception e) {
+        ErrorResponse error = new ErrorResponse(e.getMessage());
+        return ResponseEntity
+                .status(404)
+                .body(error);
     }
 }
