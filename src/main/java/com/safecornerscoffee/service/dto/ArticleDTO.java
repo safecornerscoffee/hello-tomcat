@@ -94,4 +94,26 @@ public class ArticleDTO {
                 .authorId(article.getAuthorId())
                 .build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ArticleDTO that = (ArticleDTO) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (body != null ? !body.equals(that.body) : that.body != null) return false;
+        return authorId != null ? authorId.equals(that.authorId) : that.authorId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (body != null ? body.hashCode() : 0);
+        result = 31 * result + (authorId != null ? authorId.hashCode() : 0);
+        return result;
+    }
 }

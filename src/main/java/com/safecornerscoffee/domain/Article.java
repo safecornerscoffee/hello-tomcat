@@ -44,4 +44,12 @@ public class Article {
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateBody(String body) {
+        this.body = body;
+    }
 }
