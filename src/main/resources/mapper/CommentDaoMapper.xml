@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecornerscoffee.dao.CommentDao">
+    <select id="SelectAllComments"
+            resultType="com.safecornerscoffee.domain.Comment">
+        SELECT id, body, articleid, userid
+        FROM comments
+    </select>
+    <select id="SelectCommentsByArticleId"
+            parameterType="Long"
+            resultType="com.safecornerscoffee.domain.Comment">
+        SELECT id, body, articleid, userid
+        FROM comments
+        WHERE articleid = #{articleId}
+    </select>
+    <select id="SelectCommentById"
+            parameterType="String"
+            resultType="com.safecornerscoffee.domain.Comment">
+
+        SELECT id, body, articleid, userid
+        FROM comments
+        WHERE id = #{commentId}
+    </select>
+    <insert id="insertComment" parameterType="com.safecornerscoffee.domain.Comment">
+        INSERT INTO comments(id, body, articleid, userid)
+        VALUES (#{id}, #{body}, #{articleId}, #{userId})
+    </insert>
+    <delete id="deleteComment" parameterType="com.safecornerscoffee.domain.Comment">
+        DELETE FROM comments WHERE id = #{id}
+    </delete>
+</mapper>

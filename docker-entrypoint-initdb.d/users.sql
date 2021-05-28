@@ -9,12 +9,12 @@ CREATE TABLE articles(
     id SERIAL PRIMARY KEY,
     title TEXT,
     body TEXT,
-    authorId INTEGER REFERENCES users(id) ON DELETE CASCADE
+    authorId INTEGER REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE comments (
     id TEXT PRIMARY KEY,
     body TEXT,
-    articleId INTEGER NOT NULL REFERENCES articles(id),
-    userId INTEGER NOT NULL REFERENCES users(id)
+    articleId INTEGER NOT NULL REFERENCES articles(id) ON DELETE CASCADE,
+    userId INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
