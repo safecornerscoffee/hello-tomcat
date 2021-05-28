@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecornerscoffee.dao.ArticleDao">
+    <resultMap id="Article" type="com.safecornerscoffee.domain.Article">
+        <id column="id" property="id"/>
+    </resultMap>
+    <select id="nextId" resultType="Long">
+        SELECT nextval('articles_id_seq')
+    </select>
+    <select id="selectAllArticles" resultType="com.safecornerscoffee.domain.Article">
+        SELECT id, title, body, authorid
+        FROM articles
+    </select>
+    <select id="selectArticleById"
+            parameterType="Long"
+            resultType="com.safecornerscoffee.domain.Article">
+        SELECT id, title, body, authorid
+        FROM articles
+        WHERE id = #{id}
+    </select>
+    <select id="selectArticlesByAuthorId"
+            parameterType="Long"
+            resultType="com.safecornerscoffee.domain.Article">
+        SELECT id, title, body, authorid
+        FROM articles
+        WHERE authorid = #{authorId}
+    </select>
+    <insert id="insertArticle" parameterType="com.safecornerscoffee.domain.Article">
+        INSERT INTO articles(id, title, body, authorid)
+        VALUES (#{id}, #{title}, #{body}, #{authorId})
+    </insert>
+    <update id="updateArticle" parameterType="com.safecornerscoffee.domain.Article">
+
+    </update>
+    <delete id="deleteArticle" parameterType="com.safecornerscoffee.domain.Article">
+        DELETE FROM articles WHERE id = #{id}
+    </delete>
+</mapper>

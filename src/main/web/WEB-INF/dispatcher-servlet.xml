@@ -22,6 +22,10 @@
     <mvc:interceptors>
         <bean id="loggerInterceptor"
               class="com.safecornerscoffee.interceptor.LoggerInterceptor"/>
+        <bean id="authenticationInterceptor"
+              class="com.safecornerscoffee.interceptor.AuthenicationInterceptor">
+        </bean>
+
     </mvc:interceptors>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
