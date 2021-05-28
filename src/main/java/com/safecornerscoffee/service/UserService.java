@@ -97,4 +97,9 @@ public class UserService {
                 .map(UserDTO::fromUser)
                 .collect(Collectors.toList());
     }
+
+    public void dropUser(UserDTO userDTO) {
+        User user = userDao.selectUserById(userDTO.getId());
+        userDao.deleteUser(user);
+    }
 }
