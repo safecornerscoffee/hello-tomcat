@@ -6,6 +6,9 @@ import com.safecornerscoffee.service.dto.ArticleDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
@@ -16,6 +19,13 @@ public class ArticleService {
     public ArticleService(ArticleDao articleDao) {
         this.articleDao = articleDao;
     }
+
+    public List<ArticleDTO> getArticles() {
+        List<Article> articles = articleDao.selectAllArticles();
+
+        return articles.stream().map(ArticleDTO::from).collect(Collectors.toList());
+    }
+
     public ArticleDTO readArticle(Long articleId) {
         Article article = articleDao.selectArticleById(articleId);
 

@@ -1,10 +1,13 @@
 package com.safecornerscoffee.domain;
 
+import java.util.List;
+
 public class Article {
     private Long id;
     private String title;
     private String body;
     private Long authorId;
+    private List<Tag> tags;
 
     public Article(Long id, String title, String body, Long authorId) {
         this.id = id;
@@ -51,5 +54,13 @@ public class Article {
 
     public void updateBody(String body) {
         this.body = body;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }

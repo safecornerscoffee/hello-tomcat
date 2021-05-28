@@ -12,6 +12,14 @@ CREATE TABLE articles(
     authorId INTEGER REFERENCES users(id) ON DELETE SET NULL
 );
 
+CREATE TABLE tags(
+    id SERIAL PRIMARY KEY,
+    article_id INTEGER,
+    name TEXT
+);
+
+CREATE TABLE
+
 CREATE TABLE comments (
     id TEXT PRIMARY KEY,
     body TEXT,

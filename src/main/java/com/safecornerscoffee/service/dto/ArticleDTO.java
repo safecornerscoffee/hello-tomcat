@@ -116,4 +116,14 @@ public class ArticleDTO {
         result = 31 * result + (authorId != null ? authorId.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ArticleDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", authorId=" + authorId +
+                '}';
+    }
 }

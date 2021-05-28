@@ -1,12 +1,16 @@
 package com.safecornerscoffee.dao;
 
+import com.safecornerscoffee.controller.ArticleController;
 import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,6 +25,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
 public class ArticleDaoTest {
 
+    private static final Logger log = LoggerFactory.getLogger(ArticleDaoTest.class);
     @Autowired
     ArticleDao articleDao;
 
@@ -90,6 +95,17 @@ public class ArticleDaoTest {
     }
 
     @Test
+    public void selectArticleDetailsById() {
+        Article article = articleDao.selectArticleDetailsById(1L);
+
+        assertEquals(article.getTags().size(), 2);
+        for (Tag tag : article.getTags()) {
+            log.debug(tag.toString());
+            log.debug(tag.toString());
+        }
+    }
+
+    @Test
     public void selectAllArticles() {
         String title = "test title";
         String body = "this is a test";
@@ -99,7 +115,7 @@ public class ArticleDaoTest {
         articleDao.insertArticle(secondArticle);
         List<Article> articles = articleDao.selectAllArticles();
 
-        assertEquals(articles.size(), 2);
+        assertNotNull(articles);
     }
 
     @Test
