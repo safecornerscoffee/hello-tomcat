@@ -78,9 +78,9 @@ public class ArticleMapperTest {
         String body = "pouring coffee";
         Long authorId = author.getId();
         List<Tag> tags = new ArrayList<>(Arrays.asList(
-                new Tag(articleMapper.nextTagId(), articleId, "cl"),
-                new Tag(articleMapper.nextTagId(), articleId, "go"),
-                new Tag(articleMapper.nextTagId(), articleId, "pc")
+                tagFactory.forName("cl"),
+                tagFactory.forName("go"),
+                tagFactory.forName("pc")
         ));
         Article article = new Article(articleId, title, body, authorId, tags);
 
@@ -97,9 +97,9 @@ public class ArticleMapperTest {
         String body = "pouring coffee";
         Long authorId = author.getId();
         List<Tag> tags = new ArrayList<>(Arrays.asList(
-                new Tag(articleMapper.nextTagId(), articleId, "cl"),
-                new Tag(articleMapper.nextTagId(), articleId, "go"),
-                new Tag(articleMapper.nextTagId(), articleId, "pc")
+                tagFactory.forName("cl"),
+                tagFactory.forName("go"),
+                tagFactory.forName("pc")
         ));
         Article article = new Article(articleId, title, body, authorId, tags);
 
@@ -117,4 +117,35 @@ public class ArticleMapperTest {
         assertEquals(article.getTags().size(), selectedArticle.getTags().size());
     }
 
+    @Test
+    public void updateArticleTest() {
+        Long articleId = articleMapper.nextId();
+        String title = "pouring coffee";
+        String body = "pouring coffee";
+        Long authorId = author.getId();
+        List<Tag> tags = new ArrayList<>(Arrays.asList(
+                tagFactory.forName("cl"),
+                tagFactory.forName("go"),
+                tagFactory.forName("pc")
+        ));
+        Article article = new Article(articleId, title, body, authorId, tags);
+
+        articleMapper.insertArticle(article);
+        for (Tag tag : article.getTags()) {
+            articleMapper.insertTag(tag);
+        }
+
+        String updateTitle = "mocha";
+        String updateBody = "mocha";
+
+        article.updateTitle("mocha");
+        article.updateBody("mocha");
+
+        articleMapper.updateArticle(article);
+
+        Article updatedArticle = articleMapper.selectArticleById(article.getId());
+
+        assertEquals(updateTitle, updatedArticle.getTitle());
+        assertEquals(updateBody, updatedArticle.getBody());
+    }
 }

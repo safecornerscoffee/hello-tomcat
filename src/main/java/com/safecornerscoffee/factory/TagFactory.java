@@ -13,12 +13,12 @@ public class TagFactory {
         this.articleMapper = articleMapper;
     }
 
-    public Tag forNameWithArticleId(Long ArticleId, String name) {
-        Long id = articleMapper.nextTagId();
-        return new Tag(id, ArticleId, name);
-    }
     public Tag forName(String name) {
-        Long id = articleMapper.nextTagId();
-        return new Tag(id, name);
+        Tag tag = articleMapper.selectTagByName(name);
+        if(tag == null) {
+            Long id = articleMapper.nextTagId();
+            return new Tag(id, name);
+        }
+        return tag;
     }
 }

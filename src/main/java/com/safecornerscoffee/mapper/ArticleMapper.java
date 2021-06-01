@@ -12,7 +12,6 @@ public interface ArticleMapper {
     Long nextId();
     List<Article> selectAllArticles();
     List<Article> selectArticlesByAuthorId(Long authorId);
-    Article selectArticleDetailsById(Long articleId);
     Article selectArticleById(Long articleId);
     void insertArticle(Article article);
     void updateArticle(Article article);
@@ -20,9 +19,10 @@ public interface ArticleMapper {
 
     Long nextTagId();
     void insertTag(Tag tag);
+    Tag selectTagByName(String tagName);
     void deleteTag(Tag tag);
 
     void insertArticleTagRelation(ArticleTagRelation articleTagRelation);
     void deleteArticleTagRelation(ArticleTagRelation articleTagRelation);
-
+    List<Tag> selectTagsByArticleId(Long articleId);
 }
