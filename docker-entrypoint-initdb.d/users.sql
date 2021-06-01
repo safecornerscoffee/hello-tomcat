@@ -1,5 +1,6 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     password TEXT NOT NULL
@@ -18,7 +19,6 @@ CREATE TABLE tags(
     name TEXT
 );
 
-CREATE TABLE
 
 CREATE TABLE comments (
     id TEXT PRIMARY KEY,
