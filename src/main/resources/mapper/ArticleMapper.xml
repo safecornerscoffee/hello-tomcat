@@ -2,13 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.safecornerscoffee.mapper.ArticleMapper">
+
     <resultMap id="Article" type="com.safecornerscoffee.domain.Article">
-        <id column="id" property="id"/>
-        <result column="title" property="title"/>
-        <result column="body" property="body"/>
-        <result column="author_id" property="authorId"/>
-    </resultMap>
-    <resultMap id="detailedArticle" type="com.safecornerscoffee.domain.Article">
         <id property="id" column="article_id"/>
         <result property="title" column="article_title"/>
         <result property="body" column="article_body"/>
@@ -20,19 +15,19 @@
         </collection>
     </resultMap>
 
-    <select id="selectArticleDetailsById"
+    <select id="selectArticleById"
             parameterType="Long"
-            resultMap="detailedArticle">
+            resultMap="Article">
         SELECT
             A.id as article_id,
             A.title as article_title,
             A.body as article_body,
             A.author_id as article_author_id,
             T.id as tag_id,
-            T.article_id as tag_article_id,
             T.name as tag_name
         FROM articles A
-                 LEFT OUTER JOIN tags T on A.id = T.article_id
+            LEFT OUTER JOIN articles_tags R on A.id = R.article_id
+            LEFT OUTER JOIN tags T on R.tag_id = T.id
         WHERE A.id = #{id};
     </select>
 
@@ -43,13 +38,7 @@
         SELECT id, title, body, author_id
         FROM articles
     </select>
-    <select id="selectArticleById"
-            parameterType="Long"
-            resultMap="Article">
-        SELECT id, title, body, author_id
-        FROM articles
-        WHERE id = #{id}
-    </select>
+
     <select id="selectArticlesByAuthorId"
             parameterType="Long"
             resultMap="Article">
@@ -94,4 +83,14 @@
         <result column="article_id" property="articleId"/>
         <result column="name" property="name"/>
     </resultMap>
+
+    <insert id="insertArticleTagRelation" parameterType="com.safecornerscoffee.domain.ArticleTagRelation">
+        INSERT INTO articles_tags (article_id, tag_id)
+        VALUES (#{articleId}, #{tagId})
+    </insert>
+    <delete id="deleteArticleTagRelation" parameterType="com.safecornerscoffee.domain.ArticleTagRelation">
+        DELETE FROM articles_tags
+        WHERE article_id = #{articleId} AND tag_id = #{tagId}
+    </delete>
+
 </mapper>

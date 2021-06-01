@@ -1,6 +1,7 @@
 package com.safecornerscoffee.mapper;
 
 import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.domain.ArticleTagRelation;
 import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.factory.TagFactory;
@@ -90,7 +91,7 @@ public class ArticleMapperTest {
     }
 
     @Test
-    public void SelectArticleById() {
+    public void selectArticleById() {
         Long articleId = articleMapper.nextId();
         String title = "pouring coffee";
         String body = "pouring coffee";
@@ -105,35 +106,11 @@ public class ArticleMapperTest {
         articleMapper.insertArticle(article);
         for (Tag tag : article.getTags()) {
             articleMapper.insertTag(tag);
+            ArticleTagRelation relation = new ArticleTagRelation(article.getId(), tag.getId());
+            articleMapper.insertArticleTagRelation(relation);
         }
 
-        Article selectedArticle = articleMapper.selectArticleById(articleId);
-
-        assertEquals(article.getId(), selectedArticle.getId());
-        assertEquals(article.getAuthorId(), selectedArticle.getAuthorId());
-        assertEquals(article.getTitle(), selectedArticle.getTitle());
-
-    }
-
-    @Test
-    public void selectArticleDetailsById() {
-        Long articleId = articleMapper.nextId();
-        String title = "pouring coffee";
-        String body = "pouring coffee";
-        Long authorId = author.getId();
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
-                new Tag(articleMapper.nextTagId(), articleId, "cl"),
-                new Tag(articleMapper.nextTagId(), articleId, "go"),
-                new Tag(articleMapper.nextTagId(), articleId, "pc")
-        ));
-        Article article = new Article(articleId, title, body, authorId, tags);
-
-        articleMapper.insertArticle(article);
-        for (Tag tag : article.getTags()) {
-            articleMapper.insertTag(tag);
-        }
-
-        Article selectedArticle = articleMapper.selectArticleDetailsById(article.getId());
+        Article selectedArticle = articleMapper.selectArticleById(article.getId());
 
         assertEquals(article.getId(), selectedArticle.getId());
 

@@ -19,6 +19,11 @@ CREATE TABLE tags(
     name TEXT
 );
 
+CREATE TABLE articles_tags(
+    article_id INTEGER,
+    tag_id INTEGER,
+    PRIMARY KEY (article_id, tag_id)
+);
 
 CREATE TABLE comments (
     id TEXT PRIMARY KEY,
