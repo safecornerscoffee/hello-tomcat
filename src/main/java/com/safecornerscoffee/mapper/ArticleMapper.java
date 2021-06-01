@@ -1,6 +1,7 @@
 package com.safecornerscoffee.mapper;
 
 import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.domain.Tag;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,4 +16,9 @@ public interface ArticleMapper {
     void insertArticle(Article article);
     void updateArticle(Article article);
     void deleteArticle(Article article);
+
+    Long nextTagId();
+    void insertTag(Tag tag);
+    void deleteTag(Tag tag);
+
 }

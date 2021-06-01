@@ -21,6 +21,14 @@ public class Article {
         this.authorId = authorId;
     }
 
+    public Article(Long id, String title, String body, Long authorId, List<Tag> tags) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.authorId = authorId;
+        this.tags = tags;
+    }
+
     public Long getId() {
         return id;
     }

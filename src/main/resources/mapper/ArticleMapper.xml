@@ -6,7 +6,7 @@
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="body" property="body"/>
-        <result column="authorId" property="authorId"/>
+        <result column="author_id" property="authorId"/>
     </resultMap>
     <resultMap id="detailedArticle" type="com.safecornerscoffee.domain.Article">
         <id property="id" column="article_id"/>
@@ -15,6 +15,7 @@
         <result property="authorId" column="article_author_id"/>
         <collection property="tags" ofType="com.safecornerscoffee.domain.Tag">
             <id property="id" column="tag_id"/>
+            <result property="articleId" column="tag_article_id"/>
             <result property="name" column="tag_name"/>
         </collection>
     </resultMap>
@@ -26,8 +27,9 @@
             A.id as article_id,
             A.title as article_title,
             A.body as article_body,
-            A.authorid as article_author_id,
+            A.author_id as article_author_id,
             T.id as tag_id,
+            T.article_id as tag_article_id,
             T.name as tag_name
         FROM articles A
                  LEFT OUTER JOIN tags T on A.id = T.article_id
@@ -38,25 +40,25 @@
         SELECT nextval('articles_id_seq')
     </select>
     <select id="selectAllArticles" resultMap="Article">
-        SELECT id, title, body, authorid
+        SELECT id, title, body, author_id
         FROM articles
     </select>
     <select id="selectArticleById"
             parameterType="Long"
             resultMap="Article">
-        SELECT id, title, body, authorid
+        SELECT id, title, body, author_id
         FROM articles
         WHERE id = #{id}
     </select>
     <select id="selectArticlesByAuthorId"
             parameterType="Long"
             resultMap="Article">
-        SELECT id, title, body, authorid
+        SELECT id, title, body, author_id
         FROM articles
-        WHERE authorid = #{authorId}
+        WHERE author_id = #{authorId}
     </select>
     <insert id="insertArticle" parameterType="com.safecornerscoffee.domain.Article">
-        INSERT INTO articles(id, title, body, authorid)
+        INSERT INTO articles(id, title, body, author_id)
         VALUES (#{id}, #{title}, #{body}, #{authorId})
     </insert>
     <update id="updateArticle" parameterType="com.safecornerscoffee.domain.Article">
@@ -65,4 +67,31 @@
     <delete id="deleteArticle" parameterType="com.safecornerscoffee.domain.Article">
         DELETE FROM articles WHERE id = #{id}
     </delete>
+
+    <select id="nextTagId" resultType="Long" useCache="false" flushCache="true">
+        SELECT nextval('tags_id_seq')
+    </select>
+
+    <insert id="insertTag"
+            parameterType="com.safecornerscoffee.domain.Tag">
+        INSERT INTO tags (id, article_id, name)
+        VALUES (#{id}, #{articleId}, #{name})
+    </insert>
+
+    <select id="selectTagByArticleId"
+            parameterType="Long"
+            resultMap="Tag">
+        SELECT (id, article_id, name)
+        FROM tags
+        WHERE article_id = #{articleId}
+    </select>
+
+    <delete id="deleteTag" parameterType="Long">
+        DELETE FROM tags WHERE id = #{id}
+    </delete>
+    <resultMap id="Tag" type="com.safecornerscoffee.domain.Tag">
+        <id column="id" property="id" />
+        <result column="article_id" property="articleId"/>
+        <result column="name" property="name"/>
+    </resultMap>
 </mapper>

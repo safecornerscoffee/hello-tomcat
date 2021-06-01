@@ -3,6 +3,7 @@ package com.safecornerscoffee.mapper;
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
+import com.safecornerscoffee.factory.TagFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,18 +14,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
+@Transactional
 public class ArticleMapperTest {
 
     private static final Logger log = LoggerFactory.getLogger(ArticleMapperTest.class);
+
     @Autowired
     ArticleMapper articleMapper;
+    @Autowired
+    TagFactory tagFactory;
 
     @Autowired
     UserMapper userMapper;
@@ -62,30 +70,42 @@ public class ArticleMapperTest {
         assertNotNull(nextArticleId);
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
-    public void ThrowErrorWhenInsertArticleWithNotPresentUserId() {
-        Long articleId = articleMapper.nextId();
-        String title = "test title";
-        String body = "this is a test";
-        Article article = new Article(articleId, title, body, -1L);
-        articleMapper.insertArticle(article);
-    }
-
     @Test
     public void InsertArticle() {
         Long articleId = articleMapper.nextId();
-        String title = "hello world";
-        String body = "hello world";
-        Article article = new Article(articleId, title, body, author.getId());
+        String title = "pouring coffee";
+        String body = "pouring coffee";
+        Long authorId = author.getId();
+        List<Tag> tags = new ArrayList<>(Arrays.asList(
+                new Tag(articleMapper.nextTagId(), articleId, "cl"),
+                new Tag(articleMapper.nextTagId(), articleId, "go"),
+                new Tag(articleMapper.nextTagId(), articleId, "pc")
+        ));
+        Article article = new Article(articleId, title, body, authorId, tags);
+
         articleMapper.insertArticle(article);
+        for (Tag tag : article.getTags()) {
+            articleMapper.insertTag(tag);
+        }
     }
+
     @Test
     public void SelectArticleById() {
         Long articleId = articleMapper.nextId();
-        String title = "test title";
-        String body = "this is a test";
-        Article article = new Article(articleId, title, body, author.getId());
+        String title = "pouring coffee";
+        String body = "pouring coffee";
+        Long authorId = author.getId();
+        List<Tag> tags = new ArrayList<>(Arrays.asList(
+                new Tag(articleMapper.nextTagId(), articleId, "cl"),
+                new Tag(articleMapper.nextTagId(), articleId, "go"),
+                new Tag(articleMapper.nextTagId(), articleId, "pc")
+        ));
+        Article article = new Article(articleId, title, body, authorId, tags);
+
         articleMapper.insertArticle(article);
+        for (Tag tag : article.getTags()) {
+            articleMapper.insertTag(tag);
+        }
 
         Article selectedArticle = articleMapper.selectArticleById(articleId);
 
@@ -97,47 +117,27 @@ public class ArticleMapperTest {
 
     @Test
     public void selectArticleDetailsById() {
-        Article article = articleMapper.selectArticleDetailsById(author.getId());
+        Long articleId = articleMapper.nextId();
+        String title = "pouring coffee";
+        String body = "pouring coffee";
+        Long authorId = author.getId();
+        List<Tag> tags = new ArrayList<>(Arrays.asList(
+                new Tag(articleMapper.nextTagId(), articleId, "cl"),
+                new Tag(articleMapper.nextTagId(), articleId, "go"),
+                new Tag(articleMapper.nextTagId(), articleId, "pc")
+        ));
+        Article article = new Article(articleId, title, body, authorId, tags);
 
-        assertEquals(article.getTags().size(), 2);
+        articleMapper.insertArticle(article);
         for (Tag tag : article.getTags()) {
-            log.debug(tag.toString());
-            log.debug(tag.toString());
-        }
-    }
-
-    @Test
-    public void selectAllArticles() {
-        String title = "test title";
-        String body = "this is a test";
-        Article firstArticle = new Article(articleMapper.nextId(), title, body, author.getId());
-        Article secondArticle = new Article(articleMapper.nextId(), title, body, author.getId());
-        articleMapper.insertArticle(firstArticle);
-        articleMapper.insertArticle(secondArticle);
-        List<Article> articles = articleMapper.selectAllArticles();
-
-        assertNotNull(articles);
-    }
-
-    @Test
-    public void selectArticleByAuthorId() {
-        String title = "test title";
-        String body = "this is a test";
-        Article firstArticle = new Article(articleMapper.nextId(), title, body, author.getId());
-        Article secondArticle = new Article(articleMapper.nextId(), title, body, author.getId());
-        Article AnotherArticle = new Article(articleMapper.nextId(), title, body, otherAuthor.getId());
-
-        articleMapper.insertArticle(firstArticle);
-        articleMapper.insertArticle(secondArticle);
-        articleMapper.insertArticle(AnotherArticle);
-
-        List<Article> articles = articleMapper.selectArticlesByAuthorId(author.getId());
-
-        assertEquals(articles.size(), 2);
-
-        for(Article article : articles) {
-            assertEquals(article.getAuthorId(), author.getId());
+            articleMapper.insertTag(tag);
         }
 
+        Article selectedArticle = articleMapper.selectArticleDetailsById(article.getId());
+
+        assertEquals(article.getId(), selectedArticle.getId());
+
+        assertEquals(article.getTags().size(), selectedArticle.getTags().size());
     }
+
 }

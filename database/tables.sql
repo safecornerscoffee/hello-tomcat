@@ -10,7 +10,7 @@ CREATE TABLE articles(
     id SERIAL PRIMARY KEY,
     title TEXT,
     body TEXT,
-    authorId INTEGER REFERENCES users(id) ON DELETE SET NULL
+    author_id INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE tags(
