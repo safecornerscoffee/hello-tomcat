@@ -1,5 +1,6 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     password TEXT NOT NULL
@@ -9,7 +10,7 @@ CREATE TABLE articles(
     id SERIAL PRIMARY KEY,
     title TEXT,
     body TEXT,
-    authorId INTEGER REFERENCES users(id) ON DELETE SET NULL
+    author_id INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE tags(
@@ -18,7 +19,11 @@ CREATE TABLE tags(
     name TEXT
 );
 
-CREATE TABLE
+CREATE TABLE articles_tags(
+    article_id INTEGER,
+    tag_id INTEGER,
+    PRIMARY KEY (article_id, tag_id)
+);
 
 CREATE TABLE comments (
     id TEXT PRIMARY KEY,

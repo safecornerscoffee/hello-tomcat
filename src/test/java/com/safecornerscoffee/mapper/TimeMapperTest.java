@@ -1,4 +1,4 @@
-package com.safecornerscoffee.dao;
+package com.safecornerscoffee.mapper;
 
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -9,13 +9,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
-public class TimeDaoTest extends TestCase {
+public class TimeMapperTest extends TestCase {
 
     @Autowired
-    private TimeDao timeDao;
+    private TimeMapper timeMapper;
 
     @Test
     public void testGetCurrentTime() {
-        System.out.println(timeDao.getCurrentTime());
+        System.out.println(timeMapper.getCurrentTime());
     }
 }

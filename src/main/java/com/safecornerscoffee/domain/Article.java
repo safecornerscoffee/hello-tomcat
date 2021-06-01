@@ -9,11 +9,37 @@ public class Article {
     private Long authorId;
     private List<Tag> tags;
 
+
+    public Article() {
+
+    }
+
     public Article(Long id, String title, String body, Long authorId) {
         this.id = id;
         this.title = title;
         this.body = body;
         this.authorId = authorId;
+    }
+
+    public Article(Long id, String title, String body, Long authorId, List<Tag> tags) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.authorId = authorId;
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        if (tags.contains(tag)) {
+            throw new IllegalStateException("already have tag: " + tag.getName());
+        }
+        tags.add(tag);
+    }
+    public void removeTag(Tag tag) {
+        if (!tags.contains(tag)) {
+           throw new IllegalStateException("does not have tag: " + tag.getName());
+        }
+        tags.remove(tag);
     }
 
     public Long getId() {

@@ -193,14 +193,16 @@ applicationContext.xml
 
 ### Configure SQLSessionFactory and Component Scan
 applicationContext.xml
+
 ```xml
+
 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
     <property name="configLocation" value="classpath:/mybatis-config.xml"/>
     <property name="mapperLocations" value="classpath:/mapper/*.xml"/>
 </bean>
 
-<mybatis-spring:scan base-package="com.safecornerscoffee.dao"/>
+<mybatis-spring:scan base-package="com.safecornerscoffee.mapper"/>
 ```
 mybatis-config.xml
 ```xml
@@ -234,7 +236,7 @@ public class User {
     private String password;
 }
 ```
-users.sql
+tables.sql
 ```postgresql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -258,11 +260,12 @@ public interface UserDao {
 }
 ```
 UserDaoMapper.xml
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.safecornerscoffee.dao.UserDao">
+<mapper namespace="com.safecornerscoffee.mapper.UserMapper">
     <select id="selectAllUsers" resultType="com.safecornerscoffee.domain.User">
         SELECT id, email, name, password FROM users
     </select>
@@ -295,9 +298,9 @@ UserDaoMapper.xml
             parameterType="com.safecornerscoffee.domain.User">
         UPDATE users
         SET
-            email = #{email},
-            name = #{name},
-            password = #{password}
+        email = #{email},
+        name = #{name},
+        password = #{password}
         WHERE id = #{id}
     </update>
     <delete id="deleteUser" parameterType="com.safecornerscoffee.domain.User">

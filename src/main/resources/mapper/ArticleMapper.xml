@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecornerscoffee.mapper.ArticleMapper">
+
+    <resultMap id="Article" type="com.safecornerscoffee.domain.Article">
+        <id property="id" column="article_id"/>
+        <result property="title" column="article_title"/>
+        <result property="body" column="article_body"/>
+        <result property="authorId" column="article_author_id"/>
+        <collection property="tags" ofType="com.safecornerscoffee.domain.Tag">
+            <id property="id" column="tag_id"/>
+            <result property="articleId" column="tag_article_id"/>
+            <result property="name" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectArticleById"
+            parameterType="Long"
+            resultMap="Article">
+        SELECT
+            A.id as article_id,
+            A.title as article_title,
+            A.body as article_body,
+            A.author_id as article_author_id,
+            T.id as tag_id,
+            T.name as tag_name
+        FROM articles A
+            LEFT OUTER JOIN articles_tags R on A.id = R.article_id
+            LEFT OUTER JOIN tags T on R.tag_id = T.id
+        WHERE A.id = #{id};
+    </select>
+
+    <select id="nextId" resultType="Long">
+        SELECT nextval('articles_id_seq')
+    </select>
+    <select id="selectAllArticles" resultMap="Article">
+        SELECT id, title, body, author_id
+        FROM articles
+    </select>
+
+    <select id="selectArticlesByAuthorId"
+            parameterType="Long"
+            resultMap="Article">
+        SELECT
+            A.id as article_id,
+            A.title as article_title,
+            A.body as article_body,
+            A.author_id as article_author_id,
+            T.id as tag_id,
+            T.name as tag_name
+        FROM articles A
+                 LEFT OUTER JOIN articles_tags R on A.id = R.article_id
+                 LEFT OUTER JOIN tags T on R.tag_id = T.id
+        WHERE A.author_id = #{authorId};
+    </select>
+    <insert id="insertArticle" parameterType="com.safecornerscoffee.domain.Article">
+        INSERT INTO articles(id, title, body, author_id)
+        VALUES (#{id}, #{title}, #{body}, #{authorId})
+    </insert>
+    <update id="updateArticle" parameterType="com.safecornerscoffee.domain.Article">
+        UPDATE articles
+        SET
+            title = #{title},
+            body = #{body}
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteArticle" parameterType="com.safecornerscoffee.domain.Article">
+        DELETE FROM articles WHERE id = #{id}
+    </delete>
+
+    <select id="nextTagId" resultType="Long" useCache="false" flushCache="true">
+        SELECT nextval('tags_id_seq')
+    </select>
+
+    <insert id="insertTag"
+            parameterType="com.safecornerscoffee.domain.Tag">
+        INSERT INTO tags (id, name)
+        VALUES (#{id}, #{name})
+    </insert>
+
+    <select id="selectTagByName"
+            parameterType="String"
+            resultMap="Tag">
+        SELECT (id, name)
+        FROM tags
+        WHERE name = #{name}
+    </select>
+
+    <delete id="deleteTag" parameterType="com.safecornerscoffee.domain.Tag">
+        DELETE FROM tags WHERE id = #{id}
+    </delete>
+
+    <resultMap id="Tag" type="com.safecornerscoffee.domain.Tag">
+        <id column="id" property="id" />
+        <result column="name" property="name"/>
+    </resultMap>
+
+    <insert id="insertArticleTagRelation" parameterType="com.safecornerscoffee.domain.ArticleTagRelation">
+        INSERT INTO articles_tags (article_id, tag_id)
+        VALUES (#{articleId}, #{tagId})
+    </insert>
+    <select id="selectTagsByArticleId"
+            parameterType="Long"
+            resultType="com.safecornerscoffee.domain.Tag">
+        SELECT
+            T.id as id,
+            T.name as name
+        FROM articles_tags R
+            LEFT OUTER JOIN tags T on R.tag_id = T.id
+        WHERE R.article_id = #{articleId}
+    </select>
+    <delete id="deleteArticleTagRelation" parameterType="com.safecornerscoffee.domain.ArticleTagRelation">
+        DELETE FROM articles_tags
+        WHERE article_id = #{articleId} AND tag_id = #{tagId}
+    </delete>
+
+</mapper>

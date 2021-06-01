@@ -1,6 +1,6 @@
 package com.safecornerscoffee.service;
 
-import com.safecornerscoffee.dao.UserDao;
+import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.service.dto.UserDTO;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    private final UserDao userDao;
+    private final UserMapper userMapper;
 
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
+    public UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     @Transactional
@@ -32,22 +32,21 @@ public class UserService {
         }
 
         User user = new User();
+        user.setId(userMapper.nextId());
         user.setEmail(email);
         user.setName(name);
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         user.setPassword(hashedPassword);
 
-        Long returnedId = userDao.insertUser(user);
-        user.setId(returnedId);
+       userMapper.insertUser(user);
 
-
-        return UserDTO.fromUser(user);
+       return UserDTO.fromUser(user);
     }
 
     public UserDTO signIn(String email, String candidatePassword) {
 
-        User user = userDao.selectUserByEmail(email);
+        User user = userMapper.selectUserByEmail(email);
         if (user == null) {
             throw new IllegalStateException("invalid email or password");
         }
@@ -71,7 +70,7 @@ public class UserService {
     }
 
     private boolean isExistEmailAddress(String email) {
-        User existUser = userDao.selectUserByEmail(email);
+        User existUser = userMapper.selectUserByEmail(email);
 
         if (existUser == null) {
             return false;
@@ -80,7 +79,7 @@ public class UserService {
     }
 
     public UserDTO getUser(Long id) {
-        User user = userDao.selectUserById(id);
+        User user = userMapper.selectUserById(id);
         if (user == null) {
             throw new IllegalStateException("invalid email or password");
         }
@@ -88,7 +87,7 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsers() {
-        List<User> users = userDao.selectAllUsers();
+        List<User> users = userMapper.selectAllUsers();
         if (users == null || users.isEmpty()) {
             return Collections.emptyList();
         }
@@ -99,7 +98,7 @@ public class UserService {
     }
 
     public void dropUser(UserDTO userDTO) {
-        User user = userDao.selectUserById(userDTO.getId());
-        userDao.deleteUser(user);
+        User user = userMapper.selectUserById(userDTO.getId());
+        userMapper.deleteUser(user);
     }
 }
