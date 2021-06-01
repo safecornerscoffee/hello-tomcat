@@ -1,6 +1,6 @@
 package com.safecornerscoffee.service;
 
-import com.safecornerscoffee.dao.UserDao;
+import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.service.dto.UserDTO;
 import org.junit.After;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +20,7 @@ import static org.junit.Assert.*;
 public class UserServiceTest {
 
     @Autowired
-    UserDao userDao;
+    UserMapper userMapper;
 
     @Autowired
     UserService userService;
@@ -36,12 +35,12 @@ public class UserServiceTest {
     @Before
     public void beforeEach() {
         userDTO = userService.signUp(email, name, password);
-        user = userDao.selectUserById(userDTO.getId());
+        user = userMapper.selectUserById(userDTO.getId());
     }
 
     @After
     public void afterEach() {
-        userDao.deleteUser(user);
+        userMapper.deleteUser(user);
     }
 
     @Test
@@ -82,7 +81,7 @@ public class UserServiceTest {
    @Test
    public void FindExistUserTest() {
        UserDTO findUserDTO = userService.getUser(userDTO.getId());
-       User findUser = userDao.selectUserById(userDTO.getId());
+       User findUser = userMapper.selectUserById(userDTO.getId());
        assertEquals(findUserDTO.getId(), findUser.getId());
    }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.safecornerscoffee.dao.ArticleDao">
+<mapper namespace="com.safecornerscoffee.mapper.ArticleMapper">
     <resultMap id="Article" type="com.safecornerscoffee.domain.Article">
         <id column="id" property="id"/>
         <result column="title" property="title"/>

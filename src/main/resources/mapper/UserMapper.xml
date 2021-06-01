@@ -1,39 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.safecornerscoffee.dao.UserDao">
+<mapper namespace="com.safecornerscoffee.mapper.UserMapper">
+    <select id="nextId" resultType="Long">
+        SELECT nextval('users_id_seq')
+    </select>
+    <insert id="insertUser"
+            parameterType="com.safecornerscoffee.domain.User"
+    >
+        INSERT INTO users(id, username, email, name, password)
+        VALUES(#{id}, #{username}, #{email}, #{name}, #{password})
+    </insert>
+
     <select id="selectAllUsers" resultType="com.safecornerscoffee.domain.User">
-        SELECT id, email, name, password FROM users
+        SELECT id, username, email, name, password FROM users
     </select>
     <select id="selectUserById"
             parameterType="Long"
             resultType="com.safecornerscoffee.domain.User">
-        SELECT id, email, name, password
+        SELECT id, username, email, name, password
         FROM users
         WHERE id = #{id}
     </select>
-
+    <select id="selectUserByUsername"
+            parameterType="String"
+            resultType="com.safecornerscoffee.domain.User">
+        SELECT id, username, email, name, password
+        FROM users
+        WHERE username = #{username}
+    </select>
     <select id="selectUserByEmail"
             parameterType="String"
             resultType="com.safecornerscoffee.domain.User">
-        SELECT id, email, name, password
+        SELECT id, username, email, name, password
         FROM users
         WHERE email = #{email}
     </select>
 
-    <select id="insertUser"
-            parameterType="com.safecornerscoffee.domain.User"
-            resultType="Long"
-    >
-        INSERT INTO users(email, name, password)
-        VALUES(#{email}, #{name}, #{password})
-        RETURNING id
-    </select>
+
 
     <update id="updateUser"
             parameterType="com.safecornerscoffee.domain.User">
         UPDATE users
         SET
+            username = #{username},
             email = #{email},
             name = #{name},
             password = #{password}
@@ -43,6 +53,5 @@
         DELETE FROM users WHERE id = #{id}
     </delete>
 
-    <select id="nextId" resultType="Long">
-    </select>
+
 </mapper>

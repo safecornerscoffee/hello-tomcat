@@ -1,9 +1,8 @@
 package com.safecornerscoffee.service;
 
-import com.safecornerscoffee.dao.ArticleDao;
-import com.safecornerscoffee.dao.UserDao;
+import com.safecornerscoffee.mapper.ArticleMapper;
+import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.service.dto.ArticleDTO;
 import com.safecornerscoffee.service.dto.UserDTO;
 import org.junit.After;
@@ -27,27 +26,27 @@ public class ArticleServiceTest {
     @Autowired
     ArticleService articleService;
     @Autowired
-    ArticleDao articleDao;
+    ArticleMapper articleMapper;
     Article article;
 
     @Autowired
     UserService userService;
     @Autowired
-    UserDao userDao;
+    UserMapper userMapper;
     UserDTO author;
 
     @Before
     public void beforeEach() {
         author = userService.signUp("author@example.com", "author", "author");
 
-        article = new Article(articleDao.nextId(), "articleService", "articleService", author.getId());
-        articleDao.insertArticle(article);
+        article = new Article(articleMapper.nextId(), "articleService", "articleService", author.getId());
+        articleMapper.insertArticle(article);
     }
 
     @After
     public void afterEach() {
         userService.dropUser(author);
-        articleDao.deleteArticle(article);
+        articleMapper.deleteArticle(article);
     }
 
     @Test

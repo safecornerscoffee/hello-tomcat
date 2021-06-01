@@ -9,6 +9,11 @@ public class Article {
     private Long authorId;
     private List<Tag> tags;
 
+
+    public Article() {
+
+    }
+
     public Article(Long id, String title, String body, Long authorId) {
         this.id = id;
         this.title = title;

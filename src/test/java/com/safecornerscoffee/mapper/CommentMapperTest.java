@@ -1,4 +1,4 @@
-package com.safecornerscoffee.dao;
+package com.safecornerscoffee.mapper;
 
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Comment;
@@ -18,16 +18,16 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
-public class CommentDaoTest {
+public class CommentMapperTest {
 
     @Autowired
-    CommentDao commentDao;
+    CommentMapper commentMapper;
 
     @Autowired
-    ArticleDao articleDao;
+    ArticleMapper articleMapper;
 
     @Autowired
-    UserDao userDao;
+    UserMapper userMapper;
 
     User author, commenter;
     Article article;
@@ -40,62 +40,63 @@ public class CommentDaoTest {
     @Before
     public void beforeEach() {
         author = new User();
+        author.setId(userMapper.nextId());
+        author.setUsername("bluebottle");
         author.setName("bluebottle");
         author.setEmail("bluebottle");
         author.setPassword("bluebottle");
-        Long userId = userDao.insertUser(author);
-        author.setId(userId);
 
         commenter = new User();
-        commenter.setName("commenter");
-        commenter.setEmail("commenter");
-        commenter.setPassword("commenter");
-        Long commenterId = userDao.insertUser(commenter);
-        commenter.setId(commenterId);
+        commenter.setId(userMapper.nextId());
+        commenter.setUsername("bottletop");
+        commenter.setName("bottletop");
+        commenter.setEmail("bottletop");
+        commenter.setPassword("bottletop");
 
-        Long articleId = articleDao.nextId();
+
+        Long articleId = 1L;
         String title = "comment test";
         String body = "comment test";
 
         article = new Article(articleId, title, body, author.getId());
-        articleDao.insertArticle(article);
+        articleMapper.insertArticle(article);
 
     }
 
     @After
     public void afterEach() {
-        userDao.deleteUser(author);
-        userDao.deleteUser(commenter);
-        articleDao.deleteArticle(article);
+        userMapper.deleteUser(author);
+        userMapper.deleteUser(commenter);
+        articleMapper.deleteArticle(article);
     }
 
     @Test
     public void insertComment() {
         Comment comment = new Comment(article.getId(), commenter.getId(), "Hello");
-        commentDao.insertComment(comment);
+        commentMapper.insertComment(comment);
     }
 
     @Test
     public void deleteComment() {
         Comment comment = new Comment(article.getId(), commenter.getId(), "Hello");
-        commentDao.deleteComment(comment);
+        commentMapper.deleteComment(comment);
     }
 
     @Test
     public void SelectCommentById() {
         Comment comment = new Comment(article.getId(), commenter.getId(), "Hello");
-        commentDao.insertComment(comment);
+        commentMapper.insertComment(comment);
 
-        Comment selectedComment = commentDao.SelectCommentById(comment.getId());
+        Comment selectedComment = commentMapper.SelectCommentById(comment.getId());
         assertEquals(comment.getId(), selectedComment.getId());
     }
 
     @Test
     public void selectCommentsByArticleId() {
-        commentDao.insertComment(new Comment(article.getId(), commenter.getId(), "Hello"));
-        commentDao.insertComment(new Comment(article.getId(), commenter.getId(), "Hello"));
-        commentDao.insertComment(new Comment(article.getId(), commenter.getId(), "Hello"));
-        List<Comment> comments = commentDao.SelectCommentsByArticleId(article.getId());
+        commentMapper.insertComment(new Comment(article.getId(), commenter.getId(), "Hello"));
+        commentMapper.insertComment(new Comment(article.getId(), commenter.getId(), "Hello"));
+        commentMapper.insertComment(new Comment(article.getId(), commenter.getId(), "Hello"));
+        List<Comment> comments = commentMapper.SelectCommentsByArticleId(article.getId());
 
         assertEquals(comments.size(), 3);
     }

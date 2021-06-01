@@ -1,12 +1,10 @@
-package com.safecornerscoffee.dao;
+package com.safecornerscoffee.mapper;
 
-import com.safecornerscoffee.controller.ArticleController;
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,70 +20,73 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
-public class ArticleDaoTest {
+public class ArticleMapperTest {
 
-    private static final Logger log = LoggerFactory.getLogger(ArticleDaoTest.class);
+    private static final Logger log = LoggerFactory.getLogger(ArticleMapperTest.class);
     @Autowired
-    ArticleDao articleDao;
+    ArticleMapper articleMapper;
 
     @Autowired
-    UserDao userDao;
+    UserMapper userMapper;
     User author, otherAuthor;
 
     @Before
     public void beforeEach() {
+
         author = new User();
+        author.setId(userMapper.nextId());
+        author.setUsername("bluebottle");
         author.setName("bluebottle");
         author.setEmail("bluebottle");
         author.setPassword("bluebottle");
-        Long userId = userDao.insertUser(author);
-        author.setId(userId);
+        userMapper.insertUser(author);
         otherAuthor = new User();
-        otherAuthor.setName("mega-coffee");
-        otherAuthor.setEmail("mega-coffee");
-        otherAuthor.setPassword("mega-coffee");
-        userId = userDao.insertUser(otherAuthor);
-        otherAuthor.setId(userId);
+        otherAuthor.setId(userMapper.nextId());
+        otherAuthor.setUsername("ediya");
+        otherAuthor.setName("ediya");
+        otherAuthor.setEmail("ediya");
+        otherAuthor.setPassword("ediya");
+        userMapper.insertUser(otherAuthor);
     }
 
     @After
     public void afterEach() {
-        userDao.deleteUser(author);
-        userDao.deleteUser(otherAuthor);
+        userMapper.deleteUser(author);
+        userMapper.deleteUser(otherAuthor);
     }
 
     @Test
     public void nextIdTest() {
-        Long nextArticleId = articleDao.nextId();
+        Long nextArticleId = articleMapper.nextId();
         assertNotNull(nextArticleId);
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void ThrowErrorWhenInsertArticleWithNotPresentUserId() {
-        Long articleId = articleDao.nextId();
+        Long articleId = articleMapper.nextId();
         String title = "test title";
         String body = "this is a test";
         Article article = new Article(articleId, title, body, -1L);
-        articleDao.insertArticle(article);
+        articleMapper.insertArticle(article);
     }
 
     @Test
     public void InsertArticle() {
-        Long articleId = articleDao.nextId();
+        Long articleId = articleMapper.nextId();
         String title = "test title";
         String body = "this is a test";
         Article article = new Article(articleId, title, body, author.getId());
-        articleDao.insertArticle(article);
+        articleMapper.insertArticle(article);
     }
     @Test
     public void SelectArticleById() {
-        Long articleId = articleDao.nextId();
+        Long articleId = articleMapper.nextId();
         String title = "test title";
         String body = "this is a test";
         Article article = new Article(articleId, title, body, author.getId());
-        articleDao.insertArticle(article);
+        articleMapper.insertArticle(article);
 
-        Article selectedArticle = articleDao.selectArticleById(articleId);
+        Article selectedArticle = articleMapper.selectArticleById(articleId);
 
         assertEquals(article.getId(), selectedArticle.getId());
         assertEquals(article.getAuthorId(), selectedArticle.getAuthorId());
@@ -96,7 +96,7 @@ public class ArticleDaoTest {
 
     @Test
     public void selectArticleDetailsById() {
-        Article article = articleDao.selectArticleDetailsById(1L);
+        Article article = articleMapper.selectArticleDetailsById(1L);
 
         assertEquals(article.getTags().size(), 2);
         for (Tag tag : article.getTags()) {
@@ -109,11 +109,11 @@ public class ArticleDaoTest {
     public void selectAllArticles() {
         String title = "test title";
         String body = "this is a test";
-        Article firstArticle = new Article(articleDao.nextId(), title, body, author.getId());
-        Article secondArticle = new Article(articleDao.nextId(), title, body, author.getId());
-        articleDao.insertArticle(firstArticle);
-        articleDao.insertArticle(secondArticle);
-        List<Article> articles = articleDao.selectAllArticles();
+        Article firstArticle = new Article(articleMapper.nextId(), title, body, author.getId());
+        Article secondArticle = new Article(articleMapper.nextId(), title, body, author.getId());
+        articleMapper.insertArticle(firstArticle);
+        articleMapper.insertArticle(secondArticle);
+        List<Article> articles = articleMapper.selectAllArticles();
 
         assertNotNull(articles);
     }
@@ -122,15 +122,15 @@ public class ArticleDaoTest {
     public void selectArticleByAuthorId() {
         String title = "test title";
         String body = "this is a test";
-        Article firstArticle = new Article(articleDao.nextId(), title, body, author.getId());
-        Article secondArticle = new Article(articleDao.nextId(), title, body, author.getId());
-        Article AnotherArticle = new Article(articleDao.nextId(), title, body, otherAuthor.getId());
+        Article firstArticle = new Article(articleMapper.nextId(), title, body, author.getId());
+        Article secondArticle = new Article(articleMapper.nextId(), title, body, author.getId());
+        Article AnotherArticle = new Article(articleMapper.nextId(), title, body, otherAuthor.getId());
 
-        articleDao.insertArticle(firstArticle);
-        articleDao.insertArticle(secondArticle);
-        articleDao.insertArticle(AnotherArticle);
+        articleMapper.insertArticle(firstArticle);
+        articleMapper.insertArticle(secondArticle);
+        articleMapper.insertArticle(AnotherArticle);
 
-        List<Article> articles = articleDao.selectArticlesByAuthorId(author.getId());
+        List<Article> articles = articleMapper.selectArticlesByAuthorId(author.getId());
 
         assertEquals(articles.size(), 2);
 

@@ -1,6 +1,6 @@
 package com.safecornerscoffee.service;
 
-import com.safecornerscoffee.dao.ArticleDao;
+import com.safecornerscoffee.mapper.ArticleMapper;
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.service.dto.ArticleDTO;
 import org.springframework.stereotype.Service;
@@ -14,30 +14,30 @@ import java.util.stream.Collectors;
 @Transactional
 public class ArticleService {
 
-    private ArticleDao articleDao;
+    private ArticleMapper articleMapper;
 
-    public ArticleService(ArticleDao articleDao) {
-        this.articleDao = articleDao;
+    public ArticleService(ArticleMapper articleMapper) {
+        this.articleMapper = articleMapper;
     }
 
     public List<ArticleDTO> getArticles() {
-        List<Article> articles = articleDao.selectAllArticles();
+        List<Article> articles = articleMapper.selectAllArticles();
 
         return articles.stream().map(ArticleDTO::from).collect(Collectors.toList());
     }
 
     public ArticleDTO readArticle(Long articleId) {
-        Article article = articleDao.selectArticleById(articleId);
+        Article article = articleMapper.selectArticleById(articleId);
 
         return ArticleDTO.from(article);
     }
 
     public ArticleDTO writeArticle(ArticleDTO articleDTO) {
-        Long articleId = articleDao.nextId();
+        Long articleId = articleMapper.nextId();
         Article article = new Article(articleId,
                 articleDTO.getTitle(), articleDTO.getBody(), articleDTO.getAuthorId());
 
-        articleDao.insertArticle(article);
+        articleMapper.insertArticle(article);
 
         return ArticleDTO.from(article);
     }
@@ -47,12 +47,12 @@ public class ArticleService {
             throw new IllegalStateException("invalid request");
         }
 
-        Article article = articleDao.selectArticleById(articleDTO.getId());
+        Article article = articleMapper.selectArticleById(articleDTO.getId());
 
         article.updateTitle(articleDTO.getTitle());
         article.updateBody(articleDTO.getBody());
 
-        articleDao.updateArticle(article);
+        articleMapper.updateArticle(article);
 
         return ArticleDTO.from(article);
     }
