@@ -4,13 +4,12 @@ import com.safecornerscoffee.service.UserService;
 import com.safecornerscoffee.service.dto.ErrorResponse;
 import com.safecornerscoffee.service.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.net.http.HttpResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -45,16 +44,22 @@ public class UserController {
         }
     }
 
+    @GetMapping("/main")
+    public String mainPage() {
+        return "main";
+    }
+
     @GetMapping("/signin")
     public String signInPage() {
         return "signin";
     }
 
     @PostMapping("/signin")
-    public String signIn(String email, String password, Model model) {
+    public String signIn(String email, String password, Model model, HttpSession httpSession) {
         try {
             UserDTO userDTO = userService.signIn(email, password);
             model.addAttribute("user", userDTO);
+            httpSession.setAttribute("sessionUser", userDTO);
             return "main";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

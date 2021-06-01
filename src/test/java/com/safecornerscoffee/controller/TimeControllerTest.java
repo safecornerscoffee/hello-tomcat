@@ -13,8 +13,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration({"file:src/main/web/WEB-INF/applicationContext.xml"})
 public class TimeControllerTest {
 
-
-
     @Test
     public void currentTime() {
     }
