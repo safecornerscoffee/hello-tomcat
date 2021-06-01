@@ -236,7 +236,7 @@ public class User {
     private String password;
 }
 ```
-users.sql
+tables.sql
 ```postgresql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,

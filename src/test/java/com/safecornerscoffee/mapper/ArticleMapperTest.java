@@ -40,6 +40,7 @@ public class ArticleMapperTest {
         author.setEmail("bluebottle");
         author.setPassword("bluebottle");
         userMapper.insertUser(author);
+
         otherAuthor = new User();
         otherAuthor.setId(userMapper.nextId());
         otherAuthor.setUsername("ediya");
@@ -73,8 +74,8 @@ public class ArticleMapperTest {
     @Test
     public void InsertArticle() {
         Long articleId = articleMapper.nextId();
-        String title = "test title";
-        String body = "this is a test";
+        String title = "hello world";
+        String body = "hello world";
         Article article = new Article(articleId, title, body, author.getId());
         articleMapper.insertArticle(article);
     }
@@ -96,7 +97,7 @@ public class ArticleMapperTest {
 
     @Test
     public void selectArticleDetailsById() {
-        Article article = articleMapper.selectArticleDetailsById(1L);
+        Article article = articleMapper.selectArticleDetailsById(author.getId());
 
         assertEquals(article.getTags().size(), 2);
         for (Tag tag : article.getTags()) {
