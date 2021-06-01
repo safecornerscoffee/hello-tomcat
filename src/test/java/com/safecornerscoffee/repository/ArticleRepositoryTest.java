@@ -55,9 +55,9 @@ public class ArticleRepositoryTest {
         String body = "pouring coffee";
         Long authorId = author.getId();
         List<Tag> tags = new ArrayList<>(Arrays.asList(
-                new Tag(articleMapper.nextTagId(), "cl"),
-                new Tag(articleMapper.nextTagId(),  "go"),
-                new Tag(articleMapper.nextTagId(), "pc")
+                tagFactory.forName("cl"),
+                tagFactory.forName("go"),
+                tagFactory.forName("pc")
         ));
         article = new Article(articleId, title, body, authorId, tags);
     }

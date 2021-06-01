@@ -2,7 +2,11 @@ package com.safecornerscoffee.mapper;
 
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Comment;
+import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
+import com.safecornerscoffee.factory.ArticleFactory;
+import com.safecornerscoffee.factory.TagFactory;
+import com.safecornerscoffee.repository.ArticleRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,31 +15,34 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
+@Transactional
 public class CommentMapperTest {
 
     @Autowired
     CommentMapper commentMapper;
 
     @Autowired
-    ArticleMapper articleMapper;
+    ArticleRepository articleRepository;
+    @Autowired
+    ArticleFactory articleFactory;
+    @Autowired
+    TagFactory tagFactory;
 
     @Autowired
     UserMapper userMapper;
 
     User author, commenter;
     Article article;
-
-    @BeforeClass
-    public static void beforeClass() {
-
-    }
 
     @Before
     public void beforeEach() {
@@ -45,6 +52,7 @@ public class CommentMapperTest {
         author.setName("bluebottle");
         author.setEmail("bluebottle");
         author.setPassword("bluebottle");
+        userMapper.insertUser(author);
 
         commenter = new User();
         commenter.setId(userMapper.nextId());
@@ -52,22 +60,25 @@ public class CommentMapperTest {
         commenter.setName("bottletop");
         commenter.setEmail("bottletop");
         commenter.setPassword("bottletop");
+        userMapper.insertUser(commenter);
 
-
-        Long articleId = 1L;
-        String title = "comment test";
-        String body = "comment test";
-
-        article = new Article(articleId, title, body, author.getId());
-        articleMapper.insertArticle(article);
-
+        String title = "pouring coffee";
+        String body = "pouring coffee";
+        Long authorId = author.getId();
+        List<Tag> tags = new ArrayList<>(Arrays.asList(
+                tagFactory.forName("cl"),
+                tagFactory.forName("go"),
+                tagFactory.forName("pc")
+        ));
+        article = articleFactory.getArticle(title, body, authorId, tags);
+        articleRepository.saveArticle(article);
     }
 
     @After
     public void afterEach() {
         userMapper.deleteUser(author);
         userMapper.deleteUser(commenter);
-        articleMapper.deleteArticle(article);
+        articleRepository.removeArticle(article);
     }
 
     @Test

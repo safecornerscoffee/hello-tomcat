@@ -18,7 +18,7 @@ public class ArticleRepository {
         this.articleMapper = articleMapper;
     }
 
-    void saveArticle(Article article) {
+    public void saveArticle(Article article) {
         articleMapper.insertArticle(article);
         insertTags(article);
     }
@@ -31,17 +31,6 @@ public class ArticleRepository {
         }
     }
 
-    void removeArticle(Article article) {
-        deleteTags(article);
-        articleMapper.deleteArticle(article);
-    }
-
-    void updateArticle(Article article) {
-        articleMapper.updateArticle(article);
-        deleteTags(article);
-        insertTags(article);
-    }
-
     private void deleteTags(Article article) {
         List<Tag> tags = articleMapper.selectTagsByArticleId(article.getId());
         for (Tag tag : tags) {
@@ -51,21 +40,30 @@ public class ArticleRepository {
         }
     }
 
+    public void removeArticle(Article article) {
+        deleteTags(article);
+        articleMapper.deleteArticle(article);
+    }
 
-    Article findArticleById(Long articleId) {
+    public void updateArticle(Article article) {
+        articleMapper.updateArticle(article);
+        deleteTags(article);
+        insertTags(article);
+    }
+
+    public Article findArticleById(Long articleId) {
         return articleMapper.selectArticleById(articleId);
     }
 
-    List<Article> findArticles() {
+    public List<Article> findArticles() {
         return Collections.emptyList();
     }
 
-    List<Article> findArticlesByAuthorId(Long authorId) {
+    public List<Article> findArticlesByAuthorId(Long authorId) {
         return articleMapper.selectArticlesByAuthorId(authorId);
     }
 
-    List<Article> findArticlesByTag(Tag tag) {
+    public List<Article> findArticlesByTag(Tag tag) {
         return Collections.emptyList();
     }
-
 }
