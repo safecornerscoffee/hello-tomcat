@@ -7,6 +7,7 @@ public class UserAssembler {
     public static UserDTO writeDTO(User user) {
         UserDTO userDto = new UserDTO();
         userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
         userDto.setPassword(user.getPassword());

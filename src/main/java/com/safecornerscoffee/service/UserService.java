@@ -26,24 +26,28 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO signUp(String email, String name, String password) {
-
-        if(isExistEmailAddress(email)) {
+    public UserDTO signUp(String username, String email, String name, String password) {
+        if (isExistUsername(username)) {
+            throw new IllegalStateException("already exists");
+        }
+        if (isExistEmailAddress(email)) {
             throw new IllegalStateException("already exists");
         }
 
         User user = new User();
         user.setId(userMapper.nextId());
+        user.setUsername(username);
         user.setEmail(email);
         user.setName(name);
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         user.setPassword(hashedPassword);
 
-       userMapper.insertUser(user);
+        userMapper.insertUser(user);
 
        return UserAssembler.writeDTO(user);
     }
+
 
     public UserDTO signIn(String email, String candidatePassword) {
 
@@ -68,6 +72,10 @@ public class UserService {
         return Jwts.builder().setSubject(email).signWith(key).compact();
     }
 
+    private boolean isExistUsername(String username) {
+        User existUser = userMapper.selectUserByUsername(username);
+        return existUser != null;
+    }
     private boolean isExistEmailAddress(String email) {
         User existUser = userMapper.selectUserByEmail(email);
 

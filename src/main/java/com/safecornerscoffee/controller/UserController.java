@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping("/signup")
     public String signUp(UserDTO userDTO, Model model) {
         try {
-            userService.signUp(userDTO.getEmail(), userDTO.getName(), userDTO.getPassword());
+            userService.signUp(userDTO.getUsername(), userDTO.getEmail(), userDTO.getName(), userDTO.getPassword());
             return "redirect:/";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
