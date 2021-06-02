@@ -9,7 +9,6 @@ public class Article {
     private Long authorId;
     private List<Tag> tags;
 
-
     public Article() {
 
     }

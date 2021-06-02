@@ -14,7 +14,13 @@ public class UserAssembler {
         return userDto;
     }
 
-    public User createUser(UserDTO userDTO) {
-        return new User();
+    public static User createUser(UserDTO userDTO) {
+        return new User(
+                userDTO.getId(),
+                userDTO.getUsername(),
+                userDTO.getEmail(),
+                userDTO.getName(),
+                userDTO.getPassword()
+        );
     }
 }

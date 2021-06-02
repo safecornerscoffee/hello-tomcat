@@ -35,9 +35,8 @@ public class ArticleService {
     }
 
     public ArticleDTO writeArticle(ArticleDTO articleDTO) {
-        Long articleId = articleRepository.nextId();
-        Article article = new Article(articleId,
-                articleDTO.getTitle(), articleDTO.getBody(), articleDTO.getAuthorId(), articleDTO.getTags());
+        articleDTO.setId(articleRepository.nextId());
+        Article article = ArticleAssembler.createArticle(articleDTO);
 
         articleRepository.saveArticle(article);
 

@@ -69,4 +69,53 @@ public class UserDTO {
                 ", token='" + token + '\'' +
                 '}';
     }
+
+    public static class UserBuilder {
+        Long id;
+        String username;
+        String email;
+        String name;
+        String password;
+        String token;
+
+        public UserBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+        public UserBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public UserBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+        public UserBuilder token(String token) {
+            this.token = token;
+            return this;
+
+        }
+
+        public UserDTO build() {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(id);
+            userDTO.setUsername(username);
+            userDTO.setName(name);
+            userDTO.setEmail(email);
+            userDTO.setPassword(password);
+            userDTO.setToken(token);
+
+            return userDTO;
+        }
+    }
 }

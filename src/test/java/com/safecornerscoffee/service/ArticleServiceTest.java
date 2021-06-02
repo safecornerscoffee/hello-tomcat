@@ -42,10 +42,15 @@ public class ArticleServiceTest {
     @Autowired
     UserMapper userMapper;
     UserDTO author;
-
     @Before
     public void beforeEach() {
-        author = userService.signUp("author", "author@example.com", "author", "author");
+
+        UserDTO authorDTO = new UserDTO();
+        authorDTO.setUsername("writer");
+        authorDTO.setEmail("writer@safeocornerscoffee.com");
+        authorDTO.setPassword("writer");
+        authorDTO.setName("writer");
+        author = userService.signUp(authorDTO);
 
         article = new Article(articleMapper.nextId(), "articleService", "articleService", author.getId());
         articleMapper.insertArticle(article);

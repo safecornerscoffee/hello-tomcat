@@ -26,44 +26,46 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO signUp(String username, String email, String name, String password) {
-        if (isExistUsername(username)) {
-            throw new IllegalStateException("already exists");
+    public UserDTO signUp(UserDTO userDTO) {
+        if (isExistUsername(userDTO.getUsername())) {
+            throw new IllegalStateException("already exists" + userDTO.getUsername());
         }
-        if (isExistEmailAddress(email)) {
-            throw new IllegalStateException("already exists");
+        if (isExistEmailAddress(userDTO.getEmail())) {
+            throw new IllegalStateException("already exists" + userDTO.getEmail());
         }
 
-        User user = new User();
-        user.setId(userMapper.nextId());
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setName(name);
+        userDTO.setId(userMapper.nextId());
+        User user = UserAssembler.createUser(userDTO);
 
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         user.setPassword(hashedPassword);
 
         userMapper.insertUser(user);
 
-       return UserAssembler.writeDTO(user);
+        return UserAssembler.writeDTO(user);
     }
 
 
-    public UserDTO signIn(String email, String candidatePassword) {
+    public UserDTO signIn(UserDTO userDTO) {
+        String username = userDTO.getUsername();
+        String password = userDTO.getPassword();
 
-        User user = userMapper.selectUserByEmail(email);
+        User user = userMapper.selectUserByUsername(username);
         if (user == null) {
             throw new IllegalStateException("invalid email or password");
         }
+
         String hashedPassword = user.getPassword();
-        if(!BCrypt.checkpw(candidatePassword, hashedPassword)) {
+        if(!BCrypt.checkpw(password, hashedPassword)) {
             throw new IllegalStateException("invalid email or password");
         }
 
-        String token = generateJWT(user.getEmail());
-        UserDTO userDTO = UserAssembler.writeDTO(user);
-        userDTO.setToken(token);
-        return userDTO;
+        String token = generateJWT(user.getUsername());
+
+        UserDTO userWithToken =  UserAssembler.writeDTO(user);
+        userWithToken.setToken(token);
+
+        return userWithToken;
     }
 
     private String generateJWT(String email) {

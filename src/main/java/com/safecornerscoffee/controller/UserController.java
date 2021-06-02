@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping("/signup")
     public String signUp(UserDTO userDTO, Model model) {
         try {
-            userService.signUp(userDTO.getUsername(), userDTO.getEmail(), userDTO.getName(), userDTO.getPassword());
+            userService.signUp(userDTO);
             return "redirect:/";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -55,9 +55,9 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public String signIn(String email, String password, Model model, HttpSession httpSession) {
+    public String signIn(UserDTO signUp, Model model, HttpSession httpSession) {
         try {
-            UserDTO userDTO = userService.signIn(email, password);
+            UserDTO userDTO = userService.signIn(signUp);
             model.addAttribute("user", userDTO);
             httpSession.setAttribute("sessionUser", userDTO);
             return "main";

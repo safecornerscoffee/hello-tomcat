@@ -15,6 +15,13 @@ public class ArticleAssembler {
                 .build();
     }
     public static Article createArticle(ArticleDTO articleDTO) {
-        return new Article();
+        return new Article(
+                articleDTO.getId(),
+                articleDTO.getTitle(),
+                articleDTO.getBody(),
+                articleDTO.getAuthorId(),
+                articleDTO.getTags()
+        );
     }
+
 }

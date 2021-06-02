@@ -25,7 +25,7 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
 
-    UserDTO userDTO;
+    UserDTO signUpDTO, userDTO;
     User user;
 
     String username = "coffee";
@@ -35,7 +35,8 @@ public class UserServiceTest {
 
     @Before
     public void beforeEach() {
-        userDTO = userService.signUp(username, email, name, password);
+        signUpDTO = new UserDTO.UserBuilder().username(username).email(email).name(name).password(password).build();
+        userDTO = userService.signUp(signUpDTO);
         user = userMapper.selectUserById(userDTO.getId());
     }
 
@@ -60,7 +61,7 @@ public class UserServiceTest {
 
    @Test
    public void signInTest() {
-        UserDTO signedUserDTO = userService.signIn(email, password);
+        UserDTO signedUserDTO = userService.signIn(signUpDTO);
 
         assertEquals(email, signedUserDTO.getEmail());
         assertEquals(name, signedUserDTO.getName());
@@ -70,10 +71,10 @@ public class UserServiceTest {
    @Test(expected = IllegalStateException.class)
    public void ThrowErrorWhenSignInWithInvalidUserTest() {
        String invalidPassword = "invalid-coffee";
-       userService.signUp(username, email, name, password);
+       userService.signUp(userDTO);
 
        try {
-           userService.signIn(email, invalidPassword);
+           userService.signIn(userDTO);
        } catch (Exception e) {
            assertEquals(IllegalStateException.class, e.getClass());
            assertEquals(e.getMessage(), "invalid email or password");
