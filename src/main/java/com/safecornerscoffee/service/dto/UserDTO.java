@@ -9,7 +9,6 @@ public class UserDTO {
     String password;
     String token;
 
-
     public Long getId() {
         return id;
     }
@@ -50,15 +49,6 @@ public class UserDTO {
         this.token = token;
     }
 
-    public static UserDTO fromUser(User user) {
-        UserDTO userDto = new UserDTO();
-        userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
-        userDto.setName(user.getName());
-        userDto.setPassword(user.getPassword());
-        return userDto;
-    }
-
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -66,6 +56,7 @@ public class UserDTO {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
+                ", token='" + token + '\'' +
                 '}';
     }
 }

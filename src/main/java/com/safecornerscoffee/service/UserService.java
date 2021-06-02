@@ -1,5 +1,6 @@
 package com.safecornerscoffee.service;
 
+import com.safecornerscoffee.assembler.UserAssembler;
 import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.service.dto.UserDTO;
@@ -41,7 +42,7 @@ public class UserService {
 
        userMapper.insertUser(user);
 
-       return UserDTO.fromUser(user);
+       return UserAssembler.writeDTO(user);
     }
 
     public UserDTO signIn(String email, String candidatePassword) {
@@ -56,7 +57,7 @@ public class UserService {
         }
 
         String token = generateJWT(user.getEmail());
-        UserDTO userDTO = UserDTO.fromUser(user);
+        UserDTO userDTO = UserAssembler.writeDTO(user);
         userDTO.setToken(token);
         return userDTO;
     }
@@ -64,18 +65,13 @@ public class UserService {
     private String generateJWT(String email) {
         Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-        String jws = Jwts.builder().setSubject(email).signWith(key).compact();
-
-        return jws;
+        return Jwts.builder().setSubject(email).signWith(key).compact();
     }
 
     private boolean isExistEmailAddress(String email) {
         User existUser = userMapper.selectUserByEmail(email);
 
-        if (existUser == null) {
-            return false;
-        }
-        return true;
+        return existUser != null;
     }
 
     public UserDTO getUser(Long id) {
@@ -83,7 +79,7 @@ public class UserService {
         if (user == null) {
             throw new IllegalStateException("invalid email or password");
         }
-        return UserDTO.fromUser(user);
+        return UserAssembler.writeDTO(user);
     }
 
     public List<UserDTO> getAllUsers() {
@@ -93,7 +89,7 @@ public class UserService {
         }
 
         return users.stream()
-                .map(UserDTO::fromUser)
+                .map(UserAssembler::writeDTO)
                 .collect(Collectors.toList());
     }
 
