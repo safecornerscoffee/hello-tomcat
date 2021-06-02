@@ -28,13 +28,14 @@ public class UserServiceTest {
     UserDTO userDTO;
     User user;
 
+    String username = "coffee";
     String email = "coffe@safecornerscoffee.com";
     String name = "coffee";
     String password = "coffee";
 
     @Before
     public void beforeEach() {
-        userDTO = userService.signUp(email, name, password);
+        userDTO = userService.signUp(username, email, name, password);
         user = userMapper.selectUserById(userDTO.getId());
     }
 
@@ -46,6 +47,7 @@ public class UserServiceTest {
     @Test
     public void signUpTest() {
 
+        assertEquals(username, userDTO.getUsername());
         assertEquals(email, userDTO.getEmail());
         assertEquals(name, userDTO.getName());
     }
@@ -68,7 +70,7 @@ public class UserServiceTest {
    @Test(expected = IllegalStateException.class)
    public void ThrowErrorWhenSignInWithInvalidUserTest() {
        String invalidPassword = "invalid-coffee";
-       userService.signUp(email, name, password);
+       userService.signUp(username, email, name, password);
 
        try {
            userService.signIn(email, invalidPassword);
