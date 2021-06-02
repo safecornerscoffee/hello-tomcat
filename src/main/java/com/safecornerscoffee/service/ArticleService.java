@@ -1,5 +1,6 @@
 package com.safecornerscoffee.service;
 
+import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.mapper.ArticleMapper;
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.service.dto.ArticleDTO;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class ArticleService {
 
-    private ArticleMapper articleMapper;
+    private final ArticleMapper articleMapper;
 
     public ArticleService(ArticleMapper articleMapper) {
         this.articleMapper = articleMapper;
@@ -23,13 +24,13 @@ public class ArticleService {
     public List<ArticleDTO> getArticles() {
         List<Article> articles = articleMapper.selectAllArticles();
 
-        return articles.stream().map(ArticleDTO::from).collect(Collectors.toList());
+        return articles.stream().map(ArticleAssembler::writeDTO).collect(Collectors.toList());
     }
 
     public ArticleDTO readArticle(Long articleId) {
         Article article = articleMapper.selectArticleById(articleId);
 
-        return ArticleDTO.from(article);
+        return ArticleAssembler.writeDTO(article);
     }
 
     public ArticleDTO writeArticle(ArticleDTO articleDTO) {
@@ -39,7 +40,7 @@ public class ArticleService {
 
         articleMapper.insertArticle(article);
 
-        return ArticleDTO.from(article);
+        return ArticleAssembler.writeDTO(article);
     }
 
     public ArticleDTO modifyArticle(ArticleDTO articleDTO) {
@@ -54,7 +55,7 @@ public class ArticleService {
 
         articleMapper.updateArticle(article);
 
-        return ArticleDTO.from(article);
+        return ArticleAssembler.writeDTO(article);
     }
 
 

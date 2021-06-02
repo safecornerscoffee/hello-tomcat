@@ -29,6 +29,14 @@ public class Article {
         this.tags = tags;
     }
 
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateBody(String body) {
+        this.body = body;
+    }
+
     public void addTag(Tag tag) {
         if (tags.contains(tag)) {
             throw new IllegalStateException("already have tag: " + tag.getName());
@@ -72,14 +80,6 @@ public class Article {
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
-    }
-
-    public void updateTitle(String title) {
-        this.title = title;
-    }
-
-    public void updateBody(String body) {
-        this.body = body;
     }
 
     public List<Tag> getTags() {
