@@ -1,10 +1,13 @@
 package com.safecornerscoffee.service;
 
+import com.safecornerscoffee.assembler.ArticleAssembler;
+import com.safecornerscoffee.factory.TagFactory;
 import com.safecornerscoffee.mapper.ArticleMapper;
 import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.service.dto.ArticleDTO;
 import com.safecornerscoffee.service.dto.UserDTO;
+import io.jsonwebtoken.lang.Collections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -28,16 +34,23 @@ public class ArticleServiceTest {
     @Autowired
     ArticleMapper articleMapper;
     Article article;
+    @Autowired
+    TagFactory tagFactory;
 
     @Autowired
     UserService userService;
     @Autowired
     UserMapper userMapper;
     UserDTO author;
-
     @Before
     public void beforeEach() {
-        author = userService.signUp("author@example.com", "author", "author");
+
+        UserDTO authorDTO = new UserDTO();
+        authorDTO.setUsername("writer");
+        authorDTO.setEmail("writer@safeocornerscoffee.com");
+        authorDTO.setPassword("writer");
+        authorDTO.setName("writer");
+        author = userService.signUp(authorDTO);
 
         article = new Article(articleMapper.nextId(), "articleService", "articleService", author.getId());
         articleMapper.insertArticle(article);
@@ -52,10 +65,10 @@ public class ArticleServiceTest {
     @Test
     public void readArticle() {
 
-        ArticleDTO expected = ArticleDTO.from(article);
+        ArticleDTO expected = ArticleAssembler.writeDTO(article);
         ArticleDTO actual = articleService.readArticle(article.getId());
 
-        assertEquals(expected, actual);
+        assertEquals(expected.getId(), actual.getId());
     }
 
     @Test
@@ -64,6 +77,10 @@ public class ArticleServiceTest {
                 .title("writing test")
                 .body("writing test")
                 .authorId(author.getId())
+                .tags(Arrays.asList(
+                        tagFactory.forName("cl"),
+                        tagFactory.forName("go")
+                ))
                 .build();
 
         ArticleDTO newArticleDTO = articleService.writeArticle(articleDTO);
@@ -75,7 +92,7 @@ public class ArticleServiceTest {
 
     @Test
     public void modifyArticle() {
-        ArticleDTO editingArticle = ArticleDTO.from(article);
+        ArticleDTO editingArticle = ArticleAssembler.writeDTO(article);
         editingArticle.setTitle("i'm edited!!!");
         editingArticle.setBody("i'm also");
 

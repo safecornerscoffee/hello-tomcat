@@ -18,6 +18,10 @@ public class ArticleRepository {
         this.articleMapper = articleMapper;
     }
 
+    public Long nextId() {
+        return articleMapper.nextId();
+    }
+
     public void saveArticle(Article article) {
         articleMapper.insertArticle(article);
         insertTags(article);

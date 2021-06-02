@@ -1,5 +1,6 @@
 package com.safecornerscoffee.service;
 
+import com.safecornerscoffee.assembler.UserAssembler;
 import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.service.dto.UserDTO;
@@ -25,57 +26,62 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO signUp(String email, String name, String password) {
-
-        if(isExistEmailAddress(email)) {
-            throw new IllegalStateException("already exists");
+    public UserDTO signUp(UserDTO userDTO) {
+        if (isExistUsername(userDTO.getUsername())) {
+            throw new IllegalStateException("already exists" + userDTO.getUsername());
+        }
+        if (isExistEmailAddress(userDTO.getEmail())) {
+            throw new IllegalStateException("already exists" + userDTO.getEmail());
         }
 
-        User user = new User();
-        user.setId(userMapper.nextId());
-        user.setEmail(email);
-        user.setName(name);
+        userDTO.setId(userMapper.nextId());
+        User user = UserAssembler.createUser(userDTO);
 
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         user.setPassword(hashedPassword);
 
-       userMapper.insertUser(user);
+        userMapper.insertUser(user);
 
-       return UserDTO.fromUser(user);
+        return UserAssembler.writeDTO(user);
     }
 
-    public UserDTO signIn(String email, String candidatePassword) {
 
-        User user = userMapper.selectUserByEmail(email);
+    public UserDTO signIn(UserDTO userDTO) {
+        String username = userDTO.getUsername();
+        String password = userDTO.getPassword();
+
+        User user = userMapper.selectUserByUsername(username);
         if (user == null) {
             throw new IllegalStateException("invalid email or password");
         }
+
         String hashedPassword = user.getPassword();
-        if(!BCrypt.checkpw(candidatePassword, hashedPassword)) {
+        if(!BCrypt.checkpw(password, hashedPassword)) {
             throw new IllegalStateException("invalid email or password");
         }
 
-        String token = generateJWT(user.getEmail());
-        UserDTO userDTO = UserDTO.fromUser(user);
-        userDTO.setToken(token);
-        return userDTO;
+        String token = generateJWT(user.getUsername());
+
+        UserDTO userWithToken =  UserAssembler.writeDTO(user);
+        userWithToken.setToken(token);
+
+        return userWithToken;
     }
 
     private String generateJWT(String email) {
         Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-        String jws = Jwts.builder().setSubject(email).signWith(key).compact();
-
-        return jws;
+        return Jwts.builder().setSubject(email).signWith(key).compact();
     }
 
+    private boolean isExistUsername(String username) {
+        User existUser = userMapper.selectUserByUsername(username);
+        return existUser != null;
+    }
     private boolean isExistEmailAddress(String email) {
         User existUser = userMapper.selectUserByEmail(email);
 
-        if (existUser == null) {
-            return false;
-        }
-        return true;
+        return existUser != null;
     }
 
     public UserDTO getUser(Long id) {
@@ -83,7 +89,7 @@ public class UserService {
         if (user == null) {
             throw new IllegalStateException("invalid email or password");
         }
-        return UserDTO.fromUser(user);
+        return UserAssembler.writeDTO(user);
     }
 
     public List<UserDTO> getAllUsers() {
@@ -93,7 +99,7 @@ public class UserService {
         }
 
         return users.stream()
-                .map(UserDTO::fromUser)
+                .map(UserAssembler::writeDTO)
                 .collect(Collectors.toList());
     }
 

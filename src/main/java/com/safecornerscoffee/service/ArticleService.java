@@ -1,7 +1,9 @@
 package com.safecornerscoffee.service;
 
-import com.safecornerscoffee.mapper.ArticleMapper;
+import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.factory.ArticleFactory;
+import com.safecornerscoffee.repository.ArticleRepository;
 import com.safecornerscoffee.service.dto.ArticleDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,32 +16,31 @@ import java.util.stream.Collectors;
 @Transactional
 public class ArticleService {
 
-    private ArticleMapper articleMapper;
+    private final ArticleRepository articleRepository;
 
-    public ArticleService(ArticleMapper articleMapper) {
-        this.articleMapper = articleMapper;
+    public ArticleService(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
     }
 
     public List<ArticleDTO> getArticles() {
-        List<Article> articles = articleMapper.selectAllArticles();
+        List<Article> articles = articleRepository.findArticles();
 
-        return articles.stream().map(ArticleDTO::from).collect(Collectors.toList());
+        return articles.stream().map(ArticleAssembler::writeDTO).collect(Collectors.toList());
     }
 
     public ArticleDTO readArticle(Long articleId) {
-        Article article = articleMapper.selectArticleById(articleId);
 
-        return ArticleDTO.from(article);
+        Article article = articleRepository.findArticleById(articleId);
+        return ArticleAssembler.writeDTO(article);
     }
 
     public ArticleDTO writeArticle(ArticleDTO articleDTO) {
-        Long articleId = articleMapper.nextId();
-        Article article = new Article(articleId,
-                articleDTO.getTitle(), articleDTO.getBody(), articleDTO.getAuthorId());
+        articleDTO.setId(articleRepository.nextId());
+        Article article = ArticleAssembler.createArticle(articleDTO);
 
-        articleMapper.insertArticle(article);
+        articleRepository.saveArticle(article);
 
-        return ArticleDTO.from(article);
+        return ArticleAssembler.writeDTO(article);
     }
 
     public ArticleDTO modifyArticle(ArticleDTO articleDTO) {
@@ -47,15 +48,18 @@ public class ArticleService {
             throw new IllegalStateException("invalid request");
         }
 
-        Article article = articleMapper.selectArticleById(articleDTO.getId());
+        Article article = articleRepository.findArticleById(articleDTO.getId());
 
         article.updateTitle(articleDTO.getTitle());
         article.updateBody(articleDTO.getBody());
 
-        articleMapper.updateArticle(article);
+        articleRepository.updateArticle(article);
 
-        return ArticleDTO.from(article);
+        return ArticleAssembler.writeDTO(article);
     }
 
-
+    public void deleteArticle(ArticleDTO articleDTO) {
+        Article article = articleRepository.findArticleById(articleDTO.getId());
+        articleRepository.removeArticle(article);
+    }
 }

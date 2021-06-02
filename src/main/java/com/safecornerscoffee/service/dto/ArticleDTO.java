@@ -1,18 +1,23 @@
 package com.safecornerscoffee.service.dto;
 
 import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.domain.Tag;
+
+import java.util.List;
 
 public class ArticleDTO {
     private Long id;
     private String title;
     private String body;
     private Long authorId;
+    private List<Tag> tags;
 
     public static class Builder {
         private Long id;
         private String title;
         private String body;
         private Long authorId;
+        private List<Tag> tags;
 
         public Builder() {
             this.id = 0L;
@@ -38,8 +43,12 @@ public class ArticleDTO {
             this.authorId = authorId;
             return this;
         }
+        public Builder tags(List<Tag> tags) {
+            this.tags = tags;
+            return this;
+        }
         public ArticleDTO build() {
-            return new ArticleDTO(id, title, body, authorId);
+            return new ArticleDTO(id, title, body, authorId, tags);
         }
     }
 
@@ -47,11 +56,12 @@ public class ArticleDTO {
 
     }
 
-    public ArticleDTO(Long id, String title, String body, Long authorId) {
+    public ArticleDTO(Long id, String title, String body, Long authorId, List<Tag> tags) {
         this.id = id;
         this.title = title;
         this.body = body;
         this.authorId = authorId;
+        this.tags = tags;
     }
 
     public Long getId() {
@@ -86,44 +96,11 @@ public class ArticleDTO {
         this.authorId = authorId;
     }
 
-    public static ArticleDTO from(Article article) {
-        return new ArticleDTO.Builder()
-                .id(article.getId())
-                .title(article.getTitle())
-                .body(article.getBody())
-                .authorId(article.getAuthorId())
-                .build();
+    public List<Tag> getTags() {
+        return tags;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ArticleDTO that = (ArticleDTO) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (title != null ? !title.equals(that.title) : that.title != null) return false;
-        if (body != null ? !body.equals(that.body) : that.body != null) return false;
-        return authorId != null ? authorId.equals(that.authorId) : that.authorId == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (body != null ? body.hashCode() : 0);
-        result = 31 * result + (authorId != null ? authorId.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ArticleDTO{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", body='" + body + '\'' +
-                ", authorId=" + authorId +
-                '}';
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }

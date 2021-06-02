@@ -19,6 +19,5 @@ public class ArticleDTOTest {
         assertEquals("hello", article.getTitle());
         assertEquals("hello", article.getBody());
         assertEquals(2L, (long) article.getAuthorId());
-
     }
 }
