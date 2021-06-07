@@ -1,17 +1,17 @@
 package com.safecornerscoffee.service;
 
 import com.safecornerscoffee.assembler.UserAssembler;
-import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.service.dto.UserDTO;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.safecornerscoffee.dto.UserDTO;
+import com.safecornerscoffee.mapper.UserMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Key;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;

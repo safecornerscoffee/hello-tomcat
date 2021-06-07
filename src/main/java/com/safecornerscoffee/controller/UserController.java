@@ -1,8 +1,8 @@
 package com.safecornerscoffee.controller;
 
+import com.safecornerscoffee.dto.ErrorResponse;
+import com.safecornerscoffee.dto.UserDTO;
 import com.safecornerscoffee.service.UserService;
-import com.safecornerscoffee.service.dto.ErrorResponse;
-import com.safecornerscoffee.service.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

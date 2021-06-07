@@ -1,7 +1,7 @@
 package com.safecornerscoffee.assembler;
 
 import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.service.dto.UserDTO;
+import com.safecornerscoffee.dto.UserDTO;
 
 public class UserAssembler {
     public static UserDTO writeDTO(User user) {

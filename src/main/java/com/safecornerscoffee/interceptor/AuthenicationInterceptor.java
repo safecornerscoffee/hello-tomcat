@@ -1,6 +1,6 @@
 package com.safecornerscoffee.interceptor;
 
-import com.safecornerscoffee.service.dto.UserDTO;
+import com.safecornerscoffee.dto.UserDTO;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;

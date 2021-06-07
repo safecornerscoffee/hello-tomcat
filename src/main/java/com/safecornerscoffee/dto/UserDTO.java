@@ -1,6 +1,4 @@
-package com.safecornerscoffee.service.dto;
-
-import com.safecornerscoffee.domain.User;
+package com.safecornerscoffee.dto;
 
 public class UserDTO {
     Long id;

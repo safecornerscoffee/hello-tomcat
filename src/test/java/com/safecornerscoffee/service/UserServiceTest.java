@@ -1,8 +1,8 @@
 package com.safecornerscoffee.service;
 
-import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.service.dto.UserDTO;
+import com.safecornerscoffee.dto.UserDTO;
+import com.safecornerscoffee.mapper.UserMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")

@@ -2,9 +2,8 @@ package com.safecornerscoffee.service;
 
 import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.factory.ArticleFactory;
+import com.safecornerscoffee.dto.ArticleDTO;
 import com.safecornerscoffee.repository.ArticleRepository;
-import com.safecornerscoffee.service.dto.ArticleDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

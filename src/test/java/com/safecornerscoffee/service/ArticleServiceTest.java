@@ -1,13 +1,12 @@
 package com.safecornerscoffee.service;
 
 import com.safecornerscoffee.assembler.ArticleAssembler;
+import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.dto.ArticleDTO;
+import com.safecornerscoffee.dto.UserDTO;
 import com.safecornerscoffee.factory.TagFactory;
 import com.safecornerscoffee.mapper.ArticleMapper;
 import com.safecornerscoffee.mapper.UserMapper;
-import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.service.dto.ArticleDTO;
-import com.safecornerscoffee.service.dto.UserDTO;
-import io.jsonwebtoken.lang.Collections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,10 +16,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

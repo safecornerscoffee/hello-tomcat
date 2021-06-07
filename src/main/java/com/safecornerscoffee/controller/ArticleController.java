@@ -1,17 +1,13 @@
 package com.safecornerscoffee.controller;
 
-import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.interceptor.LoggerInterceptor;
+import com.safecornerscoffee.dto.ArticleDTO;
 import com.safecornerscoffee.service.ArticleService;
-import com.safecornerscoffee.service.dto.ArticleDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 

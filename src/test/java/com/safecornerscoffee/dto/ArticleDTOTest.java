@@ -1,8 +1,8 @@
-package com.safecornerscoffee.service.dto;
+package com.safecornerscoffee.dto;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ArticleDTOTest {
 
