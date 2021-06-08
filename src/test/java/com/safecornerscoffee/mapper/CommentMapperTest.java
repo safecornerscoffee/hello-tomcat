@@ -1,15 +1,11 @@
 package com.safecornerscoffee.mapper;
 
-import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.domain.Comment;
-import com.safecornerscoffee.domain.Tag;
-import com.safecornerscoffee.domain.User;
+import com.safecornerscoffee.domain.*;
 import com.safecornerscoffee.factory.ArticleFactory;
 import com.safecornerscoffee.factory.TagFactory;
 import com.safecornerscoffee.repository.ArticleRepository;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
@@ -49,17 +45,17 @@ public class CommentMapperTest {
         author = new User();
         author.setId(userMapper.nextId());
         author.setUsername("bluebottle");
-        author.setName("bluebottle");
         author.setEmail("bluebottle");
         author.setPassword("bluebottle");
+        author.setProfile(new Profile("bluebottle", "bluebottle.png"));
         userMapper.insertUser(author);
 
         commenter = new User();
         commenter.setId(userMapper.nextId());
         commenter.setUsername("bottletop");
-        commenter.setName("bottletop");
         commenter.setEmail("bottletop");
         commenter.setPassword("bottletop");
+        commenter.setProfile(new Profile("bottletop", "bottletop.png"));
         userMapper.insertUser(commenter);
 
         String title = "pouring coffee";

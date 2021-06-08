@@ -1,5 +1,6 @@
 package com.safecornerscoffee.mapper;
 
+import com.safecornerscoffee.domain.Profile;
 import com.safecornerscoffee.domain.User;
 import org.junit.After;
 import org.junit.Before;
@@ -8,9 +9,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
@@ -26,9 +27,10 @@ public class UserMapperTest {
         Long id = userMapper.nextId();
         String username = "coffee";
         String email = "coffee@safecornerscoffee.com";
-        String name = "coffee";
         String password = "coffee";
-        user = new User(id, username, email, name, password);
+        String name = "coffee";
+        String imageUrl = "coffee.png";
+        user = new User(id, username, email, password, new Profile(name, imageUrl));
         userMapper.insertUser(user);
     }
     @After
@@ -39,11 +41,12 @@ public class UserMapperTest {
     @Test
     public void insertUserTest() {
         Long id = userMapper.nextId();
-        String username = "latte";
-        String email = "latte@safecornerscoffee.com";
-        String name = "latte";
-        String password = "latte";
-        User insertUser = new User(id, username, email, name, password);
+        String username = "mocha";
+        String email = "mocha@safecornerscoffee.com";
+        String password = "mocha";
+        String name = "mocha";
+        String imageUrl = "mocha.png";
+        User insertUser = new User(id, username, email, password, new Profile(name, imageUrl));
 
         userMapper.insertUser(insertUser);
         userMapper.deleteUser(insertUser);
@@ -53,7 +56,7 @@ public class UserMapperTest {
     public void selectUserByIdTest() {
         User returnedUser =  userMapper.selectUserById(user.getId());
         assertEquals((long) user.getId(), (long) returnedUser.getId());
-        assertEquals(user.getName(), returnedUser.getName());
+        assertEquals(user.getProfile(), returnedUser.getProfile());
     }
 
     @Test
@@ -68,7 +71,7 @@ public class UserMapperTest {
         User returnedUser =  userMapper.selectUserById(user.getId());
 
         assertEquals((long) user.getId(), (long) returnedUser.getId());
-        assertEquals(user.getName(), returnedUser.getName());
+        assertEquals(user.getProfile(), returnedUser.getProfile());
     }
 
     @Test
