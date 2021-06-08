@@ -6,11 +6,11 @@ import com.safecornerscoffee.dto.ArticleDTO;
 public class ArticleAssembler {
 
     public static ArticleDTO writeDTO(Article article) {
-        return new ArticleDTO.Builder()
+        return new ArticleDTO.ArticleDTOBuilder()
                 .id(article.getId())
                 .title(article.getTitle())
                 .body(article.getBody())
-                .authorId(article.getAuthorId())
+                .userId(article.getUserId())
                 .tags(article.getTags())
                 .build();
     }
@@ -19,7 +19,7 @@ public class ArticleAssembler {
                 articleDTO.getId(),
                 articleDTO.getTitle(),
                 articleDTO.getBody(),
-                articleDTO.getAuthorId(),
+                articleDTO.getUserId(),
                 articleDTO.getTags()
         );
     }

@@ -8,16 +8,16 @@ public class ArticleDTOTest {
 
     @Test
     public void builderTest() {
-        ArticleDTO article = new ArticleDTO.Builder()
+        ArticleDTO article = new ArticleDTO.ArticleDTOBuilder()
                 .id(1L)
                 .title("hello")
                 .body("hello")
-                .authorId(2L)
+                .userId(2L)
                 .build();
 
         assertEquals(1L, (long) article.getId());
         assertEquals("hello", article.getTitle());
         assertEquals("hello", article.getBody());
-        assertEquals(2L, (long) article.getAuthorId());
+        assertEquals(2L, (long) article.getUserId());
     }
 }

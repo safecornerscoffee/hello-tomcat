@@ -11,7 +11,9 @@ import java.util.List;
 public interface ArticleMapper {
     Long nextId();
     List<Article> selectAllArticles();
-    List<Article> selectArticlesByAuthorId(Long authorId);
+
+    List<Article> selectArticlesByUserId(Long userId);
+
     Article selectArticleById(Long articleId);
     void insertArticle(Article article);
     void updateArticle(Article article);

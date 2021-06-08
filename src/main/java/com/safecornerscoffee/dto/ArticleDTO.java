@@ -8,59 +8,23 @@ public class ArticleDTO {
     private Long id;
     private String title;
     private String body;
-    private Long authorId;
+    private Long userId;
     private List<Tag> tags;
 
-    public static class Builder {
-        private Long id;
-        private String title;
-        private String body;
-        private Long authorId;
-        private List<Tag> tags;
-
-        public Builder() {
-            this.id = 0L;
-            this.title = "";
-            this.body = "";
-            this.authorId = 0L;
-        }
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder title(String title) {
-            this.title = title;
-            return this;
-        }
-        public Builder body(String body) {
-            this.body = body;
-            return this;
-        }
-        public Builder authorId(Long authorId) {
-            this.authorId = authorId;
-            return this;
-        }
-        public Builder tags(List<Tag> tags) {
-            this.tags = tags;
-            return this;
-        }
-        public ArticleDTO build() {
-            return new ArticleDTO(id, title, body, authorId, tags);
-        }
+    public ArticleDTO(Long id, String title, String body, Long userId, List<Tag> tags) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.userId = userId;
+        this.tags = tags;
     }
 
     public ArticleDTO() {
 
     }
 
-    public ArticleDTO(Long id, String title, String body, Long authorId, List<Tag> tags) {
-        this.id = id;
-        this.title = title;
-        this.body = body;
-        this.authorId = authorId;
-        this.tags = tags;
+    public Long getUserId() {
+        return userId;
     }
 
     public Long getId() {
@@ -87,12 +51,52 @@ public class ArticleDTO {
         this.body = body;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public static class ArticleDTOBuilder {
+        private Long id;
+        private String title;
+        private String body;
+        private Long userId;
+        private List<Tag> tags;
+
+        public ArticleDTOBuilder() {
+            this.id = 0L;
+            this.title = "";
+            this.body = "";
+            this.userId = 0L;
+        }
+
+        public ArticleDTOBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public ArticleDTOBuilder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public ArticleDTOBuilder body(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public ArticleDTOBuilder userId(Long userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public ArticleDTOBuilder tags(List<Tag> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public ArticleDTO build() {
+            return new ArticleDTO(id, title, body, userId, tags);
+        }
     }
 
     public List<Tag> getTags() {

@@ -63,8 +63,8 @@ public class ArticleRepository {
         return Collections.emptyList();
     }
 
-    public List<Article> findArticlesByAuthorId(Long authorId) {
-        return articleMapper.selectArticlesByAuthorId(authorId);
+    public List<Article> findArticlesByUserId(Long authorId) {
+        return articleMapper.selectArticlesByUserId(authorId);
     }
 
     public List<Article> findArticlesByTag(Tag tag) {

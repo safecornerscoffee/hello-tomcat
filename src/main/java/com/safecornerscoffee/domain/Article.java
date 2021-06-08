@@ -6,25 +6,25 @@ public class Article {
     private Long id;
     private String title;
     private String body;
-    private Long authorId;
+    private Long userId;
     private List<Tag> tags;
 
     public Article() {
 
     }
 
-    public Article(Long id, String title, String body, Long authorId) {
+    public Article(Long id, String title, String body, Long userId) {
         this.id = id;
         this.title = title;
         this.body = body;
-        this.authorId = authorId;
+        this.userId = userId;
     }
 
-    public Article(Long id, String title, String body, Long authorId, List<Tag> tags) {
+    public Article(Long id, String title, String body, Long userId, List<Tag> tags) {
         this.id = id;
         this.title = title;
         this.body = body;
-        this.authorId = authorId;
+        this.userId = userId;
         this.tags = tags;
     }
 
@@ -73,12 +73,12 @@ public class Article {
         this.body = body;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public List<Tag> getTags() {
@@ -93,14 +93,14 @@ public class Article {
         private Long id;
         private String title;
         private String body;
-        private Long authorId;
+        private Long userId;
         private List<Tag> tags;
 
-        public ArticleBuilder(Long id, String title, String body, Long authorId) {
+        public ArticleBuilder(Long id, String title, String body, Long userId) {
             this.id = id;
             this.title = title;
             this.body = body;
-            this.authorId = authorId;
+            this.userId = userId;
         }
 
         public ArticleBuilder tags(List<Tag> tags) {
@@ -109,7 +109,7 @@ public class Article {
         }
 
         public Article build() {
-            return new Article(id, title, body, authorId, tags);
+            return new Article(id, title, body, userId, tags);
         }
     }
 }

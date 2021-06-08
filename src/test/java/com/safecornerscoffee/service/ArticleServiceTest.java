@@ -76,10 +76,10 @@ public class ArticleServiceTest {
 
     @Test
     public void writeArticle() {
-        ArticleDTO articleDTO = new ArticleDTO.Builder()
+        ArticleDTO articleDTO = new ArticleDTO.ArticleDTOBuilder()
                 .title("writing test")
                 .body("writing test")
-                .authorId(author.getId())
+                .userId(author.getId())
                 .tags(Arrays.asList(
                         tagFactory.forName("cl"),
                         tagFactory.forName("go")
@@ -90,7 +90,7 @@ public class ArticleServiceTest {
 
         assertNotNull(newArticleDTO.getId());
         assertEquals(articleDTO.getTitle(), newArticleDTO.getTitle());
-        assertEquals(articleDTO.getAuthorId(), newArticleDTO.getAuthorId());
+        assertEquals(articleDTO.getUserId(), newArticleDTO.getUserId());
     }
 
     @Test

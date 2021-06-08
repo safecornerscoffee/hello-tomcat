@@ -5,8 +5,6 @@ import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.mapper.ArticleMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -17,9 +15,9 @@ public class ArticleFactory {
         this.articleMapper = articleMapper;
     }
 
-    public Article getArticle(String title, String body, Long authorId, List<Tag> tags) {
+    public Article getArticle(String title, String body, Long userId, List<Tag> tags) {
         Long articleId = articleMapper.nextId();
 
-        return new Article(articleId, title, body, authorId, tags);
+        return new Article(articleId, title, body, userId, tags);
     }
 }

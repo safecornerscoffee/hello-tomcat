@@ -149,11 +149,11 @@ public class ArticleRepositoryTest {
     public void findArticlesByAuthorId() {
         articleRepository.saveArticle(article);
 
-        List<Article> foundAny = articleRepository.findArticlesByAuthorId(article.getAuthorId());
+        List<Article> foundAny = articleRepository.findArticlesByUserId(article.getUserId());
 
         assertFalse(foundAny.isEmpty());
         for (Article a : foundAny) {
-            assertEquals(article.getAuthorId(), a.getAuthorId());
+            assertEquals(article.getUserId(), a.getUserId());
         }
     }
 
