@@ -5,9 +5,6 @@ import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.dto.ErrorResponse;
 import com.safecornerscoffee.dto.UserDTO;
 import com.safecornerscoffee.service.UserService;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.security.Key;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,25 +24,22 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
-    public String usersPage(Model model) {
-        List<User> users = userService.getAllUsers();
-        List<UserDTO> dtos = users.stream()
-                .map(UserAssembler::writeDTO)
-                .collect(Collectors.toList());
-        model.addAttribute("users", dtos);
-        return "users";
+
+    @GetMapping("/main")
+    public String mainPage() {
+        return "main";
     }
 
-    @GetMapping("/signup")
+    @GetMapping("/register")
     public String signUpPage() {
         return "signup";
     }
 
     @PostMapping("/signup")
-    public String signUp(UserDTO userDTO, Model model) {
+    public String signUp(UserDTO signUpRequest, Model model, HttpSession httpSession) {
         try {
-            userService.signUp(userDTO);
+            User user = userService.signUp(signUpRequest);
+            httpSession.setAttribute("user", user);
             return "redirect:/";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -54,53 +47,34 @@ public class UserController {
         }
     }
 
-    @GetMapping("/main")
-    public String mainPage() {
-        return "main";
-    }
-
-    @GetMapping("/signin")
-    public String signInPage() {
-        return "signin";
-    }
-
-    @PostMapping("/signin")
-    public String signIn(UserDTO signUp, Model model, HttpSession httpSession) {
+    @GetMapping("/users")
+    public String usersPage(Model model) {
         try {
-            User user = userService.signIn(signUp);
-
-            String token = generateJWT(user.getUsername());
-
-            UserDTO userWithToken = UserAssembler.writeDTO(user);
-            userWithToken.setToken(token);
-
-            model.addAttribute("user", userWithToken);
-            httpSession.setAttribute("sessionUser", userWithToken);
-            return "main";
+            List<User> users = userService.getAllUsers();
+            List<UserDTO> dtos = users.stream()
+                    .map(UserAssembler::writeDTO)
+                    .collect(Collectors.toList());
+            model.addAttribute("users", dtos);
+            return "users";
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
+            ErrorResponse error = new ErrorResponse(e.getMessage());
+            model.addAttribute("error", error);
             return "error";
         }
-    }
-
-    private String generateJWT(String email) {
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-        return Jwts.builder().setSubject(email).signWith(key).compact();
     }
 
     @GetMapping("/users/{userId}")
     @ResponseBody
     public ResponseEntity<Object> getUser(@PathVariable Long userId, HttpServletResponse HttpResponse) {
         User user = userService.getUser(userId);
-        return ResponseEntity.ok(user);
+        UserDTO dto = UserAssembler.writeDTO(user);
+        return ResponseEntity.ok(dto);
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ErrorResponse> handleErrors(Exception e) {
+    @ExceptionHandler(RuntimeException.class)
+    public String handleErrors(Exception e, Model model) {
         ErrorResponse error = new ErrorResponse(e.getMessage());
-        return ResponseEntity
-                .status(404)
-                .body(error);
+        model.addAttribute("error");
+        return "error";
     }
 }
