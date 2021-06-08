@@ -1,8 +1,10 @@
 package com.safecornerscoffee.service;
 
-import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.service.dto.UserDTO;
+import com.safecornerscoffee.dto.UserDTO;
+import com.safecornerscoffee.exception.InvalidUsernameOrPassword;
+import com.safecornerscoffee.exception.NotFoundUserException;
+import com.safecornerscoffee.mapper.UserMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,11 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
-
 public class UserServiceTest {
 
     @Autowired
@@ -25,19 +27,20 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
 
-    UserDTO signUpDTO, userDTO;
+    UserDTO signUpRequest;
     User user;
 
     String username = "coffee";
     String email = "coffe@safecornerscoffee.com";
-    String name = "coffee";
     String password = "coffee";
+    String name = "coffee";
+    String image = "coffee.png";
 
     @Before
     public void beforeEach() {
-        signUpDTO = new UserDTO.UserBuilder().username(username).email(email).name(name).password(password).build();
-        userDTO = userService.signUp(signUpDTO);
-        user = userMapper.selectUserById(userDTO.getId());
+        signUpRequest = new UserDTO.UserDTOBuilder().username(username).email(email).password(password)
+                .profileName(name).profileImage(image).build();
+        user = userService.signUp(signUpRequest);
     }
 
     @After
@@ -47,56 +50,70 @@ public class UserServiceTest {
 
     @Test
     public void signUpTest() {
-
-        assertEquals(username, userDTO.getUsername());
-        assertEquals(email, userDTO.getEmail());
-        assertEquals(name, userDTO.getName());
+        assertThat(user.getUsername()).isEqualTo(username);
+        assertThat(user.getEmail()).isEqualTo(email);
+        assertThat(BCrypt.checkpw(password, user.getPassword())).isTrue();
     }
 
     @Test
     public void HashingPasswordWithBcryptWhenSignUpTest() {
-
-        assertTrue(BCrypt.checkpw(password, user.getPassword()));
+        assertThat(BCrypt.checkpw(password, user.getPassword())).isTrue();
    }
 
    @Test
    public void signInTest() {
-        UserDTO signedUserDTO = userService.signIn(signUpDTO);
+       UserDTO signInRequest = new UserDTO.UserDTOBuilder().username(username).password(password).build();
+       User response = userService.signIn(signInRequest);
 
-        assertEquals(email, signedUserDTO.getEmail());
-        assertEquals(name, signedUserDTO.getName());
-        assertTrue(BCrypt.checkpw(password, signedUserDTO.getPassword()));
+       assertThat(response.getId()).isEqualTo(user.getId());
+       assertThat(response.getUsername()).isEqualTo(username);
+       assertThat(response.getEmail()).isEqualTo(email);
+       assertThat(BCrypt.checkpw(password, response.getPassword())).isTrue();
    }
 
-   @Test(expected = IllegalStateException.class)
-   public void ThrowErrorWhenSignInWithInvalidUserTest() {
-       String invalidPassword = "invalid-coffee";
-       userService.signUp(userDTO);
+    @Test()
+    public void signInWithInvalidUsername() {
+        String invalidUsername = "invalid-coffee";
+        UserDTO signInRequest = new UserDTO.UserDTOBuilder().username(invalidUsername).password(password).build();
 
-       try {
-           userService.signIn(userDTO);
-       } catch (Exception e) {
-           assertEquals(IllegalStateException.class, e.getClass());
-           assertEquals(e.getMessage(), "invalid email or password");
-       }
-   }
+        assertThatThrownBy(() -> {
+            userService.signIn(signInRequest);
+        }).isInstanceOf(InvalidUsernameOrPassword.class).hasMessageContaining("invalid username or password.");
+    }
 
-   @Test
-   public void FindExistUserTest() {
-       UserDTO findUserDTO = userService.getUser(userDTO.getId());
-       User findUser = userMapper.selectUserById(userDTO.getId());
-       assertEquals(findUserDTO.getId(), findUser.getId());
-   }
+    @Test()
+    public void signInWithInvalidPassword() {
+        String invalidPassword = "invalid-coffee";
+        UserDTO signInRequest = new UserDTO.UserDTOBuilder().username(username).password(invalidPassword).build();
 
-   @Test
-    public void FindNoneExistUserTest() {
-        Long invalidUserId = -9999L;
-        try {
-            userService.getUser(invalidUserId);
-        } catch (Exception e) {
-            assertEquals(IllegalStateException.class, e.getClass());
-            assertEquals(e.getMessage(), "invalid email or password");
-        }
-   }
+        assertThatThrownBy(() -> {
+            userService.signIn(signInRequest);
+        }).isInstanceOf(InvalidUsernameOrPassword.class).hasMessageContaining("invalid username or password.");
+    }
 
+    @Test()
+    public void signInWithNoneExistUsername() {
+        String noneExistUsername = "none-exist-coffee";
+        UserDTO signInRequest = new UserDTO.UserDTOBuilder().username(noneExistUsername).password(password).build();
+
+        assertThatThrownBy(() -> {
+            userService.signIn(signInRequest);
+        }).isInstanceOf(InvalidUsernameOrPassword.class).hasMessageContaining("invalid username or password.");
+    }
+
+
+    @Test
+    public void FindExistUserTest() {
+        // todo why do i this test?
+        User result = userMapper.selectUserById(user.getId());
+        assertThat(result.getId()).isEqualTo(user.getId());
+    }
+
+    @Test
+    public void NotFoundUserException() {
+        Long noneExistUserId = 0L;
+        assertThatThrownBy(() -> {
+            userService.getUser(noneExistUserId);
+        }).isInstanceOf(NotFoundUserException.class).hasMessageContaining("NotFoundUserException");
+    }
 }

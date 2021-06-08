@@ -1,6 +1,7 @@
 package com.safecornerscoffee.repository;
 
 import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.domain.Profile;
 import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.factory.TagFactory;
@@ -45,9 +46,9 @@ public class ArticleRepositoryTest {
         author = new User();
         author.setId(userMapper.nextId());
         author.setUsername("bluebottle");
-        author.setName("bluebottle");
         author.setEmail("bluebottle");
         author.setPassword("bluebottle");
+        author.setProfile(new Profile("bluebottle", "bluebottle-image"));
         userMapper.insertUser(author);
 
         Long articleId = articleMapper.nextId();

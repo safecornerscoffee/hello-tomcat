@@ -1,9 +1,6 @@
 package com.safecornerscoffee.mapper;
 
-import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.domain.ArticleTagRelation;
-import com.safecornerscoffee.domain.Tag;
-import com.safecornerscoffee.domain.User;
+import com.safecornerscoffee.domain.*;
 import com.safecornerscoffee.factory.TagFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -12,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
@@ -45,17 +42,17 @@ public class ArticleMapperTest {
         author = new User();
         author.setId(userMapper.nextId());
         author.setUsername("bluebottle");
-        author.setName("bluebottle");
         author.setEmail("bluebottle");
         author.setPassword("bluebottle");
+        author.setProfile(new Profile("bluebottle", "bluebottle.png"));
         userMapper.insertUser(author);
 
         otherAuthor = new User();
         otherAuthor.setId(userMapper.nextId());
         otherAuthor.setUsername("ediya");
-        otherAuthor.setName("ediya");
         otherAuthor.setEmail("ediya");
         otherAuthor.setPassword("ediya");
+        otherAuthor.setProfile(new Profile("ediya", "ediya.png"));
         userMapper.insertUser(otherAuthor);
     }
 

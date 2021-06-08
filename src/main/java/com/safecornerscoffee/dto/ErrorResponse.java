@@ -1,4 +1,4 @@
-package com.safecornerscoffee.service.dto;
+package com.safecornerscoffee.dto;
 
 public class ErrorResponse {
     String message;

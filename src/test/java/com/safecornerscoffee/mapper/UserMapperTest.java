@@ -1,5 +1,6 @@
 package com.safecornerscoffee.mapper;
 
+import com.safecornerscoffee.domain.Profile;
 import com.safecornerscoffee.domain.User;
 import org.junit.After;
 import org.junit.Before;
@@ -10,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
@@ -20,15 +21,18 @@ public class UserMapperTest {
     private UserMapper userMapper;
 
     User user;
+
     @Before
     public void beforeEach() {
 
         Long id = userMapper.nextId();
         String username = "coffee";
         String email = "coffee@safecornerscoffee.com";
-        String name = "coffee";
         String password = "coffee";
-        user = new User(id, username, email, name, password);
+        String name = "coffee";
+        String image = "coffee.png";
+        Profile profile = new Profile(name, image);
+        user = new User(id, username, email, password, profile);
         userMapper.insertUser(user);
     }
     @After
@@ -37,45 +41,53 @@ public class UserMapperTest {
     }
 
     @Test
+    @Transactional
     public void insertUserTest() {
         Long id = userMapper.nextId();
-        String username = "latte";
-        String email = "latte@safecornerscoffee.com";
-        String name = "latte";
-        String password = "latte";
-        User insertUser = new User(id, username, email, name, password);
+        String username = "mocha";
+        String email = "mocha@safecornerscoffee.com";
+        String password = "mocha";
+        String name = "mocha";
+        String imageUrl = "mocha.png";
+        User insertUser = new User(id, username, email, password, new Profile(name, imageUrl));
 
         userMapper.insertUser(insertUser);
-        userMapper.deleteUser(insertUser);
     }
 
     @Test
     public void selectUserByIdTest() {
-        User returnedUser =  userMapper.selectUserById(user.getId());
-        assertEquals((long) user.getId(), (long) returnedUser.getId());
-        assertEquals(user.getName(), returnedUser.getName());
+        User result = userMapper.selectUserById(user.getId());
+
+        assertThat(result.getId()).isEqualTo(user.getId());
+        assertThat(result.getUsername()).isEqualTo(user.getUsername());
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
     public void selectUserByUsernameTest() {
-        User returnedUser = userMapper.selectUserByUsername(user.getUsername());
-        assertEquals((long) user.getId(), (long) returnedUser.getId());
+        User result = userMapper.selectUserByUsername(user.getUsername());
+
+        assertThat(result.getId()).isEqualTo(user.getId());
+        assertThat(result.getUsername()).isEqualTo(user.getUsername());
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
     public void selectUserByEmailTest() {
 
-        User returnedUser =  userMapper.selectUserById(user.getId());
+        User result = userMapper.selectUserById(user.getId());
 
-        assertEquals((long) user.getId(), (long) returnedUser.getId());
-        assertEquals(user.getName(), returnedUser.getName());
+        assertThat(result.getId()).isEqualTo(user.getId());
+        assertThat(result.getUsername()).isEqualTo(user.getUsername());
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
-    public void retuningNullWhenSelectUserNotExistsTest() {
-        String invalidEmailAddress= "invalid@invalid.com";
-        User returnedUser = userMapper.selectUserByEmail(invalidEmailAddress);
-        assertNull(returnedUser);
+    public void resultShouldBeNullWhenSelectNoneExistsUsername() {
+        String NoneExistsUsername = "NoneExistsUsername";
+        User result = userMapper.selectUserByUsername(NoneExistsUsername);
+
+        assertThat(result).isNull();
     }
 
 }

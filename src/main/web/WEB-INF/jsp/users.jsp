@@ -13,7 +13,7 @@
 <body>
 <div class="container">
   <c:forEach var="user" items="${users}">
-    <p><c:out value="${user.id} ${user.email} ${user.password} ${user.name}"/></p>
+    <p><c:out value="${user.id} ${user.email} ${user.password} ${user.profileName}"/></p>
   </c:forEach>
 </div>
 </body>

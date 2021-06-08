@@ -1,7 +1,7 @@
 package com.safecornerscoffee.assembler;
 
 import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.service.dto.ArticleDTO;
+import com.safecornerscoffee.dto.ArticleDTO;
 
 public class ArticleAssembler {
 

@@ -1,6 +1,5 @@
-package com.safecornerscoffee.service.dto;
+package com.safecornerscoffee.dto;
 
-import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Tag;
 
 import java.util.List;

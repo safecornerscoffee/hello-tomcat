@@ -4,19 +4,19 @@ public class User {
     private Long id;
     private String username;
     private String email;
-    private String name;
     private String password;
+    private Profile profile;
 
     public User() {
 
     }
 
-    public User(Long id, String username, String email, String name, String password) {
+    public User(Long id, String username, String email, String password, Profile profile) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.name = name;
         this.password = password;
+        this.profile = profile;
     }
 
     public Long getId() {
@@ -51,12 +51,12 @@ public class User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     @Override
@@ -65,8 +65,33 @@ public class User {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
+                ", name='" + profile + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
+
+    public static class UserBuilder {
+        private final Long id;
+        private final String username;
+        private final String email;
+        private final String password;
+        private Profile profile;
+
+        public UserBuilder(Long id, String username, String email, String password) {
+            this.id = id;
+            this.username = username;
+            this.email = email;
+            this.password = password;
+        }
+
+        public UserBuilder profile(Profile profile) {
+            this.profile = profile;
+            return this;
+        }
+
+        public User build() {
+            return new User(id, username, email, password, profile);
+        }
+    }
+
 }
