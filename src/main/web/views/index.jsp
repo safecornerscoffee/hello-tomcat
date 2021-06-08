@@ -16,5 +16,7 @@
   <a href="/signin">Sign In</a>
   <a href="/users">User List</a>
 </div>
+<img src="/static/images/profile-image.png" alt="profile image">
+<script src="/static/js/app.js" charset="UTF-8" type="text/javascript"></script>
 </body>
 </html>
