@@ -36,7 +36,7 @@ public class UserServiceTest {
 
     @Before
     public void beforeEach() {
-        signUpDTO = new UserDTO.UserBuilder().username(username).email(email).name(name).password(password).build();
+        signUpDTO = new UserDTO.UserDTOBuilder().username(username).email(email).password(password).build();
         userDTO = userService.signUp(signUpDTO);
         user = userMapper.selectUserById(userDTO.getId());
     }
@@ -51,7 +51,7 @@ public class UserServiceTest {
 
         assertEquals(username, userDTO.getUsername());
         assertEquals(email, userDTO.getEmail());
-        assertEquals(name, userDTO.getName());
+        assertEquals(name, userDTO.getProfileName());
     }
 
     @Test
@@ -62,11 +62,11 @@ public class UserServiceTest {
 
    @Test
    public void signInTest() {
-        UserDTO signedUserDTO = userService.signIn(signUpDTO);
+       UserDTO signedUserDTO = userService.signIn(signUpDTO);
 
-        assertEquals(email, signedUserDTO.getEmail());
-        assertEquals(name, signedUserDTO.getName());
-        assertTrue(BCrypt.checkpw(password, signedUserDTO.getPassword()));
+       assertEquals(email, signedUserDTO.getEmail());
+       assertEquals(name, signedUserDTO.getProfileName());
+       assertTrue(BCrypt.checkpw(password, signedUserDTO.getPassword()));
    }
 
    @Test(expected = IllegalStateException.class)

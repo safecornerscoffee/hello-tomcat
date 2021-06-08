@@ -69,4 +69,29 @@ public class User {
                 ", password='" + password + '\'' +
                 '}';
     }
+
+    public static class UserBuilder {
+        private final Long id;
+        private final String username;
+        private final String email;
+        private final String password;
+        private Profile profile;
+
+        public UserBuilder(Long id, String username, String email, String password) {
+            this.id = id;
+            this.username = username;
+            this.email = email;
+            this.password = password;
+        }
+
+        public UserBuilder profile(Profile profile) {
+            this.profile = profile;
+            return this;
+        }
+
+        public User build() {
+            return new User(id, username, email, password, profile);
+        }
+    }
+
 }

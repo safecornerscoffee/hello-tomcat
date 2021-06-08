@@ -48,7 +48,7 @@ public class ArticleServiceTest {
         authorDTO.setUsername("writer");
         authorDTO.setEmail("writer@safeocornerscoffee.com");
         authorDTO.setPassword("writer");
-        authorDTO.setName("writer");
+        authorDTO.setProfileName("writer");
         author = userService.signUp(authorDTO);
 
         article = new Article(articleMapper.nextId(), "articleService", "articleService", author.getId());

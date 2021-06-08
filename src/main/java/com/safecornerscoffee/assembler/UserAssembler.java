@@ -6,22 +6,25 @@ import com.safecornerscoffee.dto.UserDTO;
 
 public class UserAssembler {
     public static UserDTO writeDTO(User user) {
-        UserDTO userDto = new UserDTO();
-        userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
-        userDto.setEmail(user.getEmail());
-        userDto.setPassword(user.getPassword());
-        userDto.setName(user.getProfile().getName());
-        return userDto;
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setPassword(user.getPassword());
+        dto.setProfileName(user.getProfile().getName());
+        dto.setProfileImage(user.getProfile().getImage());
+        return dto;
     }
 
-    public static User createUser(UserDTO userDTO) {
-        return new User(
-                userDTO.getId(),
-                userDTO.getUsername(),
-                userDTO.getEmail(),
-                userDTO.getPassword(),
-                new Profile(userDTO.getName(), userDTO.getName() + "png")
-        );
+    public static User createUser(UserDTO dto) {
+        Long id = dto.getId();
+        String username = dto.getUsername();
+        String email = dto.getEmail();
+        String password = dto.getPassword();
+        String name = dto.getProfileName();
+        String image = dto.getProfileImage();
+        Profile profile = new Profile(name, image);
+
+        return new User.UserBuilder(id, username, email, password).profile(profile).build();
     }
 }

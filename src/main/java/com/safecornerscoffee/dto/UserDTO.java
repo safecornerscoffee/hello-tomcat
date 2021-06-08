@@ -4,8 +4,9 @@ public class UserDTO {
     Long id;
     String username;
     String email;
-    String name;
     String password;
+    String profileName;
+    String profileImage;
     String token;
 
     public Long getId() {
@@ -32,12 +33,20 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
+    public String getProfileName() {
+        return profileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public String getPassword() {
@@ -62,43 +71,53 @@ public class UserDTO {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
+                ", profileName='" + profileName + '\'' +
+                ", profileImage='" + profileImage + '\'' +
                 ", token='" + token + '\'' +
                 '}';
     }
 
-    public static class UserBuilder {
+    public static class UserDTOBuilder {
         Long id;
         String username;
         String email;
-        String name;
         String password;
+        String profileName;
+        String profileImage;
         String token;
 
-        public UserBuilder id(Long id) {
+        public UserDTOBuilder id(Long id) {
             this.id = id;
             return this;
         }
-        public UserBuilder username(String username) {
+
+        public UserDTOBuilder username(String username) {
             this.username = username;
             return this;
         }
-        public UserBuilder email(String email) {
+
+        public UserDTOBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public UserBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public UserBuilder password(String password) {
+        public UserDTOBuilder password(String password) {
             this.password = password;
             return this;
         }
-        public UserBuilder token(String token) {
+
+        public UserDTOBuilder profileName(String profileName) {
+            this.profileName = profileName;
+            return this;
+        }
+
+        public UserDTOBuilder profileImage(String profileImage) {
+            this.profileImage = profileImage;
+            return this;
+        }
+
+        public UserDTOBuilder token(String token) {
             this.token = token;
             return this;
 
@@ -108,9 +127,10 @@ public class UserDTO {
             UserDTO userDTO = new UserDTO();
             userDTO.setId(id);
             userDTO.setUsername(username);
-            userDTO.setName(name);
             userDTO.setEmail(email);
             userDTO.setPassword(password);
+            userDTO.setProfileName(profileName);
+            userDTO.setProfileImage(profileImage);
             userDTO.setToken(token);
 
             return userDTO;
