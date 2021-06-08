@@ -3,6 +3,9 @@ package com.safecornerscoffee.service;
 import com.safecornerscoffee.assembler.UserAssembler;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.dto.UserDTO;
+import com.safecornerscoffee.exception.InvalidUsernameOrPassword;
+import com.safecornerscoffee.exception.NotFoundUserException;
+import com.safecornerscoffee.exception.UserAlreadyExistException;
 import com.safecornerscoffee.mapper.UserMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Key;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -26,46 +28,39 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO signUp(UserDTO userDTO) {
-        if (isExistUsername(userDTO.getUsername())) {
-            throw new IllegalStateException("already exists" + userDTO.getUsername());
-        }
-        if (isExistEmailAddress(userDTO.getEmail())) {
-            throw new IllegalStateException("already exists" + userDTO.getEmail());
+    public User signUp(UserDTO signUpRequest) {
+        if (isExistUsername(signUpRequest.getUsername()) || isExistEmailAddress(signUpRequest.getEmail())) {
+            throw new UserAlreadyExistException();
         }
 
-        userDTO.setId(userMapper.nextId());
-        User user = UserAssembler.createUser(userDTO);
+        Long id = userMapper.nextId();
+        signUpRequest.setId(id);
+        User user = UserAssembler.createUser(signUpRequest);
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         user.setPassword(hashedPassword);
 
         userMapper.insertUser(user);
 
-        return UserAssembler.writeDTO(user);
+        return user;
     }
 
 
-    public UserDTO signIn(UserDTO userDTO) {
-        String username = userDTO.getUsername();
-        String password = userDTO.getPassword();
+    public User signIn(UserDTO signInRequest) {
+        String username = signInRequest.getUsername();
+        String password = signInRequest.getPassword();
 
         User user = userMapper.selectUserByUsername(username);
         if (user == null) {
-            throw new IllegalStateException("invalid email or password");
+            throw new InvalidUsernameOrPassword();
         }
 
         String hashedPassword = user.getPassword();
-        if(!BCrypt.checkpw(password, hashedPassword)) {
-            throw new IllegalStateException("invalid email or password");
+        if (!BCrypt.checkpw(password, hashedPassword)) {
+            throw new InvalidUsernameOrPassword();
         }
 
-        String token = generateJWT(user.getUsername());
-
-        UserDTO userWithToken =  UserAssembler.writeDTO(user);
-        userWithToken.setToken(token);
-
-        return userWithToken;
+        return user;
     }
 
     private String generateJWT(String email) {
@@ -84,27 +79,28 @@ public class UserService {
         return existUser != null;
     }
 
-    public UserDTO getUser(Long id) {
+    public User getUser(Long id) {
         User user = userMapper.selectUserById(id);
         if (user == null) {
-            throw new IllegalStateException("invalid email or password");
+            throw new NotFoundUserException();
         }
-        return UserAssembler.writeDTO(user);
+        return user;
     }
 
-    public List<UserDTO> getAllUsers() {
+    public List<User> getAllUsers() {
         List<User> users = userMapper.selectAllUsers();
         if (users == null || users.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return users.stream()
-                .map(UserAssembler::writeDTO)
-                .collect(Collectors.toList());
+        return users;
     }
 
-    public void dropUser(UserDTO userDTO) {
-        User user = userMapper.selectUserById(userDTO.getId());
+    public void dropUser(UserDTO dropUserRequest) {
+        User user = userMapper.selectUserById(dropUserRequest.getId());
+        if (user == null) {
+            throw new NotFoundUserException();
+        }
         userMapper.deleteUser(user);
     }
 }

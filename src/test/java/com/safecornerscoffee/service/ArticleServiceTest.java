@@ -2,6 +2,7 @@ package com.safecornerscoffee.service;
 
 import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.dto.ArticleDTO;
 import com.safecornerscoffee.dto.UserDTO;
 import com.safecornerscoffee.factory.TagFactory;
@@ -40,16 +41,18 @@ public class ArticleServiceTest {
     UserService userService;
     @Autowired
     UserMapper userMapper;
-    UserDTO author;
+    User author;
     @Before
     public void beforeEach() {
+        String username = "mocha";
+        String email = "mocha@safecornerscoffee.com";
+        String password = "mocha";
+        String name = "mocha";
+        String imageUrl = "mocha.png";
+        UserDTO createAuthorRequest = new UserDTO.UserDTOBuilder().username(username).email(email).password(password)
+                .profileName(name).profileImage(imageUrl).build();
 
-        UserDTO authorDTO = new UserDTO();
-        authorDTO.setUsername("writer");
-        authorDTO.setEmail("writer@safeocornerscoffee.com");
-        authorDTO.setPassword("writer");
-        authorDTO.setProfileName("writer");
-        author = userService.signUp(authorDTO);
+        author = userService.signUp(createAuthorRequest);
 
         article = new Article(articleMapper.nextId(), "articleService", "articleService", author.getId());
         articleMapper.insertArticle(article);
@@ -57,7 +60,8 @@ public class ArticleServiceTest {
 
     @After
     public void afterEach() {
-        userService.dropUser(author);
+        UserDTO dropUserRequest = new UserDTO.UserDTOBuilder().id(author.getId()).build();
+        userService.dropUser(dropUserRequest);
         articleMapper.deleteArticle(article);
     }
 

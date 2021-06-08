@@ -1,8 +1,13 @@
 package com.safecornerscoffee.controller;
 
+import com.safecornerscoffee.assembler.UserAssembler;
+import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.dto.ErrorResponse;
 import com.safecornerscoffee.dto.UserDTO;
 import com.safecornerscoffee.service.UserService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.Key;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -23,8 +30,11 @@ public class UserController {
 
     @GetMapping("/users")
     public String usersPage(Model model) {
-        List<UserDTO> users = userService.getAllUsers();
-        model.addAttribute("users", users);
+        List<User> users = userService.getAllUsers();
+        List<UserDTO> dtos = users.stream()
+                .map(UserAssembler::writeDTO)
+                .collect(Collectors.toList());
+        model.addAttribute("users", dtos);
         return "users";
     }
 
@@ -57,9 +67,15 @@ public class UserController {
     @PostMapping("/signin")
     public String signIn(UserDTO signUp, Model model, HttpSession httpSession) {
         try {
-            UserDTO userDTO = userService.signIn(signUp);
-            model.addAttribute("user", userDTO);
-            httpSession.setAttribute("sessionUser", userDTO);
+            User user = userService.signIn(signUp);
+
+            String token = generateJWT(user.getUsername());
+
+            UserDTO userWithToken = UserAssembler.writeDTO(user);
+            userWithToken.setToken(token);
+
+            model.addAttribute("user", userWithToken);
+            httpSession.setAttribute("sessionUser", userWithToken);
             return "main";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -67,10 +83,16 @@ public class UserController {
         }
     }
 
+    private String generateJWT(String email) {
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+        return Jwts.builder().setSubject(email).signWith(key).compact();
+    }
+
     @GetMapping("/users/{userId}")
     @ResponseBody
     public ResponseEntity<Object> getUser(@PathVariable Long userId, HttpServletResponse HttpResponse) {
-        UserDTO user = userService.getUser(userId);
+        User user = userService.getUser(userId);
         return ResponseEntity.ok(user);
     }
 
