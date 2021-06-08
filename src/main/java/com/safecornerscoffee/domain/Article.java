@@ -88,4 +88,28 @@ public class Article {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
+
+    public static class ArticleBuilder {
+        private Long id;
+        private String title;
+        private String body;
+        private Long authorId;
+        private List<Tag> tags;
+
+        public ArticleBuilder(Long id, String title, String body, Long authorId) {
+            this.id = id;
+            this.title = title;
+            this.body = body;
+            this.authorId = authorId;
+        }
+
+        public ArticleBuilder tags(List<Tag> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public Article build() {
+            return new Article(id, title, body, authorId, tags);
+        }
+    }
 }
