@@ -19,6 +19,9 @@
 
     </mvc:annotation-driven>
 
+    <mvc:default-servlet-handler/>
+    <mvc:view-controller path="/" view-name="index"/>
+
     <mvc:resources mapping="/static/js/**" location="/static/js/"/>
     <mvc:resources mapping="/static/css/**" location="/static/css/"/>
     <mvc:resources mapping="/static/images/**" location="/static/images/"/>
