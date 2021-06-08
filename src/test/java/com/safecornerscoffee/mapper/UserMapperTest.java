@@ -9,9 +9,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
@@ -21,6 +21,7 @@ public class UserMapperTest {
     private UserMapper userMapper;
 
     User user;
+
     @Before
     public void beforeEach() {
 
@@ -29,8 +30,9 @@ public class UserMapperTest {
         String email = "coffee@safecornerscoffee.com";
         String password = "coffee";
         String name = "coffee";
-        String imageUrl = "coffee.png";
-        user = new User(id, username, email, password, new Profile(name, imageUrl));
+        String image = "coffee.png";
+        Profile profile = new Profile(name, image);
+        user = new User(id, username, email, password, profile);
         userMapper.insertUser(user);
     }
     @After
@@ -39,6 +41,7 @@ public class UserMapperTest {
     }
 
     @Test
+    @Transactional
     public void insertUserTest() {
         Long id = userMapper.nextId();
         String username = "mocha";
@@ -49,36 +52,42 @@ public class UserMapperTest {
         User insertUser = new User(id, username, email, password, new Profile(name, imageUrl));
 
         userMapper.insertUser(insertUser);
-        userMapper.deleteUser(insertUser);
     }
 
     @Test
     public void selectUserByIdTest() {
-        User returnedUser =  userMapper.selectUserById(user.getId());
-        assertEquals((long) user.getId(), (long) returnedUser.getId());
-        assertEquals(user.getProfile(), returnedUser.getProfile());
+        User result = userMapper.selectUserById(user.getId());
+
+        assertThat(result.getId()).isEqualTo(user.getId());
+        assertThat(result.getUsername()).isEqualTo(user.getUsername());
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
     public void selectUserByUsernameTest() {
-        User returnedUser = userMapper.selectUserByUsername(user.getUsername());
-        assertEquals((long) user.getId(), (long) returnedUser.getId());
+        User result = userMapper.selectUserByUsername(user.getUsername());
+
+        assertThat(result.getId()).isEqualTo(user.getId());
+        assertThat(result.getUsername()).isEqualTo(user.getUsername());
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
     public void selectUserByEmailTest() {
 
-        User returnedUser =  userMapper.selectUserById(user.getId());
+        User result = userMapper.selectUserById(user.getId());
 
-        assertEquals((long) user.getId(), (long) returnedUser.getId());
-        assertEquals(user.getProfile(), returnedUser.getProfile());
+        assertThat(result.getId()).isEqualTo(user.getId());
+        assertThat(result.getUsername()).isEqualTo(user.getUsername());
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
-    public void retuningNullWhenSelectUserNotExistsTest() {
-        String invalidEmailAddress= "invalid@invalid.com";
-        User returnedUser = userMapper.selectUserByEmail(invalidEmailAddress);
-        assertNull(returnedUser);
+    public void resultShouldBeNullWhenSelectNoneExistsUsername() {
+        String NoneExistsUsername = "NoneExistsUsername";
+        User result = userMapper.selectUserByUsername(NoneExistsUsername);
+
+        assertThat(result).isNull();
     }
 
 }

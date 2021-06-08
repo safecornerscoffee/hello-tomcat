@@ -2,56 +2,65 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.safecornerscoffee.mapper.UserMapper">
+    <resultMap id="user" type="com.safecornerscoffee.domain.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <association property="profile" javaType="com.safecornerscoffee.domain.Profile">
+            <result property="profileName" column="profile_name"/>
+            <result property="profileImage" column="profile_image"/>
+        </association>
+    </resultMap>
+
     <select id="nextId" resultType="Long">
         SELECT nextval('users_id_seq')
     </select>
     <insert id="insertUser"
             parameterType="com.safecornerscoffee.domain.User"
     >
-        INSERT INTO users(id, username, email, name, password)
-        VALUES(#{id}, #{username}, #{email}, #{name}, #{password})
+        INSERT INTO users(id, username, email, password, profile_name, profile_image)
+        VALUES (#{id}, #{username}, #{email}, #{password}, #{profile.name}, #{profile.image})
     </insert>
 
     <select id="selectAllUsers" resultType="com.safecornerscoffee.domain.User">
-        SELECT id, username, email, name, password FROM users
+        SELECT id, username, email, password, profile_name, profile_image
+        FROM users
     </select>
     <select id="selectUserById"
             parameterType="Long"
             resultType="com.safecornerscoffee.domain.User">
-        SELECT id, username, email, name, password
+        SELECT id, username, email, password, profile_name, profile_image
         FROM users
         WHERE id = #{id}
     </select>
     <select id="selectUserByUsername"
             parameterType="String"
             resultType="com.safecornerscoffee.domain.User">
-        SELECT id, username, email, name, password
+        SELECT id, username, email, password, profile_name, profile_image
         FROM users
         WHERE username = #{username}
     </select>
     <select id="selectUserByEmail"
             parameterType="String"
             resultType="com.safecornerscoffee.domain.User">
-        SELECT id, username, email, name, password
+        SELECT id, username, email, password, profile_name, profile_image
         FROM users
         WHERE email = #{email}
     </select>
 
-
-
     <update id="updateUser"
             parameterType="com.safecornerscoffee.domain.User">
         UPDATE users
-        SET
-            username = #{username},
-            email = #{email},
-            name = #{name},
-            password = #{password}
+        SET username      = #{username},
+            email         = #{email},
+            password      = #{password},
+            profile_name  = #{profile.name},
+            profile_image = #{profile.image}
         WHERE id = #{id}
     </update>
     <delete id="deleteUser" parameterType="com.safecornerscoffee.domain.User">
         DELETE FROM users WHERE id = #{id}
     </delete>
-
 
 </mapper>

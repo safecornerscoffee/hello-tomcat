@@ -1,11 +1,11 @@
 CREATE TABLE users
 (
-    id       SERIAL PRIMARY KEY,
-    username TEXT UNIQUE NOT NULL,
-    email    TEXT UNIQUE NOT NULL,
-    password TEXT        NOT NULL,
-    name     TEXT,
-    image    TEXT
+    id            SERIAL PRIMARY KEY,
+    username      TEXT NOT NULL UNIQUE,
+    email         TEXT NOT NULL UNIQUE,
+    password      TEXT NOT NULL,
+    profile_name  TEXT,
+    profile_image TEXT
 );
 
 CREATE TABLE articles(
