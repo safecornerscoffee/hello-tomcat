@@ -99,7 +99,7 @@ public class ArticleServiceTest {
         editingArticle.setTitle("i'm edited!!!");
         editingArticle.setBody("i'm also");
 
-        ArticleDTO result = articleService.modifyArticle(editingArticle);
+        ArticleDTO result = articleService.updateArticle(editingArticle);
 
         assertEquals(editingArticle.getTitle(), result.getTitle());
         assertEquals(editingArticle.getBody(), result.getBody());

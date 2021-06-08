@@ -42,23 +42,23 @@ public class ArticleService {
         return ArticleAssembler.writeDTO(article);
     }
 
-    public ArticleDTO modifyArticle(ArticleDTO articleDTO) {
-        if(articleDTO.getTitle() == null || articleDTO.getTitle().equals("")) {
+    public ArticleDTO updateArticle(ArticleDTO updateArticleRequest) {
+        if (updateArticleRequest.getTitle() == null || updateArticleRequest.getTitle().equals("")) {
             throw new IllegalStateException("invalid request");
         }
 
-        Article article = articleRepository.findArticleById(articleDTO.getId());
+        Article article = articleRepository.findArticleById(updateArticleRequest.getId());
 
-        article.updateTitle(articleDTO.getTitle());
-        article.updateBody(articleDTO.getBody());
+        article.updateTitle(updateArticleRequest.getTitle());
+        article.updateBody(updateArticleRequest.getBody());
 
         articleRepository.updateArticle(article);
 
         return ArticleAssembler.writeDTO(article);
     }
 
-    public void deleteArticle(ArticleDTO articleDTO) {
-        Article article = articleRepository.findArticleById(articleDTO.getId());
+    public void deleteArticle(ArticleDTO deleteArticleRequest) {
+        Article article = articleRepository.findArticleById(deleteArticleRequest.getId());
         articleRepository.removeArticle(article);
     }
 }
