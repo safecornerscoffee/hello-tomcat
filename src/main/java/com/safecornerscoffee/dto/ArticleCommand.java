@@ -4,14 +4,14 @@ import com.safecornerscoffee.domain.Tag;
 
 import java.util.Set;
 
-public class ArticleDTO {
+public class ArticleCommand {
     private Long id;
     private String title;
     private String body;
     private Long userId;
     private Set<Tag> tags;
 
-    public ArticleDTO(Long id, String title, String body, Long userId, Set<Tag> tags) {
+    public ArticleCommand(Long id, String title, String body, Long userId, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.body = body;
@@ -19,7 +19,7 @@ public class ArticleDTO {
         this.tags = tags;
     }
 
-    public ArticleDTO() {
+    public ArticleCommand() {
 
     }
 
@@ -63,47 +63,47 @@ public class ArticleDTO {
         this.tags = tags;
     }
 
-    public static class ArticleDTOBuilder {
+    public static class ArticleCommandBuilder {
         private Long id;
         private String title;
         private String body;
         private Long userId;
         private Set<Tag> tags;
 
-        public ArticleDTOBuilder() {
+        public ArticleCommandBuilder() {
             this.id = 0L;
             this.title = "";
             this.body = "";
             this.userId = 0L;
         }
 
-        public ArticleDTOBuilder id(Long id) {
+        public ArticleCommandBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public ArticleDTOBuilder title(String title) {
+        public ArticleCommandBuilder title(String title) {
             this.title = title;
             return this;
         }
 
-        public ArticleDTOBuilder body(String body) {
+        public ArticleCommandBuilder body(String body) {
             this.body = body;
             return this;
         }
 
-        public ArticleDTOBuilder userId(Long userId) {
+        public ArticleCommandBuilder userId(Long userId) {
             this.userId = userId;
             return this;
         }
 
-        public ArticleDTOBuilder tags(Set<Tag> tags) {
+        public ArticleCommandBuilder tags(Set<Tag> tags) {
             this.tags = tags;
             return this;
         }
 
-        public ArticleDTO build() {
-            return new ArticleDTO(id, title, body, userId, tags);
+        public ArticleCommand build() {
+            return new ArticleCommand(id, title, body, userId, tags);
         }
     }
 }

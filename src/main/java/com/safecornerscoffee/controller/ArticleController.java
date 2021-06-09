@@ -1,6 +1,6 @@
 package com.safecornerscoffee.controller;
 
-import com.safecornerscoffee.dto.ArticleDTO;
+import com.safecornerscoffee.dto.ArticleCommand;
 import com.safecornerscoffee.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class ArticleController {
 
     @GetMapping("/articles")
     public String getArticles(Model model) {
-        List<ArticleDTO> articles = articleService.getArticles();
+        List<ArticleCommand> articles = articleService.getArticles();
         model.addAttribute("articles", articles);
         return "articles/list";
     }
@@ -40,7 +40,7 @@ public class ArticleController {
     }
 
     @PostMapping("/articles")
-    public String postArticle(ArticleDTO article) {
+    public String postArticle(ArticleCommand article) {
         log.info(article.toString());
         articleService.writeArticle(article);
 

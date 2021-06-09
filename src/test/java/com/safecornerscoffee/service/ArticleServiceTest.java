@@ -3,7 +3,7 @@ package com.safecornerscoffee.service;
 import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.dto.ArticleDTO;
+import com.safecornerscoffee.dto.ArticleCommand;
 import com.safecornerscoffee.dto.UserDTO;
 import com.safecornerscoffee.factory.TagFactory;
 import com.safecornerscoffee.mapper.ArticleMapper;
@@ -69,15 +69,15 @@ public class ArticleServiceTest {
     @Test
     public void readArticle() {
 
-        ArticleDTO expected = ArticleAssembler.writeDTO(article);
-        ArticleDTO actual = articleService.readArticle(article.getId());
+        ArticleCommand expected = ArticleAssembler.writeCommand(article);
+        ArticleCommand actual = articleService.readArticle(article.getId());
 
         assertEquals(expected.getId(), actual.getId());
     }
 
     @Test
     public void writeArticle() {
-        ArticleDTO articleDTO = new ArticleDTO.ArticleDTOBuilder()
+        ArticleCommand articleCommand = new ArticleCommand.ArticleCommandBuilder()
                 .title("writing test")
                 .body("writing test")
                 .userId(author.getId())
@@ -85,20 +85,20 @@ public class ArticleServiceTest {
                 .build();
 
 
-        ArticleDTO newArticleDTO = articleService.writeArticle(articleDTO);
+        ArticleCommand newArticleCommand = articleService.writeArticle(articleCommand);
 
-        assertNotNull(newArticleDTO.getId());
-        assertEquals(articleDTO.getTitle(), newArticleDTO.getTitle());
-        assertEquals(articleDTO.getUserId(), newArticleDTO.getUserId());
+        assertNotNull(newArticleCommand.getId());
+        assertEquals(articleCommand.getTitle(), newArticleCommand.getTitle());
+        assertEquals(articleCommand.getUserId(), newArticleCommand.getUserId());
     }
 
     @Test
     public void modifyArticle() {
-        ArticleDTO editingArticle = ArticleAssembler.writeDTO(article);
+        ArticleCommand editingArticle = ArticleAssembler.writeCommand(article);
         editingArticle.setTitle("i'm edited!!!");
         editingArticle.setBody("i'm also");
 
-        ArticleDTO result = articleService.updateArticle(editingArticle);
+        ArticleCommand result = articleService.updateArticle(editingArticle);
 
         assertEquals(editingArticle.getTitle(), result.getTitle());
         assertEquals(editingArticle.getBody(), result.getBody());

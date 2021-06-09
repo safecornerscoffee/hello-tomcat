@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ArticleDTOTest {
+public class ArticleCommandTest {
 
     @Test
     public void builderTest() {
-        ArticleDTO article = new ArticleDTO.ArticleDTOBuilder()
+        ArticleCommand article = new ArticleCommand.ArticleCommandBuilder()
                 .id(1L)
                 .title("hello")
                 .body("hello")

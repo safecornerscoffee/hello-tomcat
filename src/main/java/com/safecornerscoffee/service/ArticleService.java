@@ -2,7 +2,7 @@ package com.safecornerscoffee.service;
 
 import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.dto.ArticleDTO;
+import com.safecornerscoffee.dto.ArticleCommand;
 import com.safecornerscoffee.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,28 +21,28 @@ public class ArticleService {
         this.articleRepository = articleRepository;
     }
 
-    public List<ArticleDTO> getArticles() {
+    public List<ArticleCommand> getArticles() {
         List<Article> articles = articleRepository.findArticles();
 
-        return articles.stream().map(ArticleAssembler::writeDTO).collect(Collectors.toList());
+        return articles.stream().map(ArticleAssembler::writeCommand).collect(Collectors.toList());
     }
 
-    public ArticleDTO readArticle(Long articleId) {
+    public ArticleCommand readArticle(Long articleId) {
 
         Article article = articleRepository.findArticleById(articleId);
-        return ArticleAssembler.writeDTO(article);
+        return ArticleAssembler.writeCommand(article);
     }
 
-    public ArticleDTO writeArticle(ArticleDTO articleDTO) {
-        articleDTO.setId(articleRepository.nextId());
-        Article article = ArticleAssembler.createArticle(articleDTO);
+    public ArticleCommand writeArticle(ArticleCommand articleCommand) {
+        articleCommand.setId(articleRepository.nextId());
+        Article article = ArticleAssembler.createArticle(articleCommand);
 
         articleRepository.saveArticle(article);
 
-        return ArticleAssembler.writeDTO(article);
+        return ArticleAssembler.writeCommand(article);
     }
 
-    public ArticleDTO updateArticle(ArticleDTO updateArticleRequest) {
+    public ArticleCommand updateArticle(ArticleCommand updateArticleRequest) {
         if (updateArticleRequest.getTitle() == null || updateArticleRequest.getTitle().equals("")) {
             throw new IllegalStateException("invalid request");
         }
@@ -54,10 +54,10 @@ public class ArticleService {
 
         articleRepository.updateArticle(article);
 
-        return ArticleAssembler.writeDTO(article);
+        return ArticleAssembler.writeCommand(article);
     }
 
-    public void deleteArticle(ArticleDTO deleteArticleRequest) {
+    public void deleteArticle(ArticleCommand deleteArticleRequest) {
         Article article = articleRepository.findArticleById(deleteArticleRequest.getId());
         articleRepository.removeArticle(article);
     }
