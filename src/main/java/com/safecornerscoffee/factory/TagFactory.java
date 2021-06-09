@@ -1,24 +1,19 @@
 package com.safecornerscoffee.factory;
 
 import com.safecornerscoffee.domain.Tag;
-import com.safecornerscoffee.mapper.ArticleMapper;
+import com.safecornerscoffee.repository.ArticleRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TagFactory {
 
-    ArticleMapper articleMapper;
+    ArticleRepository articleRepository;
 
-    public TagFactory(ArticleMapper articleMapper) {
-        this.articleMapper = articleMapper;
+    public TagFactory(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
     }
 
     public Tag forName(String name) {
-        Tag tag = articleMapper.selectTagByName(name);
-        if(tag == null) {
-            Long id = articleMapper.nextTagId();
-            return new Tag(id, name);
-        }
-        return tag;
+        return articleRepository.getTagByName(name);
     }
 }

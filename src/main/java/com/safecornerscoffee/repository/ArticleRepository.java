@@ -23,16 +23,28 @@ public class ArticleRepository {
     }
 
     public void saveArticle(Article article) {
-        articleMapper.insertArticle(article);
+        insertArticle(article);
         insertTags(article);
+    }
+
+    private void insertArticle(Article article) {
+        articleMapper.insertArticle(article);
     }
 
     private void insertTags(Article article) {
         for (Tag tag : article.getTags()) {
-            articleMapper.insertTag(tag);
             ArticleTagRelation relation = new ArticleTagRelation(article.getId(), tag.getId());
             articleMapper.insertArticleTagRelation(relation);
         }
+    }
+
+    public void removeArticle(Article article) {
+        deleteTags(article);
+        deleteArticle(article);
+    }
+
+    private void deleteArticle(Article article) {
+        articleMapper.deleteArticle(article);
     }
 
     private void deleteTags(Article article) {
@@ -40,14 +52,9 @@ public class ArticleRepository {
         for (Tag tag : tags) {
             ArticleTagRelation relation = new ArticleTagRelation(article.getId(), tag.getId());
             articleMapper.deleteArticleTagRelation(relation);
-            articleMapper.deleteTag(tag);
         }
     }
 
-    public void removeArticle(Article article) {
-        deleteTags(article);
-        articleMapper.deleteArticle(article);
-    }
 
     public void updateArticle(Article article) {
         articleMapper.updateArticle(article);
@@ -55,19 +62,40 @@ public class ArticleRepository {
         insertTags(article);
     }
 
+    public List<Article> findArticles() {
+        // todo
+        return Collections.emptyList();
+    }
+
     public Article findArticleById(Long articleId) {
         return articleMapper.selectArticleById(articleId);
     }
 
-    public List<Article> findArticles() {
-        return Collections.emptyList();
-    }
-
-    public List<Article> findArticlesByUserId(Long authorId) {
-        return articleMapper.selectArticlesByUserId(authorId);
+    public List<Article> findArticlesByUserId(Long userId) {
+        return articleMapper.selectArticlesByUserId(userId);
     }
 
     public List<Article> findArticlesByTag(Tag tag) {
+        return articleMapper.selectArticlesByTagName(tag.getName());
+    }
+
+    public List<Article> findArticlesByTags(List<Tag> tags) {
+        // todo
         return Collections.emptyList();
     }
+
+    public Tag getTagByName(String name) {
+        Tag savedTag = articleMapper.selectTagByName(name);
+        if (savedTag != null) {
+            return savedTag;
+        }
+
+        Long id = articleMapper.nextTagId();
+        Tag newTag = new Tag(id, name);
+        articleMapper.insertTag(newTag);
+
+        return newTag;
+    }
+
+
 }
