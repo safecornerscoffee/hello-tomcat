@@ -15,10 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -54,7 +51,7 @@ public class ArticleRepositoryTest {
         Long articleId = articleMapper.nextId();
         String title = "cappuccino recipe";
         String body = "try it with";
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
+        Set<Tag> tags = new HashSet<>(Arrays.asList(
                 articleRepository.getTagByName("Recipe"),
                 articleRepository.getTagByName("Caffeine"),
                 articleRepository.getTagByName("Cappuccino")
@@ -87,7 +84,7 @@ public class ArticleRepositoryTest {
         Long articleId = articleMapper.nextId();
         String title = "cappuccino recipe";
         String body = "try it with";
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
+        Set<Tag> tags = new HashSet<>(Arrays.asList(
                 articleRepository.getTagByName("Recipe"),
                 articleRepository.getTagByName("Caffeine"),
                 articleRepository.getTagByName("Cappuccino")
@@ -98,7 +95,7 @@ public class ArticleRepositoryTest {
         articleRepository.removeArticle(newArticle);
 
         Article removedArticle = articleRepository.findArticleById(newArticle.getId());
-        List<Tag> removedTags = articleMapper.selectTagsByArticleId(newArticle.getId());
+        Set<Tag> removedTags = articleMapper.selectTagsByArticleId(newArticle.getId());
 
         assertThat(removedArticle).isNull();
         assertThat(removedTags).isEmpty();
@@ -192,7 +189,7 @@ public class ArticleRepositoryTest {
         Long articleId = articleMapper.nextId();
         String title = "cappuccino recipe";
         String body = "try it with";
-        List<Tag> tags = Collections.emptyList();
+        Set<Tag> tags = Collections.emptySet();
 
         Article articleWithoutTags = new Article.ArticleBuilder(articleId, title, body, user.getId()).tags(tags).build();
         articleRepository.saveArticle(articleWithoutTags);

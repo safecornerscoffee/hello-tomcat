@@ -1,13 +1,13 @@
 package com.safecornerscoffee.domain;
 
-import java.util.List;
+import java.util.Set;
 
 public class Article {
     private Long id;
     private String title;
     private String body;
     private Long userId;
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     public Article() {
 
@@ -20,7 +20,7 @@ public class Article {
         this.userId = userId;
     }
 
-    public Article(Long id, String title, String body, Long userId, List<Tag> tags) {
+    public Article(Long id, String title, String body, Long userId, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.body = body;
@@ -81,11 +81,11 @@ public class Article {
         this.userId = userId;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
@@ -94,7 +94,7 @@ public class Article {
         private String title;
         private String body;
         private Long userId;
-        private List<Tag> tags;
+        private Set<Tag> tags;
 
         public ArticleBuilder(Long id, String title, String body, Long userId) {
             this.id = id;
@@ -103,7 +103,7 @@ public class Article {
             this.userId = userId;
         }
 
-        public ArticleBuilder tags(List<Tag> tags) {
+        public ArticleBuilder tags(Set<Tag> tags) {
             this.tags = tags;
             return this;
         }

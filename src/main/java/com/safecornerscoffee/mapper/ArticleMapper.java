@@ -6,6 +6,7 @@ import com.safecornerscoffee.domain.Tag;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface ArticleMapper {
@@ -33,7 +34,8 @@ public interface ArticleMapper {
     void insertTag(Tag tag);
     void deleteTag(Tag tag);
 
-    List<Tag> selectTagsByArticleId(Long articleId);
+    Set<Tag> selectTagsByArticleId(Long articleId);
+
     void insertArticleTagRelation(ArticleTagRelation articleTagRelation);
     void deleteArticleTagRelation(ArticleTagRelation articleTagRelation);
 

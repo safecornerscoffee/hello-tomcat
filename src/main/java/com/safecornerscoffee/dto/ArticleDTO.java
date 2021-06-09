@@ -2,16 +2,16 @@ package com.safecornerscoffee.dto;
 
 import com.safecornerscoffee.domain.Tag;
 
-import java.util.List;
+import java.util.Set;
 
 public class ArticleDTO {
     private Long id;
     private String title;
     private String body;
     private Long userId;
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
-    public ArticleDTO(Long id, String title, String body, Long userId, List<Tag> tags) {
+    public ArticleDTO(Long id, String title, String body, Long userId, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.body = body;
@@ -55,12 +55,20 @@ public class ArticleDTO {
         this.userId = userId;
     }
 
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
     public static class ArticleDTOBuilder {
         private Long id;
         private String title;
         private String body;
         private Long userId;
-        private List<Tag> tags;
+        private Set<Tag> tags;
 
         public ArticleDTOBuilder() {
             this.id = 0L;
@@ -89,7 +97,7 @@ public class ArticleDTO {
             return this;
         }
 
-        public ArticleDTOBuilder tags(List<Tag> tags) {
+        public ArticleDTOBuilder tags(Set<Tag> tags) {
             this.tags = tags;
             return this;
         }
@@ -97,13 +105,5 @@ public class ArticleDTO {
         public ArticleDTO build() {
             return new ArticleDTO(id, title, body, userId, tags);
         }
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
     }
 }

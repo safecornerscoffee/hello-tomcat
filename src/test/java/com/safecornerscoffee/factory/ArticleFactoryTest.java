@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,7 +28,7 @@ public class ArticleFactoryTest {
         String title = "pouring coffee";
         String body = "pouring coffee";
         Long userId = user.getId();
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
+        Set<Tag> tags = new HashSet<>(Arrays.asList(
                 new Tag(1L, "cl"),
                 new Tag(2L, "dg")
         ));

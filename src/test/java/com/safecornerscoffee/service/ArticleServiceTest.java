@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,9 +34,9 @@ public class ArticleServiceTest {
     ArticleService articleService;
     @Autowired
     ArticleMapper articleMapper;
-    Article article;
     @Autowired
     TagFactory tagFactory;
+    Article article;
 
     @Autowired
     UserService userService;
@@ -80,11 +81,9 @@ public class ArticleServiceTest {
                 .title("writing test")
                 .body("writing test")
                 .userId(author.getId())
-                .tags(Arrays.asList(
-                        tagFactory.forName("cl"),
-                        tagFactory.forName("go")
-                ))
+                .tags(new HashSet<>(Arrays.asList(tagFactory.forName("cl"), tagFactory.forName("go"))))
                 .build();
+
 
         ArticleDTO newArticleDTO = articleService.writeArticle(articleDTO);
 

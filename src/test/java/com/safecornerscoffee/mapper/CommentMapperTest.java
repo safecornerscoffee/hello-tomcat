@@ -13,9 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -61,7 +62,7 @@ public class CommentMapperTest {
         String title = "pouring coffee";
         String body = "pouring coffee";
         Long authorId = author.getId();
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
+        Set<Tag> tags = new HashSet<>(Arrays.asList(
                 tagFactory.forName("cl"),
                 tagFactory.forName("go"),
                 tagFactory.forName("pc")

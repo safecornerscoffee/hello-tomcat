@@ -13,9 +13,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,7 +49,7 @@ public class ArticleMapperTest {
         Long articleId = articleMapper.nextId();
         String title = "cafe mocha recipe";
         String body = "try it with";
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
+        Set<Tag> tags = new HashSet<>(Arrays.asList(
                 new Tag(articleMapper.nextTagId(), "Recipe"),
                 new Tag(articleMapper.nextTagId(), "Caffeine"),
                 new Tag(articleMapper.nextTagId(), "Mocha")

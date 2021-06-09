@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class ArticleRepository {
@@ -48,7 +49,7 @@ public class ArticleRepository {
     }
 
     private void deleteTags(Article article) {
-        List<Tag> tags = articleMapper.selectTagsByArticleId(article.getId());
+        Set<Tag> tags = articleMapper.selectTagsByArticleId(article.getId());
         for (Tag tag : tags) {
             ArticleTagRelation relation = new ArticleTagRelation(article.getId(), tag.getId());
             articleMapper.deleteArticleTagRelation(relation);
@@ -79,7 +80,7 @@ public class ArticleRepository {
         return articleMapper.selectArticlesByTagName(tag.getName());
     }
 
-    public List<Article> findArticlesByTags(List<Tag> tags) {
+    public List<Article> findArticlesByTags(Set<Tag> tags) {
         // todo
         return Collections.emptyList();
     }
