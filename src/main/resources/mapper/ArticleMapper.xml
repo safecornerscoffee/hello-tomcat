@@ -60,57 +60,56 @@
         UPDATE articles
         SET
             title = #{title},
-            body = #{body}
+            body  = #{body}
         WHERE id = #{id}
     </update>
     <delete id="deleteArticle" parameterType="com.safecornerscoffee.domain.Article">
-        DELETE FROM articles WHERE id = #{id}
+        DELETE
+        FROM articles
+        WHERE id = #{id}
     </delete>
 
-    <select id="nextTagId" resultType="Long" useCache="false" flushCache="true">
+    <select id="nextTagId" resultType="Long">
         SELECT nextval('tags_id_seq')
     </select>
-
-    <insert id="insertTag"
-            parameterType="com.safecornerscoffee.domain.Tag">
-        INSERT INTO tags (id, name)
-        VALUES (#{id}, #{name})
-    </insert>
-
-    <select id="selectTagByName"
-            parameterType="String"
-            resultMap="Tag">
-        SELECT (id, name)
+    <select id="selectTagById" parameterType="Long" resultType="com.safecornerscoffee.domain.Tag">
+        SELECT id, name
+        FROM tags
+        WHERE id = #{id}
+    </select>
+    <select id="selectTagByName" parameterType="String" resultType="com.safecornerscoffee.domain.Tag">
+        SELECT id, name
         FROM tags
         WHERE name = #{name}
     </select>
-
+    <insert id="insertTag" parameterType="com.safecornerscoffee.domain.Tag">
+        INSERT INTO tags (id, name)
+        VALUES (#{id}, #{name})
+    </insert>
     <delete id="deleteTag" parameterType="com.safecornerscoffee.domain.Tag">
-        DELETE FROM tags WHERE id = #{id}
+        DELETE
+        FROM tags
+        WHERE id = #{id}
     </delete>
 
-    <resultMap id="Tag" type="com.safecornerscoffee.domain.Tag">
-        <id column="id" property="id" />
-        <result column="name" property="name"/>
-    </resultMap>
-
+    <select id="selectTagsByArticleId"
+            parameterType="Long"
+            resultType="com.safecornerscoffee.domain.Tag">
+        SELECT T.id   as id,
+               T.name as name
+        FROM articles_tags R
+                 LEFT OUTER JOIN tags T on R.tag_id = T.id
+        WHERE R.article_id = #{articleId}
+    </select>
     <insert id="insertArticleTagRelation" parameterType="com.safecornerscoffee.domain.ArticleTagRelation">
         INSERT INTO articles_tags (article_id, tag_id)
         VALUES (#{articleId}, #{tagId})
     </insert>
-    <select id="selectTagsByArticleId"
-            parameterType="Long"
-            resultType="com.safecornerscoffee.domain.Tag">
-        SELECT
-            T.id as id,
-            T.name as name
-        FROM articles_tags R
-            LEFT OUTER JOIN tags T on R.tag_id = T.id
-        WHERE R.article_id = #{articleId}
-    </select>
     <delete id="deleteArticleTagRelation" parameterType="com.safecornerscoffee.domain.ArticleTagRelation">
-        DELETE FROM articles_tags
-        WHERE article_id = #{articleId} AND tag_id = #{tagId}
+        DELETE
+        FROM articles_tags
+        WHERE article_id = #{articleId}
+          AND tag_id = #{tagId}
     </delete>
 
 </mapper>

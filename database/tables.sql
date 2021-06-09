@@ -16,9 +16,8 @@ CREATE TABLE articles(
 );
 
 CREATE TABLE tags(
-    id SERIAL PRIMARY KEY,
-    article_id INTEGER,
-    name TEXT
+                     id SERIAL PRIMARY KEY,
+                     name TEXT UNIQUE
 );
 
 CREATE TABLE articles_tags(

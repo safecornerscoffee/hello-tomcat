@@ -1,13 +1,13 @@
 package com.safecornerscoffee.mapper;
 
-import com.safecornerscoffee.domain.*;
-import com.safecornerscoffee.factory.TagFactory;
+import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.domain.Profile;
+import com.safecornerscoffee.domain.Tag;
+import com.safecornerscoffee.domain.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -17,120 +17,75 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
-@Transactional
 public class ArticleMapperTest {
-
-    private static final Logger log = LoggerFactory.getLogger(ArticleMapperTest.class);
 
     @Autowired
     ArticleMapper articleMapper;
-    @Autowired
-    TagFactory tagFactory;
+    Article article;
+    Tag tag;
 
     @Autowired
     UserMapper userMapper;
-    User author, otherAuthor;
+    User author;
 
     @Before
     public void beforeEach() {
 
-        author = new User();
-        author.setId(userMapper.nextId());
-        author.setUsername("bluebottle");
-        author.setEmail("bluebottle");
-        author.setPassword("bluebottle");
-        author.setProfile(new Profile("bluebottle", "bluebottle.png"));
+        Long userId = userMapper.nextId();
+        String username = "mocha";
+        String email = "mocha@safecornerscoffee.com";
+        String password = "mocha";
+        String name = "mocha";
+        String image = "mocha.png";
+        Profile profile = new Profile(name, image);
+
+        author = new User.UserBuilder(userId, username, email, password).profile(profile).build();
         userMapper.insertUser(author);
 
-        otherAuthor = new User();
-        otherAuthor.setId(userMapper.nextId());
-        otherAuthor.setUsername("ediya");
-        otherAuthor.setEmail("ediya");
-        otherAuthor.setPassword("ediya");
-        otherAuthor.setProfile(new Profile("ediya", "ediya.png"));
-        userMapper.insertUser(otherAuthor);
+        Long articleId = articleMapper.nextId();
+        String title = "cafe mocha recipe";
+        String body = "try it with";
+        List<Tag> tags = new ArrayList<>(Arrays.asList(
+                new Tag(articleMapper.nextTagId(), "Recipe"),
+                new Tag(articleMapper.nextTagId(), "Caffeine"),
+                new Tag(articleMapper.nextTagId(), "Mocha")
+        ));
+        article = new Article.ArticleBuilder(articleId, title, body, userId).tags(tags).build();
+        articleMapper.insertArticle(article);
+
+        String tagName = "Peppermint";
+        tag = new Tag(articleMapper.nextTagId(), tagName);
+        articleMapper.insertTag(tag);
     }
 
     @After
     public void afterEach() {
         userMapper.deleteUser(author);
-        userMapper.deleteUser(otherAuthor);
+        articleMapper.deleteArticle(article);
+        articleMapper.deleteTag(tag);
     }
 
     @Test
-    public void nextIdTest() {
+    public void nextArticleIdTest() {
         Long nextArticleId = articleMapper.nextId();
-        assertNotNull(nextArticleId);
-    }
-
-    @Test
-    public void InsertArticle() {
-        Long articleId = articleMapper.nextId();
-        String title = "pouring coffee";
-        String body = "pouring coffee";
-        Long authorId = author.getId();
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
-                tagFactory.forName("cl"),
-                tagFactory.forName("go"),
-                tagFactory.forName("pc")
-        ));
-        Article article = new Article(articleId, title, body, authorId, tags);
-
-        articleMapper.insertArticle(article);
-        for (Tag tag : article.getTags()) {
-            articleMapper.insertTag(tag);
-        }
+        assertThat(nextArticleId).isNotNull();
     }
 
     @Test
     public void selectArticleById() {
-        Long articleId = articleMapper.nextId();
-        String title = "pouring coffee";
-        String body = "pouring coffee";
-        Long authorId = author.getId();
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
-                tagFactory.forName("cl"),
-                tagFactory.forName("go"),
-                tagFactory.forName("pc")
-        ));
-        Article article = new Article(articleId, title, body, authorId, tags);
 
-        articleMapper.insertArticle(article);
-        for (Tag tag : article.getTags()) {
-            articleMapper.insertTag(tag);
-            ArticleTagRelation relation = new ArticleTagRelation(article.getId(), tag.getId());
-            articleMapper.insertArticleTagRelation(relation);
-        }
+        Article savedArticle = articleMapper.selectArticleById(article.getId());
 
-        Article selectedArticle = articleMapper.selectArticleById(article.getId());
+        assertThat(savedArticle.getId()).isEqualTo(article.getId());
 
-        assertEquals(article.getId(), selectedArticle.getId());
-
-        assertEquals(article.getTags().size(), selectedArticle.getTags().size());
     }
 
     @Test
     public void updateArticleTest() {
-        Long articleId = articleMapper.nextId();
-        String title = "pouring coffee";
-        String body = "pouring coffee";
-        Long authorId = author.getId();
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
-                tagFactory.forName("cl"),
-                tagFactory.forName("go"),
-                tagFactory.forName("pc")
-        ));
-        Article article = new Article(articleId, title, body, authorId, tags);
-
-        articleMapper.insertArticle(article);
-        for (Tag tag : article.getTags()) {
-            articleMapper.insertTag(tag);
-        }
 
         String updateTitle = "mocha";
         String updateBody = "mocha";
@@ -142,7 +97,39 @@ public class ArticleMapperTest {
 
         Article updatedArticle = articleMapper.selectArticleById(article.getId());
 
-        assertEquals(updateTitle, updatedArticle.getTitle());
-        assertEquals(updateBody, updatedArticle.getBody());
+        assertThat(updatedArticle.getId()).isEqualTo(article.getId());
+        assertThat(updatedArticle.getTitle()).isEqualTo(updateTitle);
+        assertThat(updatedArticle.getBody()).isEqualTo(updateBody);
     }
+
+    @Test
+    public void nextTagIdTest() {
+        Long nextTagId = articleMapper.nextTagId();
+        assertThat(nextTagId).isNotNull();
+    }
+
+    @Test
+    @Transactional
+    public void insertTagTest() {
+        String tagName = "Test";
+        Tag tag = new Tag(articleMapper.nextTagId(), tagName);
+        articleMapper.insertTag(tag);
+    }
+
+    @Test
+    public void selectTagByIdTest() {
+        Tag savedTag = articleMapper.selectTagById(tag.getId());
+
+        assertThat(savedTag.getId()).isNotNull();
+        assertThat(savedTag.getId()).isEqualTo(tag.getId());
+    }
+
+    @Test
+    public void selectTagByNameTest() {
+        Tag savedTag = articleMapper.selectTagByName(tag.getName());
+
+        assertThat(savedTag.getId()).isNotNull();
+        assertThat(savedTag.getName()).isEqualTo(tag.getName());
+    }
+
 }
