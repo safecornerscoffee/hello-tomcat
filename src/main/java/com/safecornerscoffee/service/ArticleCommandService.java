@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class ArticleService {
+public class ArticleCommandService {
 
     private final ArticleRepository articleRepository;
 
-    public ArticleService(ArticleRepository articleRepository) {
+    public ArticleCommandService(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
 

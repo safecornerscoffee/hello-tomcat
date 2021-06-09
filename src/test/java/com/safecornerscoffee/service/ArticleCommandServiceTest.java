@@ -27,11 +27,11 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
 @Transactional
-public class ArticleServiceTest {
+public class ArticleCommandServiceTest {
 
 
     @Autowired
-    ArticleService articleService;
+    ArticleCommandService articleCommandService;
     @Autowired
     ArticleMapper articleMapper;
     @Autowired
@@ -70,7 +70,7 @@ public class ArticleServiceTest {
     public void readArticle() {
 
         ArticleCommand expected = ArticleAssembler.writeCommand(article);
-        ArticleCommand actual = articleService.readArticle(article.getId());
+        ArticleCommand actual = articleCommandService.readArticle(article.getId());
 
         assertEquals(expected.getId(), actual.getId());
     }
@@ -85,7 +85,7 @@ public class ArticleServiceTest {
                 .build();
 
 
-        ArticleCommand newArticleCommand = articleService.writeArticle(articleCommand);
+        ArticleCommand newArticleCommand = articleCommandService.writeArticle(articleCommand);
 
         assertNotNull(newArticleCommand.getId());
         assertEquals(articleCommand.getTitle(), newArticleCommand.getTitle());
@@ -98,7 +98,7 @@ public class ArticleServiceTest {
         editingArticle.setTitle("i'm edited!!!");
         editingArticle.setBody("i'm also");
 
-        ArticleCommand result = articleService.updateArticle(editingArticle);
+        ArticleCommand result = articleCommandService.updateArticle(editingArticle);
 
         assertEquals(editingArticle.getTitle(), result.getTitle());
         assertEquals(editingArticle.getBody(), result.getBody());
