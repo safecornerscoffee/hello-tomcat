@@ -3,18 +3,11 @@ package com.safecornerscoffee.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class HelloController {
+public class IndexController {
 
-    @RequestMapping(value="/hello")
-    @ResponseBody
-    public String Hello() {
-        return "Hello, Controller";
-    }
-
-    @RequestMapping(value="/")
+    @RequestMapping(value = "/")
     public String Index(Model model) {
         model.addAttribute("name", "JSP");
         return "index";

@@ -1,6 +1,7 @@
-package com.safecornerscoffee.repository;
+package com.safecornerscoffee.integration.repository;
 
 import com.safecornerscoffee.domain.Tag;
+import com.safecornerscoffee.repository.ArticleRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

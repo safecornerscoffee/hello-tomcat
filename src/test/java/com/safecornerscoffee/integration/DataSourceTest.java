@@ -1,4 +1,4 @@
-package com.safecornerscoffee;
+package com.safecornerscoffee.integration;
 
 
 

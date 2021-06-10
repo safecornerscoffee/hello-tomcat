@@ -1,5 +1,6 @@
-package com.safecornerscoffee.mapper;
+package com.safecornerscoffee.integration.service;
 
+import com.safecornerscoffee.service.TimeService;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,13 +10,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
-public class TimeMapperTest extends TestCase {
+public class TimeServiceTest extends TestCase {
 
     @Autowired
-    private TimeMapper timeMapper;
+    TimeService timeService;
 
     @Test
     public void testGetCurrentTime() {
-        System.out.println(timeMapper.getCurrentTime());
+        System.out.println(timeService.getCurrentTime());
     }
+
 }

@@ -1,4 +1,4 @@
-package com.safecornerscoffee.mapper;
+package com.safecornerscoffee.integration.mapper;
 
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Profile;
@@ -7,6 +7,8 @@ import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.dto.ArticleResponse;
 import com.safecornerscoffee.factory.ArticleFactory;
 import com.safecornerscoffee.factory.TagFactory;
+import com.safecornerscoffee.mapper.ArticleQueryMapper;
+import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.repository.ArticleRepository;
 import org.junit.After;
 import org.junit.Before;

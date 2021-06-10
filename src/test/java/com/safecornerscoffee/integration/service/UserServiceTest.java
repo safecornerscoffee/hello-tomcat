@@ -1,10 +1,11 @@
-package com.safecornerscoffee.service;
+package com.safecornerscoffee.integration.service;
 
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.dto.UserDTO;
 import com.safecornerscoffee.exception.InvalidUsernameOrPassword;
 import com.safecornerscoffee.exception.NotFoundUserException;
 import com.safecornerscoffee.mapper.UserMapper;
+import com.safecornerscoffee.service.UserService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

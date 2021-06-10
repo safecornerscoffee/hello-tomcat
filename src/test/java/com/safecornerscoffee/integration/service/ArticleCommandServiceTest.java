@@ -1,4 +1,4 @@
-package com.safecornerscoffee.service;
+package com.safecornerscoffee.integration.service;
 
 import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.domain.Article;
@@ -10,6 +10,7 @@ import com.safecornerscoffee.factory.ArticleFactory;
 import com.safecornerscoffee.factory.TagFactory;
 import com.safecornerscoffee.mapper.UserMapper;
 import com.safecornerscoffee.repository.ArticleRepository;
+import com.safecornerscoffee.service.ArticleCommandService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
