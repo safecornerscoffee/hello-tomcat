@@ -15,7 +15,7 @@
         </collection>
     </resultMap>
 
-    <select id="nextId" resultType="Long">
+    <select id="nextId" resultType="Long" useCache="false" flushCache="true">
         SELECT nextval('articles_id_seq')
     </select>
 
@@ -92,7 +92,7 @@
         WHERE id = #{id}
     </delete>
 
-    <select id="nextTagId" resultType="Long">
+    <select id="nextTagId" resultType="Long" useCache="false" flushCache="true">
         SELECT nextval('tags_id_seq')
     </select>
     <select id="selectTagById" parameterType="Long" resultType="com.safecornerscoffee.domain.Tag">

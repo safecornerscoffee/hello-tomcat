@@ -13,7 +13,7 @@
         </association>
     </resultMap>
 
-    <select id="nextId" resultType="Long">
+    <select id="nextId" resultType="Long" useCache="false" flushCache="true">
         SELECT nextval('users_id_seq')
     </select>
     <insert id="insertUser"
