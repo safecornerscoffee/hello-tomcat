@@ -4,7 +4,7 @@ import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Profile;
 import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.factory.TagFactory;
+import com.safecornerscoffee.exception.NotFoundArticleException;
 import com.safecornerscoffee.mapper.ArticleMapper;
 import com.safecornerscoffee.mapper.UserMapper;
 import org.junit.After;
@@ -16,12 +16,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
@@ -32,145 +30,176 @@ public class ArticleRepositoryTest {
     ArticleRepository articleRepository;
     @Autowired
     ArticleMapper articleMapper;
-    @Autowired
-    TagFactory tagFactory;
-
     Article article;
 
     @Autowired
     UserMapper userMapper;
-    User author;
+    User user;
 
     @Before
     public void beforeEach() {
-        author = new User();
-        author.setId(userMapper.nextId());
-        author.setUsername("bluebottle");
-        author.setEmail("bluebottle");
-        author.setPassword("bluebottle");
-        author.setProfile(new Profile("bluebottle", "bluebottle-image"));
-        userMapper.insertUser(author);
+        Long userId = userMapper.nextId();
+        String username = "cappuccino";
+        String email = "cappuccino@safecornerscoffee.com";
+        String password = "cappuccino";
+        String name = "cappuccino";
+        String image = "cappuccino.png";
+        Profile profile = new Profile(name, image);
+
+        user = new User.UserBuilder(userId, username, email, password).profile(profile).build();
+        userMapper.insertUser(user);
 
         Long articleId = articleMapper.nextId();
-        String title = "pouring coffee";
-        String body = "pouring coffee";
-        Long authorId = author.getId();
-        List<Tag> tags = new ArrayList<>(Arrays.asList(
-                tagFactory.forName("cl"),
-                tagFactory.forName("go"),
-                tagFactory.forName("pc")
+        String title = "cappuccino recipe";
+        String body = "try it with";
+        Set<Tag> tags = new HashSet<>(Arrays.asList(
+                articleRepository.getTagByName("Recipe"),
+                articleRepository.getTagByName("Caffeine"),
+                articleRepository.getTagByName("Cappuccino")
         ));
-        article = new Article(articleId, title, body, authorId, tags);
+        article = new Article.ArticleBuilder(articleId, title, body, userId).tags(tags).build();
+        articleRepository.saveArticle(article);
     }
 
     @After
     public void afterEach() {
-        userMapper.deleteUser(author);
+        userMapper.deleteUser(user);
+        articleRepository.removeArticle(article);
     }
 
     @Test
     public void saveArticleTest() {
-        articleRepository.saveArticle(article);
 
-        Article savedArticle = articleMapper.selectArticleById(this.article.getId());
+        Article savedArticle = articleMapper.selectArticleById(article.getId());
 
-        assertEquals(article.getId(), savedArticle.getId());
-        assertEquals(article.getTags().size(), savedArticle.getTags().size());
+        assertThat(savedArticle.getId()).isEqualTo(article.getId());
+        assertThat(savedArticle.getTags().size()).isEqualTo(article.getTags().size());
 
-        for (Tag tag: article.getTags()) {
-            assertTrue(savedArticle.getTags().contains(tag));
+        for (Tag tag : savedArticle.getTags()) {
+            assertThat(tag).isIn(article.getTags());
         }
+    }
+
+    @Test
+    public void removeArticleTest() {
+        Long articleId = articleMapper.nextId();
+        String title = "cappuccino recipe";
+        String body = "try it with";
+        Set<Tag> tags = new HashSet<>(Arrays.asList(
+                articleRepository.getTagByName("Recipe"),
+                articleRepository.getTagByName("Caffeine"),
+                articleRepository.getTagByName("Cappuccino")
+        ));
+        Article newArticle = new Article.ArticleBuilder(articleId, title, body, user.getId()).tags(tags).build();
+        articleRepository.saveArticle(newArticle);
+
+        articleRepository.removeArticle(newArticle);
+
+        assertThatThrownBy(() -> {
+            Article removedArticle = articleRepository.findArticleById(newArticle.getId());
+        }).isInstanceOf(NotFoundArticleException.class);
+
+        Set<Tag> removedTags = articleMapper.selectTagsByArticleId(newArticle.getId());
+        assertThat(removedTags).isEmpty();
     }
 
     @Test
     public void updateArticleTest() {
-        articleRepository.saveArticle(article);
 
-        String updateTitle = "mocha";
-        String updateBody = "mocha";
+        String updateTitle = "wet cappuccino recipe";
+        String updateBody = "try it with";
         article.updateTitle(updateTitle);
         article.updateBody(updateBody);
         articleRepository.updateArticle(article);
 
-        Article updatedArticle = articleMapper.selectArticleById(this.article.getId());
-
-        assertEquals(updateTitle, updatedArticle.getTitle());
-        assertEquals(updateBody, updatedArticle.getBody());
-
-        articleMapper.deleteArticle(this.article);
-    }
-
-    @Test
-    public void removeArticleTagTest() {
-        articleRepository.saveArticle(article);
-        Tag tag = tagFactory.forName("cl");
-
-        article.removeTag(tag);
-        articleRepository.updateArticle(article);
-
         Article updatedArticle = articleMapper.selectArticleById(article.getId());
 
-        assertFalse(updatedArticle.getTags().contains(tag));
-    }
-    @Test
-    public void addArticleTagTest() {
-        articleRepository.saveArticle(article);
-        Tag tag = tagFactory.forName("dg");
-
-        article.addTag(tag);
-        articleRepository.updateArticle(article);
-
-        Article updatedArticle = articleMapper.selectArticleById(article.getId());
-
-        assertTrue(updatedArticle.getTags().contains(tag));
+        assertThat(updatedArticle.getId()).isEqualTo(article.getId());
+        assertThat(updatedArticle.getTitle()).isEqualTo(updateTitle);
+        assertThat(updatedArticle.getBody()).isEqualTo(updateBody);
     }
 
     @Test
-    public void ReturningEmptyListWhenArticleNotHavingTags() {
-        article.setTags(Collections.emptyList());
-        articleRepository.saveArticle(article);
-
-        articleRepository.findArticleById(article.getId());
-
-        assertNotNull(article.getTags());
-        assertTrue(article.getTags().isEmpty());
+    public void findArticlesTest() {
+        // todo
     }
 
     @Test
-    public void findArticleById() {
-        articleRepository.saveArticle(article);
+    public void findArticleByIdTest() {
 
         Article foundOne = articleRepository.findArticleById(article.getId());
 
-        assertEquals(article.getId(), foundOne.getId() );
+        assertThat(foundOne).isNotNull();
+        assertThat(foundOne.getId()).isEqualTo(article.getId());
     }
 
     @Test
-    public void findArticlesByAuthorId() {
-        articleRepository.saveArticle(article);
+    public void findArticlesByUserIdTest() {
 
-        List<Article> foundAny = articleRepository.findArticlesByAuthorId(article.getAuthorId());
+        List<Article> foundAny = articleRepository.findArticlesByUserId(article.getUserId());
 
-        assertFalse(foundAny.isEmpty());
-        for (Article a : foundAny) {
-            assertEquals(article.getAuthorId(), a.getAuthorId());
+        assertThat(foundAny).isNotEmpty();
+        for (Article foundOne : foundAny) {
+            assertThat(foundOne.getUserId()).isEqualTo(article.getUserId());
         }
     }
 
     @Test
-    public void findArticlesByTag() {
-        articleRepository.saveArticle(article);
-        Tag tag = tagFactory.forName("cl");
+    public void findArticlesByTagTest() {
+        Tag tag = articleRepository.getTagByName("Cappuccino");
         List<Article> articlesByTag = articleRepository.findArticlesByTag(tag);
 
-        for (Article a : articlesByTag) {
-            assertTrue(a.getTags().contains(tag));
+        assertThat(articlesByTag).isNotEmpty();
+        for (Article article : articlesByTag) {
+            assertThat(tag).isIn(article.getTags());
         }
     }
 
     @Test
     public void findArticlesByTags() {
         // todo
+    }
+
+    @Test
+    public void removeArticleTagTest() {
+
+        Tag tag = articleRepository.getTagByName("Caffeine");
+
+        article.removeTag(tag);
+        articleRepository.updateArticle(article);
+
+        Article updatedArticle = articleMapper.selectArticleById(article.getId());
+
+        assertThat(tag).isNotIn(updatedArticle.getTags());
+    }
+
+    @Test
+    public void addArticleTagTest() {
+
+        Tag tag = articleRepository.getTagByName("HomeBrew");
+
+        article.addTag(tag);
+        articleRepository.updateArticle(article);
+
+        Article updatedArticle = articleMapper.selectArticleById(article.getId());
+
+        assertThat(tag).isIn(updatedArticle.getTags());
+    }
+
+    @Test
+    public void ArticleWithoutTags() {
+        Long articleId = articleMapper.nextId();
+        String title = "cappuccino recipe";
+        String body = "try it with";
+        Set<Tag> tags = Collections.emptySet();
+
+        Article articleWithoutTags = new Article.ArticleBuilder(articleId, title, body, user.getId()).tags(tags).build();
+        articleRepository.saveArticle(articleWithoutTags);
+
+        Article savedArticle = articleRepository.findArticleById(articleWithoutTags.getId());
+
+        assertThat(savedArticle.getId()).isEqualTo(articleWithoutTags.getId());
+        assertThat(savedArticle.getTags()).isEmpty();
     }
 
 }

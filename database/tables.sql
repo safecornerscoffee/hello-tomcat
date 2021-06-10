@@ -9,16 +9,15 @@ CREATE TABLE users
 );
 
 CREATE TABLE articles(
-    id SERIAL PRIMARY KEY,
-    title TEXT,
-    body TEXT,
-    author_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+                         id      SERIAL PRIMARY KEY,
+                         title   TEXT    NOT NULL,
+                         body    TEXT    NOT NULL,
+                         user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE tags(
-    id SERIAL PRIMARY KEY,
-    article_id INTEGER,
-    name TEXT
+                     id SERIAL PRIMARY KEY,
+                     name TEXT UNIQUE
 );
 
 CREATE TABLE articles_tags(

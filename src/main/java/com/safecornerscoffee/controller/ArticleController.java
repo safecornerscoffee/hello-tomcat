@@ -1,7 +1,9 @@
 package com.safecornerscoffee.controller;
 
-import com.safecornerscoffee.dto.ArticleDTO;
-import com.safecornerscoffee.service.ArticleService;
+import com.safecornerscoffee.dto.ArticleCommand;
+import com.safecornerscoffee.dto.ArticleResponse;
+import com.safecornerscoffee.service.ArticleCommandService;
+import com.safecornerscoffee.service.ArticleQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -15,15 +17,17 @@ import java.util.List;
 public class ArticleController {
     private static final Logger log = LoggerFactory.getLogger(ArticleController.class);
 
-    private final ArticleService articleService;
+    private final ArticleCommandService articleCommandService;
+    private final ArticleQueryService articleQueryService;
 
-    public ArticleController(ArticleService articleService) {
-        this.articleService = articleService;
+    public ArticleController(ArticleCommandService articleCommandService, ArticleQueryService articleQueryService) {
+        this.articleCommandService = articleCommandService;
+        this.articleQueryService = articleQueryService;
     }
 
     @GetMapping("/articles")
     public String getArticles(Model model) {
-        List<ArticleDTO> articles = articleService.getArticles();
+        List<ArticleResponse> articles = articleQueryService.getAllArticles();
         model.addAttribute("articles", articles);
         return "articles/list";
     }
@@ -40,9 +44,9 @@ public class ArticleController {
     }
 
     @PostMapping("/articles")
-    public String postArticle(ArticleDTO article) {
+    public String postArticle(ArticleCommand article) {
         log.info(article.toString());
-        articleService.writeArticle(article);
+        articleCommandService.writeArticle(article);
 
         return "index";
     }

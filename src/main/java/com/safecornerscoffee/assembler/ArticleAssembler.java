@@ -1,26 +1,27 @@
 package com.safecornerscoffee.assembler;
 
 import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.dto.ArticleDTO;
+import com.safecornerscoffee.dto.ArticleCommand;
 
 public class ArticleAssembler {
 
-    public static ArticleDTO writeDTO(Article article) {
-        return new ArticleDTO.Builder()
+    public static ArticleCommand writeCommand(Article article) {
+        return new ArticleCommand.ArticleCommandBuilder()
                 .id(article.getId())
                 .title(article.getTitle())
                 .body(article.getBody())
-                .authorId(article.getAuthorId())
+                .userId(article.getUserId())
                 .tags(article.getTags())
                 .build();
     }
-    public static Article createArticle(ArticleDTO articleDTO) {
+
+    public static Article createArticle(ArticleCommand articleCommand) {
         return new Article(
-                articleDTO.getId(),
-                articleDTO.getTitle(),
-                articleDTO.getBody(),
-                articleDTO.getAuthorId(),
-                articleDTO.getTags()
+                articleCommand.getId(),
+                articleCommand.getTitle(),
+                articleCommand.getBody(),
+                articleCommand.getUserId(),
+                articleCommand.getTags()
         );
     }
 

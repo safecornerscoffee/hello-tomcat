@@ -1,39 +1,43 @@
 package com.safecornerscoffee.domain;
 
-import java.util.List;
+import java.util.Set;
 
 public class Article {
     private Long id;
     private String title;
     private String body;
-    private Long authorId;
-    private List<Tag> tags;
+    private Long userId;
+    private Set<Tag> tags;
 
     public Article() {
 
     }
 
-    public Article(Long id, String title, String body, Long authorId) {
+    public Article(Long id, String title, String body, Long userId) {
         this.id = id;
         this.title = title;
         this.body = body;
-        this.authorId = authorId;
+        this.userId = userId;
     }
 
-    public Article(Long id, String title, String body, Long authorId, List<Tag> tags) {
+    public Article(Long id, String title, String body, Long userId, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.body = body;
-        this.authorId = authorId;
+        this.userId = userId;
         this.tags = tags;
     }
 
     public void updateTitle(String title) {
-        this.title = title;
+        setTitle(title);
     }
 
     public void updateBody(String body) {
-        this.body = body;
+        setBody(body);
+    }
+
+    public void updateTags(Set<Tag> tags) {
+        setTags(tags);
     }
 
     public void addTag(Tag tag) {
@@ -42,6 +46,7 @@ public class Article {
         }
         tags.add(tag);
     }
+
     public void removeTag(Tag tag) {
         if (!tags.contains(tag)) {
            throw new IllegalStateException("does not have tag: " + tag.getName());
@@ -73,19 +78,43 @@ public class Article {
         this.body = body;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public static class ArticleBuilder {
+        private Long id;
+        private String title;
+        private String body;
+        private Long userId;
+        private Set<Tag> tags;
+
+        public ArticleBuilder(Long id, String title, String body, Long userId) {
+            this.id = id;
+            this.title = title;
+            this.body = body;
+            this.userId = userId;
+        }
+
+        public ArticleBuilder tags(Set<Tag> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public Article build() {
+            return new Article(id, title, body, userId, tags);
+        }
     }
 }
