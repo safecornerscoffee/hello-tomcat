@@ -4,6 +4,7 @@ import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Profile;
 import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
+import com.safecornerscoffee.exception.NotFoundArticleException;
 import com.safecornerscoffee.mapper.ArticleMapper;
 import com.safecornerscoffee.mapper.UserMapper;
 import org.junit.After;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
@@ -94,10 +95,11 @@ public class ArticleRepositoryTest {
 
         articleRepository.removeArticle(newArticle);
 
-        Article removedArticle = articleRepository.findArticleById(newArticle.getId());
-        Set<Tag> removedTags = articleMapper.selectTagsByArticleId(newArticle.getId());
+        assertThatThrownBy(() -> {
+            Article removedArticle = articleRepository.findArticleById(newArticle.getId());
+        }).isInstanceOf(NotFoundArticleException.class);
 
-        assertThat(removedArticle).isNull();
+        Set<Tag> removedTags = articleMapper.selectTagsByArticleId(newArticle.getId());
         assertThat(removedTags).isEmpty();
     }
 
@@ -181,7 +183,7 @@ public class ArticleRepositoryTest {
 
         Article updatedArticle = articleMapper.selectArticleById(article.getId());
 
-        assertTrue(updatedArticle.getTags().contains(tag));
+        assertThat(tag).isIn(updatedArticle.getTags());
     }
 
     @Test

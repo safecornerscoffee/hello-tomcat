@@ -7,9 +7,6 @@ import com.safecornerscoffee.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Service
 @Transactional
@@ -21,44 +18,37 @@ public class ArticleCommandService {
         this.articleRepository = articleRepository;
     }
 
-    public List<ArticleCommand> getArticles() {
-        List<Article> articles = articleRepository.findArticles();
-
-        return articles.stream().map(ArticleAssembler::writeCommand).collect(Collectors.toList());
-    }
-
-    public ArticleCommand readArticle(Long articleId) {
-
-        Article article = articleRepository.findArticleById(articleId);
-        return ArticleAssembler.writeCommand(article);
-    }
-
     public ArticleCommand writeArticle(ArticleCommand articleCommand) {
         articleCommand.setId(articleRepository.nextId());
         Article article = ArticleAssembler.createArticle(articleCommand);
 
         articleRepository.saveArticle(article);
-
         return ArticleAssembler.writeCommand(article);
     }
 
-    public ArticleCommand updateArticle(ArticleCommand updateArticleRequest) {
-        if (updateArticleRequest.getTitle() == null || updateArticleRequest.getTitle().equals("")) {
+    public ArticleCommand updateArticle(ArticleCommand ArticleUpdateCommand) {
+        if (ArticleUpdateCommand.getTitle() == null || ArticleUpdateCommand.getTitle().equals("")) {
             throw new IllegalStateException("invalid request");
         }
 
-        Article article = articleRepository.findArticleById(updateArticleRequest.getId());
+        Article article = articleRepository.findArticleById(ArticleUpdateCommand.getId());
 
-        article.updateTitle(updateArticleRequest.getTitle());
-        article.updateBody(updateArticleRequest.getBody());
+        updateArticleContent(article, ArticleUpdateCommand);
 
         articleRepository.updateArticle(article);
 
         return ArticleAssembler.writeCommand(article);
     }
 
-    public void deleteArticle(ArticleCommand deleteArticleRequest) {
-        Article article = articleRepository.findArticleById(deleteArticleRequest.getId());
+    private void updateArticleContent(Article article, ArticleCommand ArticleUpdateCommand) {
+        article.updateTitle(ArticleUpdateCommand.getTitle());
+        article.updateBody(ArticleUpdateCommand.getBody());
+        article.updateTags(ArticleUpdateCommand.getTags());
+    }
+
+    public ArticleCommand deleteArticle(ArticleCommand ArticleDeleteCommand) {
+        Article article = articleRepository.findArticleById(ArticleDeleteCommand.getId());
         articleRepository.removeArticle(article);
+        return ArticleAssembler.writeCommand(article);
     }
 }

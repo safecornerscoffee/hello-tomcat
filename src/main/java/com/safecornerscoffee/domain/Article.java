@@ -29,11 +29,15 @@ public class Article {
     }
 
     public void updateTitle(String title) {
-        this.title = title;
+        setTitle(title);
     }
 
     public void updateBody(String body) {
-        this.body = body;
+        setBody(body);
+    }
+
+    public void updateTags(Set<Tag> tags) {
+        setTags(tags);
     }
 
     public void addTag(Tag tag) {
@@ -42,6 +46,7 @@ public class Article {
         }
         tags.add(tag);
     }
+
     public void removeTag(Tag tag) {
         if (!tags.contains(tag)) {
            throw new IllegalStateException("does not have tag: " + tag.getName());

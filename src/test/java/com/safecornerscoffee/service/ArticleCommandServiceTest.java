@@ -2,12 +2,14 @@ package com.safecornerscoffee.service;
 
 import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.domain.Article;
+import com.safecornerscoffee.domain.Profile;
 import com.safecornerscoffee.domain.User;
 import com.safecornerscoffee.dto.ArticleCommand;
-import com.safecornerscoffee.dto.UserDTO;
+import com.safecornerscoffee.exception.NotFoundArticleException;
+import com.safecornerscoffee.factory.ArticleFactory;
 import com.safecornerscoffee.factory.TagFactory;
-import com.safecornerscoffee.mapper.ArticleMapper;
 import com.safecornerscoffee.mapper.UserMapper;
+import com.safecornerscoffee.repository.ArticleRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,87 +22,115 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/web/WEB-INF/applicationContext.xml")
 @Transactional
 public class ArticleCommandServiceTest {
 
-
     @Autowired
     ArticleCommandService articleCommandService;
     @Autowired
-    ArticleMapper articleMapper;
+    ArticleRepository articleRepository;
+    @Autowired
+    ArticleFactory articleFactory;
     @Autowired
     TagFactory tagFactory;
+
     Article article;
 
     @Autowired
-    UserService userService;
-    @Autowired
     UserMapper userMapper;
-    User author;
+    User user;
+
     @Before
     public void beforeEach() {
-        String username = "mocha";
-        String email = "mocha@safecornerscoffee.com";
-        String password = "mocha";
-        String name = "mocha";
-        String imageUrl = "mocha.png";
-        UserDTO createAuthorRequest = new UserDTO.UserDTOBuilder().username(username).email(email).password(password)
-                .profileName(name).profileImage(imageUrl).build();
+        Long userId = userMapper.nextId();
+        String username = "cappuccino";
+        String email = "cappuccino@safecornerscoffee.com";
+        String password = "cappuccino";
+        String name = "cappuccino";
+        String image = "cappuccino.png";
+        Profile profile = new Profile(name, image);
 
-        author = userService.signUp(createAuthorRequest);
+        user = new User.UserBuilder(userId, username, email, password).profile(profile).build();
+        userMapper.insertUser(user);
 
-        article = new Article(articleMapper.nextId(), "articleService", "articleService", author.getId());
-        articleMapper.insertArticle(article);
+        article = articleFactory.getArticle("cappuccino recipe", "cappuccino recipe:", user.getId(),
+                new HashSet<>(Arrays.asList(
+                        tagFactory.forName("Recipe"),
+                        tagFactory.forName("Cappuccino"))));
+        articleRepository.saveArticle(article);
     }
 
     @After
     public void afterEach() {
-        UserDTO dropUserRequest = new UserDTO.UserDTOBuilder().id(author.getId()).build();
-        userService.dropUser(dropUserRequest);
-        articleMapper.deleteArticle(article);
-    }
-
-    @Test
-    public void readArticle() {
-
-        ArticleCommand expected = ArticleAssembler.writeCommand(article);
-        ArticleCommand actual = articleCommandService.readArticle(article.getId());
-
-        assertEquals(expected.getId(), actual.getId());
+        userMapper.deleteUser(user);
+        articleRepository.removeArticle(article);
     }
 
     @Test
     public void writeArticle() {
+
         ArticleCommand articleCommand = new ArticleCommand.ArticleCommandBuilder()
-                .title("writing test")
-                .body("writing test")
-                .userId(author.getId())
-                .tags(new HashSet<>(Arrays.asList(tagFactory.forName("cl"), tagFactory.forName("go"))))
+                .title("wet cappuccino recipe")
+                .body("wet cappuccino recipe:")
+                .userId(user.getId())
+                .tags(new HashSet<>(Arrays.asList(tagFactory.forName("Recipe"),
+                        tagFactory.forName("Cappuccino"),
+                        tagFactory.forName("Wet Cappuccino")
+                )))
                 .build();
 
+        ArticleCommand responseArticleCommand = articleCommandService.writeArticle(articleCommand);
 
-        ArticleCommand newArticleCommand = articleCommandService.writeArticle(articleCommand);
-
-        assertNotNull(newArticleCommand.getId());
-        assertEquals(articleCommand.getTitle(), newArticleCommand.getTitle());
-        assertEquals(articleCommand.getUserId(), newArticleCommand.getUserId());
+        assertThat(responseArticleCommand.getId()).isNotNull();
+        assertThat(responseArticleCommand.getTitle()).isEqualTo(articleCommand.getTitle());
+        assertThat(responseArticleCommand.getBody()).isEqualTo(articleCommand.getBody());
+        assertThat(responseArticleCommand.getUserId()).isEqualTo(articleCommand.getUserId());
     }
 
     @Test
-    public void modifyArticle() {
-        ArticleCommand editingArticle = ArticleAssembler.writeCommand(article);
-        editingArticle.setTitle("i'm edited!!!");
-        editingArticle.setBody("i'm also");
+    public void updateArticle() {
+        ArticleCommand updateCommand = ArticleAssembler.writeCommand(article);
+        updateCommand.setTitle("wet cappuccino recipe v2");
+        updateCommand.setBody("wet cappuccino recipe v2:");
 
-        ArticleCommand result = articleCommandService.updateArticle(editingArticle);
+        ArticleCommand updateResponse = articleCommandService.updateArticle(updateCommand);
 
-        assertEquals(editingArticle.getTitle(), result.getTitle());
-        assertEquals(editingArticle.getBody(), result.getBody());
+        assertThat(updateResponse.getId()).isEqualTo(article.getId());
+        assertThat(updateResponse.getTitle()).isEqualTo(updateCommand.getTitle());
+        assertThat(updateResponse.getBody()).isEqualTo(updateCommand.getBody());
+    }
+
+    @Test
+    public void deleteArticle() {
+        Article subjectArticle = articleFactory.getArticle("espresso recipe", "espresso recipe:", user.getId(),
+                new HashSet<>(Arrays.asList(
+                        tagFactory.forName("Recipe"),
+                        tagFactory.forName("Espresso"))));
+        articleRepository.saveArticle(subjectArticle);
+        ArticleCommand deleteCommand = ArticleAssembler.writeCommand(subjectArticle);
+
+        ArticleCommand deleteResponse = articleCommandService.deleteArticle(deleteCommand);
+
+        assertThat(deleteResponse.getId()).isEqualTo(deleteCommand.getId());
+    }
+
+    @Test
+    public void removeNoneExistArticle() {
+        Article noneExistArticle = articleFactory.getArticle("espresso recipe", "espresso recipe:", user.getId(),
+                new HashSet<>(Arrays.asList(
+                        tagFactory.forName("Recipe"),
+                        tagFactory.forName("Espresso"))));
+
+        ArticleCommand deleteCommand = ArticleAssembler.writeCommand(noneExistArticle);
+
+        assertThatThrownBy(() -> {
+            ArticleCommand deleteResponse = articleCommandService.deleteArticle(deleteCommand);
+        }).isInstanceOf(NotFoundArticleException.class)
+                .hasMessageContaining("NotFoundArticleException");
     }
 }

@@ -3,6 +3,7 @@ package com.safecornerscoffee.repository;
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.ArticleTagRelation;
 import com.safecornerscoffee.domain.Tag;
+import com.safecornerscoffee.exception.NotFoundArticleException;
 import com.safecornerscoffee.mapper.ArticleMapper;
 import org.springframework.stereotype.Repository;
 
@@ -69,7 +70,11 @@ public class ArticleRepository {
     }
 
     public Article findArticleById(Long articleId) {
-        return articleMapper.selectArticleById(articleId);
+        Article article = articleMapper.selectArticleById(articleId);
+        if (article == null) {
+            throw new NotFoundArticleException();
+        }
+        return article;
     }
 
     public List<Article> findArticlesByUserId(Long userId) {
