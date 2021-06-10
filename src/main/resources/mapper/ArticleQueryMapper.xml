@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecornerscoffee.mapper.ArticleQueryMapper">
+
+    <resultMap id="Article" type="com.safecornerscoffee.dto.ArticleResponse">
+        <id property="id" column="article_id"/>
+        <result property="title" column="article_title"/>
+        <result property="body" column="article_body"/>
+        <result property="userId" column="user_id"/>
+        <result property="username" column="user_username"/>
+        <result property="profileName" column="user_profile_name"/>
+        <result property="profileImage" column="user_profile_image"/>
+        <collection property="tags" ofType="com.safecornerscoffee.domain.Tag">
+            <id property="id" column="tag_id"/>
+            <result property="name" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAllArticles" resultMap="Article">
+        SELECT A.id            as article_id,
+               A.title         as article_title,
+               A.body          as article_body,
+               U.id            as user_id,
+               U.username      as user_username,
+               U.profile_name  as user_profile_name,
+               U.profile_image as user_profile_image,
+               T.id            as tag_id,
+               T.name          as tag_name
+        FROM articles A
+                 LEFT OUTER JOIN users U ON A.user_id = U.id
+                 LEFT OUTER JOIN articles_tags R ON A.id = R.article_id
+                 LEFT OUTER JOIN tags T ON R.tag_id = T.id
+    </select>
+
+    <select id="getArticleById" parameterType="Long" resultMap="Article">
+        SELECT A.id            as article_id,
+               A.title         as article_title,
+               A.body          as article_body,
+               U.id            as user_id,
+               U.username      as user_username,
+               U.profile_name  as user_profile_name,
+               U.profile_image as user_profile_image,
+               T.id            as tag_id,
+               T.name          as tag_name
+        FROM articles A
+                 LEFT OUTER JOIN users U ON A.user_id = U.id
+                 LEFT OUTER JOIN articles_tags R ON A.id = R.article_id
+                 LEFT OUTER JOIN tags T ON R.tag_id = T.id
+        WHERE A.id = #{id}
+    </select>
+
+    <select id="getArticlesByUserId" parameterType="Long" resultMap="Article">
+        SELECT A.id            as article_id,
+               A.title         as article_title,
+               A.body          as article_body,
+               U.id            as user_id,
+               U.username      as user_username,
+               U.profile_name  as user_profile_name,
+               U.profile_image as user_profile_image,
+               T.id            as tag_id,
+               T.name          as tag_name
+        FROM articles A
+                 LEFT OUTER JOIN users U ON A.user_id = U.id
+                 LEFT OUTER JOIN articles_tags R ON A.id = R.article_id
+                 LEFT OUTER JOIN tags T ON R.tag_id = T.id
+        WHERE U.id = #{id}
+    </select>
+
+    <select id="getArticlesByTag" parameterType="String" resultMap="Article">
+        SELECT A.id            as article_id,
+               A.title         as article_title,
+               A.body          as article_body,
+               U.id            as user_id,
+               U.username      as user_username,
+               U.profile_name  as user_profile_name,
+               U.profile_image as user_profile_image,
+               T.id            as tag_id,
+               T.name          as tag_name
+        FROM articles A
+                 LEFT OUTER JOIN users U ON A.user_id = U.id
+                 LEFT OUTER JOIN articles_tags R ON A.id = R.article_id
+                 LEFT OUTER JOIN tags T ON R.tag_id = T.id
+        WHERE t.name = #{name}
+    </select>
+
+</mapper>

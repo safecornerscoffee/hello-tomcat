@@ -10,7 +10,6 @@
         <result property="userId" column="article_user_id"/>
         <collection property="tags" ofType="com.safecornerscoffee.domain.Tag">
             <id property="id" column="tag_id"/>
-            <result property="articleId" column="tag_article_id"/>
             <result property="name" column="tag_name"/>
         </collection>
     </resultMap>
