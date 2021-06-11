@@ -77,6 +77,7 @@ public class UserServiceTest {
         }).isInstanceOf(UserAlreadyExistException.class);
 
         verify(userMapper).selectUserByEmail(email);
+        verify(userMapper, never()).insertUser(any(User.class));
     }
 
     @Test
@@ -116,6 +117,8 @@ public class UserServiceTest {
         assertThatThrownBy(() -> {
             userService.dropUser(dropUserRequest);
         }).isInstanceOf(NotFoundUserException.class);
+
+        verify(userMapper, never()).deleteUser(any(User.class));
 
     }
 }
