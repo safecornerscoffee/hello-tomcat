@@ -33,14 +33,12 @@ public class AuthController {
         try {
             User user = userService.signIn(signUp);
 
-            String token = AuthHelper.generateToken(user.getUsername());
-
             UserDTO userWithToken = UserAssembler.writeDTO(user);
+            String token = AuthHelper.generateToken(user.getUsername());
             userWithToken.setToken(token);
 
-            model.addAttribute("user", userWithToken);
             httpSession.setAttribute("user", userWithToken);
-            return "main";
+            return "redirect:/";
         } catch (Exception e) {
             ErrorResponse error = new ErrorResponse(e.getMessage());
             model.addAttribute("error", error);
