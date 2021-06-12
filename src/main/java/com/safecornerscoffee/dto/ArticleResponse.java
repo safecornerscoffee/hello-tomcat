@@ -19,6 +19,17 @@ public class ArticleResponse {
 
     }
 
+    public ArticleResponse(Long id, String title, String body, Set<Tag> tags, Long userId, String username, String profileName, String profileImage) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.tags = tags;
+        this.userId = userId;
+        this.username = username;
+        this.profileName = profileName;
+        this.profileImage = profileImage;
+    }
+
     public Long getId() {
         return id;
     }

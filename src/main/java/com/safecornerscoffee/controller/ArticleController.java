@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -25,35 +26,44 @@ public class ArticleController {
         this.articleQueryService = articleQueryService;
     }
 
-    @GetMapping("/articles")
-    public String getArticles(Model model) {
-        List<ArticleResponse> articles = articleQueryService.getAllArticles();
-        model.addAttribute("articles", articles);
-        return "articles/list";
-    }
-
     @GetMapping("/articles/new")
-    public String createArticle() {
+    public String newPage() {
 
-        return "articles/new";
+        return "article/new";
     }
 
     @GetMapping("/articles/edit")
-    public String editArticle() {
-        return "articles/edit";
+    public String editArticlePage() {
+        return "article/edit";
     }
 
-    @PostMapping("/articles")
-    public String postArticle(ArticleCommand article) {
-        log.info(article.toString());
-        articleCommandService.createArticle(article);
 
-        return "index";
+    @GetMapping("/articles")
+    public String articleListPage(Model model) {
+        List<ArticleResponse> articles = articleQueryService.getAllArticles();
+        model.addAttribute("articles", articles);
+        return "article/list";
     }
+
+//    @GetMapping("/articles")
+//    public String articleListPageByTag(@RequestParam(name="tag") String tagName, Model model) {
+//        List<ArticleResponse> articles = articleQueryService.getArticlesByTag(tagName);
+//        model.addAttribute("articles", articles);
+//        return "article/list";
+//    }
 
     @GetMapping("/articles/{articleId}")
-    public String getArticle() {
-        return "articles/item";
+    public String articlePage(@PathVariable Long articleId, Model model) {
+        ArticleResponse article = articleQueryService.getArticleById(articleId);
+        model.addAttribute("article", article);
+        return "article/item";
+    }
+
+
+    @PostMapping("/articles/{articleId}")
+    public String postArticle(ArticleCommand article) {
+        articleCommandService.createArticle(article);
+        return "index";
     }
 
 }
