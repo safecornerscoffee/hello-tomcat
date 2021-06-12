@@ -46,7 +46,7 @@ public class ArticleController {
     @PostMapping("/articles")
     public String postArticle(ArticleCommand article) {
         log.info(article.toString());
-        articleCommandService.writeArticle(article);
+        articleCommandService.createArticle(article);
 
         return "index";
     }
