@@ -1,6 +1,5 @@
 package com.safecornerscoffee.integration.controller;
 
-import com.safecornerscoffee.controller.IndexController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,17 +11,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"file:src/main/web/WEB-INF/applicationContext.xml", "file:src/main/web/WEB-INF/dispatcher-servlet.xml"})
 @WebAppConfiguration
 public class IndexControllerTest {
-
-    @Autowired
-    IndexController indexController;
 
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -31,7 +27,6 @@ public class IndexControllerTest {
 
     @Before
     public void beforeEach() {
-//        mockMvc = standaloneSetup(indexController).build();
         mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
@@ -39,6 +34,7 @@ public class IndexControllerTest {
     public void renderIndexPageTest() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("name"))
                 .andExpect(forwardedUrl("/views/index.jsp"));
     }
 
