@@ -93,4 +93,34 @@ public class ArticleResponse {
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ArticleResponse that = (ArticleResponse) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!title.equals(that.title)) return false;
+        if (!body.equals(that.body)) return false;
+        if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
+        if (!userId.equals(that.userId)) return false;
+        if (!username.equals(that.username)) return false;
+        if (profileName != null ? !profileName.equals(that.profileName) : that.profileName != null) return false;
+        return profileImage != null ? profileImage.equals(that.profileImage) : that.profileImage == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + title.hashCode();
+        result = 31 * result + body.hashCode();
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + userId.hashCode();
+        result = 31 * result + username.hashCode();
+        result = 31 * result + (profileName != null ? profileName.hashCode() : 0);
+        result = 31 * result + (profileImage != null ? profileImage.hashCode() : 0);
+        return result;
+    }
 }

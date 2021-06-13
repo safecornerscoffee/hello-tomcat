@@ -1,9 +1,11 @@
 package com.safecornerscoffee.controller;
 
+import com.safecornerscoffee.assembler.ArticleAssembler;
 import com.safecornerscoffee.domain.Article;
 import com.safecornerscoffee.domain.Profile;
 import com.safecornerscoffee.domain.Tag;
 import com.safecornerscoffee.domain.User;
+import com.safecornerscoffee.dto.ArticleCommand;
 import com.safecornerscoffee.dto.ArticleResponse;
 import com.safecornerscoffee.service.ArticleCommandService;
 import com.safecornerscoffee.service.ArticleQueryService;
@@ -16,7 +18,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import java.util.List;
 import static com.safecornerscoffee.dto.ArticleResponseBuilder.ArticleResponseBuilder;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,13 +56,12 @@ public class ArticleControllerTest {
         setup();
     }
 
-
     @Test
     public void getArticleListPage() throws Exception {
 
         given(articleQueryService.getAllArticles()).willReturn(articleList);
 
-        ModelAndView mav = mockMvc.perform(get("/articles"))
+        mockMvc.perform(get("/articles"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("article/list"))
@@ -89,6 +90,44 @@ public class ArticleControllerTest {
 
     }
 
+    @Test
+    public void getArticlesByTagName() throws Exception {
+        String tagName = "Cappuccino";
+        List<ArticleResponse> articleListByTag = new ArrayList<>();
+        for (ArticleResponse articleResponse : articleList) {
+            for (Tag tag : articleResponse.getTags()) {
+                if (tag.getName().equals(tagName)) {
+                    articleListByTag.add(articleResponse);
+                    break;
+                }
+            }
+        }
+
+        given(articleQueryService.getArticlesByTag(any(String.class))).willReturn(articleListByTag);
+
+        mockMvc.perform(get("/articles").param("tag", tagName))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("article/list"))
+                .andExpect(model().attribute("articles", articleListByTag));
+
+        verify(articleQueryService).getArticlesByTag(any(String.class));
+
+    }
+
+    @Test
+    public void createArticle() throws Exception {
+        ArticleCommand article = ArticleAssembler.writeCommand(articles.get(0));
+        given(articleCommandService.createArticle(any(ArticleCommand.class)))
+                .willReturn(article);
+
+        mockMvc.perform(post("/articles"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(view().name("article/list"))
+                .andExpect(model().attributeExists("article"));
+
+        verify(articleCommandService).createArticle((any(ArticleCommand.class)));
+    }
 
     private void setup() {
         Long userId = 1L;
