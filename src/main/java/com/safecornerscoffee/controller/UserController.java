@@ -37,14 +37,10 @@ public class UserController {
 
     @PostMapping("/signup")
     public String signUp(UserDTO signUpRequest, Model model, HttpSession httpSession) {
-        try {
-            User user = userService.signUp(signUpRequest);
-            httpSession.setAttribute("user", user);
-            return "redirect:/";
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "error";
-        }
+        User user = userService.signUp(signUpRequest);
+        UserDTO sessionUser = UserAssembler.writeDTO(user);
+        httpSession.setAttribute("user", sessionUser);
+        return "index";
     }
 
     @GetMapping("/users")

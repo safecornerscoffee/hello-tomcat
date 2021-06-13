@@ -2,6 +2,7 @@ package com.safecornerscoffee.dto;
 
 import com.safecornerscoffee.domain.Tag;
 
+import java.util.Collections;
 import java.util.Set;
 
 public class ArticleCommand {
@@ -20,7 +21,7 @@ public class ArticleCommand {
     }
 
     public ArticleCommand() {
-
+        tags = Collections.emptySet();
     }
 
     public Long getUserId() {

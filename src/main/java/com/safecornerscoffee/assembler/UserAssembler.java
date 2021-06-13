@@ -7,12 +7,14 @@ import com.safecornerscoffee.dto.UserDTO;
 public class UserAssembler {
     public static UserDTO writeDTO(User user) {
         UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
-        dto.setEmail(user.getEmail());
-        dto.setPassword(user.getPassword());
-        dto.setProfileName(user.getProfile().getName());
-        dto.setProfileImage(user.getProfile().getImage());
+        if (user.getId() != null) dto.setId(user.getId());
+        if (user.getUsername() != null) dto.setUsername(user.getUsername());
+        if (user.getEmail() != null) dto.setEmail(user.getEmail());
+        if (user.getPassword() != null) dto.setPassword(user.getPassword());
+        if (user.getProfile() != null && user.getProfile().getName() != null)
+            dto.setProfileName(user.getProfile().getName());
+        if (user.getProfile() != null && user.getProfile().getImage() != null)
+            dto.setProfileImage(user.getProfile().getImage());
         return dto;
     }
 

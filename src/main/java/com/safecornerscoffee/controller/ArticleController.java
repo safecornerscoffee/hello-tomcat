@@ -2,14 +2,17 @@ package com.safecornerscoffee.controller;
 
 import com.safecornerscoffee.dto.ArticleCommand;
 import com.safecornerscoffee.dto.ArticleResponse;
+import com.safecornerscoffee.dto.ErrorResponse;
+import com.safecornerscoffee.exception.ArticleAlreadyExistException;
+import com.safecornerscoffee.exception.NotFoundArticleException;
 import com.safecornerscoffee.service.ArticleCommandService;
 import com.safecornerscoffee.service.ArticleQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,35 +28,61 @@ public class ArticleController {
         this.articleQueryService = articleQueryService;
     }
 
-    @GetMapping("/articles")
-    public String getArticles(Model model) {
-        List<ArticleResponse> articles = articleQueryService.getAllArticles();
-        model.addAttribute("articles", articles);
-        return "articles/list";
-    }
-
     @GetMapping("/articles/new")
-    public String createArticle() {
+    public String newPage() {
 
-        return "articles/new";
+        return "article/new";
     }
 
     @GetMapping("/articles/edit")
-    public String editArticle() {
-        return "articles/edit";
+    public String editArticlePage() {
+        return "article/edit";
     }
 
-    @PostMapping("/articles")
-    public String postArticle(ArticleCommand article) {
-        log.info(article.toString());
-        articleCommandService.writeArticle(article);
 
-        return "index";
+    @GetMapping("/articles")
+    public String articleListPage(Model model) {
+        List<ArticleResponse> articles = articleQueryService.getAllArticles();
+        model.addAttribute("articles", articles);
+        return "article/list";
+    }
+
+    @GetMapping(value = "/articles", params = "tag")
+    public String articleListPageByTag(@RequestParam(name = "tag", required = true) String tagName, Model model) {
+        List<ArticleResponse> articles = articleQueryService.getArticlesByTag(tagName);
+        model.addAttribute("articles", articles);
+        return "article/list";
     }
 
     @GetMapping("/articles/{articleId}")
-    public String getArticle() {
-        return "articles/item";
+    public String articlePage(@PathVariable Long articleId, Model model) {
+        ArticleResponse article = articleQueryService.getArticleById(articleId);
+        model.addAttribute("article", article);
+        return "article/item";
     }
 
+
+    @PostMapping("/articles")
+    @ResponseStatus(HttpStatus.CREATED)
+    public String createArticle(ArticleCommand article, Model model) {
+        ArticleCommand savedArticle = articleCommandService.createArticle(article);
+        model.addAttribute("article", article);
+        return "article/list";
+    }
+
+    @ExceptionHandler(NotFoundArticleException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String errorPage(Exception e, Model model) {
+        ErrorResponse error = new ErrorResponse(e.getMessage());
+        model.addAttribute("error", error);
+        return "error";
+    }
+
+    @ExceptionHandler(ArticleAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleErrors(Exception e, Model model) {
+        ErrorResponse error = new ErrorResponse(e.getMessage());
+        model.addAttribute("error", error);
+        return "error";
+    }
 }

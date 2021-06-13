@@ -85,7 +85,7 @@ public class ArticleCommandServiceTest {
                 )))
                 .build();
 
-        ArticleCommand responseArticleCommand = articleCommandService.writeArticle(articleCommand);
+        ArticleCommand responseArticleCommand = articleCommandService.createArticle(articleCommand);
 
         assertThat(responseArticleCommand.getId()).isNotNull();
         assertThat(responseArticleCommand.getTitle()).isEqualTo(articleCommand.getTitle());

@@ -40,7 +40,7 @@ public class ArticleCommandServiceTest {
 
         given(articleRepository.nextId()).willReturn(1L);
 
-        ArticleCommand writtenArticle = articleCommandService.writeArticle(writeCommand);
+        ArticleCommand writtenArticle = articleCommandService.createArticle(writeCommand);
 
         verify(articleRepository).saveArticle(any(Article.class));
 

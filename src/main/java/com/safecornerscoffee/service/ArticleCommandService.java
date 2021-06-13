@@ -18,7 +18,7 @@ public class ArticleCommandService {
         this.articleRepository = articleRepository;
     }
 
-    public ArticleCommand writeArticle(ArticleCommand articleCommand) {
+    public ArticleCommand createArticle(ArticleCommand articleCommand) {
         articleCommand.setId(articleRepository.nextId());
         Article article = ArticleAssembler.createArticle(articleCommand);
 
