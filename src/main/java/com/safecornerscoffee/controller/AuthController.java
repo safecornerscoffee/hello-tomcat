@@ -24,11 +24,11 @@ public class AuthController {
 
 
     @GetMapping("/login")
-    public String signInPage() {
-        return "signin";
+    public String loginPage() {
+        return "login";
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/session")
     public String signIn(UserDTO signUp, Model model, HttpSession httpSession) {
         try {
             User user = userService.signIn(signUp);
@@ -51,5 +51,4 @@ public class AuthController {
         httpSession.invalidate();
         return "redirect:/";
     }
-
 }

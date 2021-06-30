@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,20 +13,20 @@
 <body>
 <div class="navbar has-shadow">
     <div class="navbar-brand">
-        <a class="navbar-item" href="/">Home</a>
+        <a class="navbar-item" href="${pageContext.request.contextPath}/">Home</a>
     </div><!--navbar-brand-->
     <div class="navbar-menu is-active">
         <div class="navbar-start">
-            <a class="navbar-item" href="/users">
+            <a class="navbar-item" href="${pageContext.request.contextPath}/users">
                 Users
             </a>
-            <a class="navbar-item" href="/articles">
+            <a class="navbar-item" href="${pageContext.request.contextPath}/articles">
                 Articles
             </a>
         </div><!--navbar-start-->
 
         <div class="navbar-end">
-            <a class="navbar-item" href="login.html">Sign in</a>
+            <a class="navbar-item" href="${pageContext.request.contextPath}/login">Sign in</a>
 
         </div>
     </div><!--navbar-menu-->

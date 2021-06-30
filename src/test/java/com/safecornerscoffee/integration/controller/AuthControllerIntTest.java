@@ -61,7 +61,7 @@ public class AuthControllerIntTest {
     @Test
     public void signInTest() throws Exception {
 
-        MockHttpServletRequestBuilder request = post("/signin")
+        MockHttpServletRequestBuilder request = post("/session")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("username", username)
                 .param("password", password);
