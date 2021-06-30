@@ -35,7 +35,13 @@
 <section class="section">
   <div class="columns">
     <div class="column is-centered">
-      <h1 class="title">Index Page</h1>
+      <div class="content">
+        <h1 class="title">Error message:</h1>
+        <p>
+        <c:out value="${error}">
+        </p>
+      </div>
+
     </div><!--column-->
   </div><!--columns-->
 </section><!--section-->
