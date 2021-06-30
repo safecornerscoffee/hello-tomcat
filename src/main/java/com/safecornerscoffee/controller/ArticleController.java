@@ -29,36 +29,36 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/new")
-    public String newPage() {
+    public String newArticlePage() {
 
-        return "article/new";
+        return "article/new-article";
     }
 
     @GetMapping("/articles/edit")
     public String editArticlePage() {
-        return "article/edit";
+        return "article/edit-article";
     }
 
 
     @GetMapping("/articles")
-    public String articleListPage(Model model) {
+    public String articlesPage(Model model) {
         List<ArticleResponse> articles = articleQueryService.getAllArticles();
         model.addAttribute("articles", articles);
-        return "article/list";
+        return "article/articles";
     }
 
     @GetMapping(value = "/articles", params = "tag")
     public String articleListPageByTag(@RequestParam(name = "tag", required = true) String tagName, Model model) {
         List<ArticleResponse> articles = articleQueryService.getArticlesByTag(tagName);
         model.addAttribute("articles", articles);
-        return "article/list";
+        return "article/articles";
     }
 
     @GetMapping("/articles/{articleId}")
     public String articlePage(@PathVariable Long articleId, Model model) {
         ArticleResponse article = articleQueryService.getArticleById(articleId);
         model.addAttribute("article", article);
-        return "article/item";
+        return "article/article";
     }
 
 
@@ -67,7 +67,7 @@ public class ArticleController {
     public String createArticle(ArticleCommand article, Model model) {
         ArticleCommand savedArticle = articleCommandService.createArticle(article);
         model.addAttribute("article", article);
-        return "article/list";
+        return "article/articles";
     }
 
     @ExceptionHandler(NotFoundArticleException.class)
