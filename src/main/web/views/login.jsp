@@ -16,11 +16,13 @@
         <div class="container">
             <div class="columns is-centered">
                 <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-                    <form action="${pageContext.request.contextPath}/session" class="box" method="POST">
+                    <form action="${pageContext.request.contextPath}/login" class="box" method="POST">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div class="field">
                             <label class="label" for="username">Username</label>
                             <div class="control has-icons-left">
-                                <input class="input" id="username" name="username" placeholder="e.g. cappuccino" type="text">
+                                <input class="input" id="username" name="username" placeholder="e.g. cappuccino"
+                                       type="text">
                                 <span class="icon is-small is-left">
                                     <i class="fa fa-user"></i>
                                 </span>

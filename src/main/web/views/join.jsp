@@ -37,6 +37,7 @@
         <div class="column is-12-tablet is-8-desktop is-6-widescreen">
 
             <form action="${pageContext.request.contextPath}/join" method="POST">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <div class="field">
                     <label class="label" for="username">Username</label>
                     <div class="control">
