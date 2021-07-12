@@ -16,6 +16,9 @@
     </context:component-scan>
 
     <mvc:annotation-driven>
+        <!--        <mvc:argument-resolvers>-->
+        <!--            <ref>org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver</ref>-->
+        <!--        </mvc:argument-resolvers>-->
 
     </mvc:annotation-driven>
 
