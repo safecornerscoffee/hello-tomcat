@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"file:src/main/web/WEB-INF/applicationContext.xml", "file:src/main/web/WEB-INF/dispatcher-servlet.xml"})
 @WebAppConfiguration
-public class IndexControllerTest {
+public class HomeControllerTest {
 
     @Autowired
     WebApplicationContext webApplicationContext;
