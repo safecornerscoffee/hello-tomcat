@@ -7,15 +7,11 @@ import com.safecornerscoffee.medium.exception.InvalidUsernameOrPassword;
 import com.safecornerscoffee.medium.exception.NotFoundUserException;
 import com.safecornerscoffee.medium.exception.UserAlreadyExistException;
 import com.safecornerscoffee.medium.mapper.UserMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Key;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,11 +62,6 @@ public class UserService {
         return user;
     }
 
-    private String generateJWT(String email) {
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-        return Jwts.builder().setSubject(email).signWith(key).compact();
-    }
 
     private boolean isExistUsername(String username) {
         User existUser = userMapper.selectUserByUsername(username);
