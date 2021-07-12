@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +28,10 @@
 
     <div class="navbar-end">
       <a class="navbar-item" href="${pageContext.request.contextPath}/login">Sign in</a>
-
+      <a class="navbar-item" onclick="document.querySelector('#logoutForm').submit();">Sign out</a>
+      <form action="/logout" method="post" id="logoutForm" style="visibility: hidden">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+      </form>
     </div>
   </div><!--navbar-menu-->
 </div><!--navbar-->
@@ -36,6 +40,21 @@
   <div class="columns">
     <div class="column is-centered">
       <h1 class="title">Index Page</h1>
+      <sec:authorize access="hasRole('ROLE_USER')">
+        <p>Only Visible to ROLE_USER</p>
+      </sec:authorize>
+
+      <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <p>Only Visible to ROLE_ADMIN</p>
+      </sec:authorize>
+
+      <sec:authorize access="isAuthenticated()">
+        <p>Visible to Authenticated User</p>
+      </sec:authorize>
+
+      <sec:authorize access="isAnonymous()">
+        <p>Visible to Anonymous</p>
+      </sec:authorize>
     </div><!--column-->
   </div><!--columns-->
 </section><!--section-->

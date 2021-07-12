@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.safecornerscoffee.mapper.UserMapper">
-    <resultMap id="user" type="com.safecornerscoffee.domain.User">
+    <resultMap id="User" type="com.safecornerscoffee.domain.User">
         <id property="id" column="id"/>
         <result property="username" column="username"/>
         <result property="email" column="email"/>
         <result property="password" column="password"/>
         <association property="profile" javaType="com.safecornerscoffee.domain.Profile">
-            <result property="profileName" column="profile_name"/>
-            <result property="profileImage" column="profile_image"/>
+            <result property="name" column="profile_name"/>
+            <result property="image" column="profile_image"/>
         </association>
     </resultMap>
 
@@ -36,7 +36,7 @@
     </select>
     <select id="selectUserByUsername"
             parameterType="String"
-            resultType="com.safecornerscoffee.domain.User">
+            resultMap="User">
         SELECT id, username, email, password, profile_name, profile_image
         FROM users
         WHERE username = #{username}
