@@ -1,8 +1,8 @@
 package com.safecornerscoffee.integration.mapper;
 
-import com.safecornerscoffee.domain.Profile;
-import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.mapper.UserMapper;
+import com.safecornerscoffee.medium.domain.Profile;
+import com.safecornerscoffee.medium.domain.User;
+import com.safecornerscoffee.medium.mapper.UserMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

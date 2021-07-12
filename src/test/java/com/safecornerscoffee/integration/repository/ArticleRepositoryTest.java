@@ -1,13 +1,13 @@
 package com.safecornerscoffee.integration.repository;
 
-import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.domain.Profile;
-import com.safecornerscoffee.domain.Tag;
-import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.exception.NotFoundArticleException;
-import com.safecornerscoffee.mapper.ArticleMapper;
-import com.safecornerscoffee.mapper.UserMapper;
-import com.safecornerscoffee.repository.ArticleRepository;
+import com.safecornerscoffee.medium.domain.Article;
+import com.safecornerscoffee.medium.domain.Profile;
+import com.safecornerscoffee.medium.domain.Tag;
+import com.safecornerscoffee.medium.domain.User;
+import com.safecornerscoffee.medium.exception.NotFoundArticleException;
+import com.safecornerscoffee.medium.mapper.ArticleMapper;
+import com.safecornerscoffee.medium.mapper.UserMapper;
+import com.safecornerscoffee.medium.repository.ArticleRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

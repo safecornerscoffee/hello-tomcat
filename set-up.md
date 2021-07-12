@@ -64,7 +64,7 @@ dispatcher-servlet.xml
            http://www.springframework.org/schema/mvc
            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:component-scan base-package="com.safecornerscoffee.controller">
+    <context:component-scan base-package="com.safecornerscoffee.medium.web">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
@@ -229,7 +229,7 @@ applicationContext.xml
     <property name="mapperLocations" value="classpath:/mapper/*.xml"/>
 </bean>
 
-<mybatis-spring:scan base-package="com.safecornerscoffee.mapper"/>
+<mybatis-spring:scan base-package="com.safecornerscoffee.medium.mapper"/>
 ```
 
 mybatis-config.xml
@@ -307,13 +307,13 @@ UserDaoMapper.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.safecornerscoffee.mapper.UserMapper">
-    <select id="selectAllUsers" resultType="com.safecornerscoffee.domain.User">
+<mapper namespace="com.safecornerscoffee.medium.mapper.UserMapper">
+    <select id="selectAllUsers" resultType="com.safecornerscoffee.medium.domain.User">
         SELECT id, email, name, password FROM users
     </select>
     <select id="selectUserById"
             parameterType="Long"
-            resultType="com.safecornerscoffee.domain.User">
+            resultType="com.safecornerscoffee.medium.domain.User">
         SELECT id, email, name, password
         FROM users
         WHERE id = #{id}
@@ -321,14 +321,14 @@ UserDaoMapper.xml
 
     <select id="selectUserByEmail"
             parameterType="string"
-            resultType="com.safecornerscoffee.domain.User">
+            resultType="com.safecornerscoffee.medium.domain.User">
         SELECT id, email, name, password
         FROM users
         WHERE email = #{email}
     </select>
 
     <select id="insertUser"
-            parameterType="com.safecornerscoffee.domain.User"
+            parameterType="com.safecornerscoffee.medium.domain.User"
             resultType="Long"
     >
         INSERT INTO users(email, name, password)
@@ -337,7 +337,7 @@ UserDaoMapper.xml
     </select>
 
     <update id="updateUser"
-            parameterType="com.safecornerscoffee.domain.User">
+            parameterType="com.safecornerscoffee.medium.domain.User">
         UPDATE users
         SET
         email = #{email},
@@ -345,7 +345,7 @@ UserDaoMapper.xml
         password = #{password}
         WHERE id = #{id}
     </update>
-    <delete id="deleteUser" parameterType="com.safecornerscoffee.domain.User">
+    <delete id="deleteUser" parameterType="com.safecornerscoffee.medium.domain.User">
         DELETE FROM users WHERE id = #{id}
     </delete>
 </mapper>

@@ -1,7 +1,7 @@
 package com.safecornerscoffee.integration.factory;
 
-import com.safecornerscoffee.domain.Tag;
-import com.safecornerscoffee.factory.TagFactory;
+import com.safecornerscoffee.medium.domain.Tag;
+import com.safecornerscoffee.medium.factory.TagFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

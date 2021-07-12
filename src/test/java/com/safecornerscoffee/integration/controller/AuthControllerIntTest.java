@@ -1,9 +1,9 @@
 package com.safecornerscoffee.integration.controller;
 
-import com.safecornerscoffee.assembler.UserAssembler;
-import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.dto.UserDTO;
-import com.safecornerscoffee.service.UserService;
+import com.safecornerscoffee.medium.assembler.UserAssembler;
+import com.safecornerscoffee.medium.domain.User;
+import com.safecornerscoffee.medium.dto.UserDTO;
+import com.safecornerscoffee.medium.service.UserService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -14,7 +14,7 @@
            http://mybatis.org/schema/mybatis-spring
            https://mybatis.org/schema/mybatis-spring.xsd">
 
-    <context:component-scan base-package="com.safecornerscoffee">
+    <context:component-scan base-package="com.safecornerscoffee.medium">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
@@ -36,8 +36,7 @@
     </bean>
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <mybatis-spring:scan base-package="com.safecornerscoffee.mapper"/>
-
+    <mybatis-spring:scan base-package="com.safecornerscoffee.medium.mapper"/>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="defaultEncoding" value="UTF-8"/>

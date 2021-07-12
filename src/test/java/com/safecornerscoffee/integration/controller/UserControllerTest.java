@@ -1,6 +1,6 @@
 package com.safecornerscoffee.integration.controller;
 
-import com.safecornerscoffee.dto.UserDTO;
+import com.safecornerscoffee.medium.dto.UserDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

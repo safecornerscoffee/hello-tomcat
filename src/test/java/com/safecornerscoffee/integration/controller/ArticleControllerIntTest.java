@@ -1,15 +1,15 @@
 package com.safecornerscoffee.integration.controller;
 
-import com.safecornerscoffee.assembler.UserAssembler;
-import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.dto.ArticleCommand;
-import com.safecornerscoffee.dto.ArticleResponse;
-import com.safecornerscoffee.dto.UserDTO;
-import com.safecornerscoffee.factory.ArticleFactory;
-import com.safecornerscoffee.factory.TagFactory;
-import com.safecornerscoffee.repository.ArticleRepository;
-import com.safecornerscoffee.service.UserService;
+import com.safecornerscoffee.medium.assembler.UserAssembler;
+import com.safecornerscoffee.medium.domain.Article;
+import com.safecornerscoffee.medium.domain.User;
+import com.safecornerscoffee.medium.dto.ArticleCommand;
+import com.safecornerscoffee.medium.dto.ArticleResponse;
+import com.safecornerscoffee.medium.dto.UserDTO;
+import com.safecornerscoffee.medium.factory.ArticleFactory;
+import com.safecornerscoffee.medium.factory.TagFactory;
+import com.safecornerscoffee.medium.repository.ArticleRepository;
+import com.safecornerscoffee.medium.service.UserService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.safecornerscoffee.dto.ArticleResponseBuilder.ArticleResponseBuilder;
+import static com.safecornerscoffee.medium.dto.ArticleResponseBuilder.ArticleResponseBuilder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
