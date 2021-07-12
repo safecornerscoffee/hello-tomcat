@@ -106,4 +106,8 @@ public class UserService {
         }
         userMapper.deleteUser(user);
     }
+
+    public User findByUsername(String username) {
+        return userMapper.selectUserByUsername(username);
+    }
 }

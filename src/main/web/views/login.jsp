@@ -11,7 +11,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 </head>
 <body>
-<section class="hero is-primary is-fullheight">
+<section class="hero is-fullheight">
     <div class="hero-body">
         <div class="container">
             <div class="columns is-centered">

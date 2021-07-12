@@ -10,6 +10,6 @@ public class TagController {
     @GetMapping("/tags/")
     @ResponseBody
     public String returnTags() {
-
+        return "redirect:/";
     }
 }

@@ -1,15 +1,18 @@
 package com.safecornerscoffee.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@Getter
+@Setter
 public class User {
     private Long id;
     private String username;
     private String email;
     private String password;
     private Profile profile;
-
-    public User() {
-
-    }
 
     public User(Long id, String username, String email, String password, Profile profile) {
         this.id = id;
@@ -71,10 +74,10 @@ public class User {
     }
 
     public static class UserBuilder {
-        private final Long id;
-        private final String username;
-        private final String email;
-        private final String password;
+        private Long id;
+        private String username;
+        private String email;
+        private String password;
         private Profile profile;
 
         public UserBuilder(Long id, String username, String email, String password) {
