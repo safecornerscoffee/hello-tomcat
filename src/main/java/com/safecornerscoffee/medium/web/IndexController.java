@@ -1,4 +1,4 @@
-package com.safecornerscoffee.medium.controller;
+package com.safecornerscoffee.medium.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

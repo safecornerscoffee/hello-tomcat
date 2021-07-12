@@ -14,7 +14,7 @@
            http://mybatis.org/schema/mybatis-spring
            https://mybatis.org/schema/mybatis-spring.xsd">
 
-    <context:component-scan base-package="com.safecornerscoffee">
+    <context:component-scan base-package="com.safecornerscoffee.medium">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 

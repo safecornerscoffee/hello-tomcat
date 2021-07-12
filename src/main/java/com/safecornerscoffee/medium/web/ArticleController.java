@@ -1,4 +1,4 @@
-package com.safecornerscoffee.medium.controller;
+package com.safecornerscoffee.medium.web;
 
 import com.safecornerscoffee.medium.dto.ArticleCommand;
 import com.safecornerscoffee.medium.dto.ArticleResponse;

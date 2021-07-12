@@ -1,4 +1,4 @@
-package com.safecornerscoffee.medium.controller;
+package com.safecornerscoffee.medium.web;
 
 import com.safecornerscoffee.medium.assembler.ArticleAssembler;
 import com.safecornerscoffee.medium.domain.Article;

@@ -64,7 +64,7 @@ dispatcher-servlet.xml
            http://www.springframework.org/schema/mvc
            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:component-scan base-package="com.safecornerscoffee.medium.controller">
+    <context:component-scan base-package="com.safecornerscoffee.medium.web">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
