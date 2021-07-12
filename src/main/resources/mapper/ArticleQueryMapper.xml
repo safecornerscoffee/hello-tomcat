@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.safecornerscoffee.mapper.ArticleQueryMapper">
+<mapper namespace="com.safecornerscoffee.medium.mapper.ArticleQueryMapper">
 
-    <resultMap id="Article" type="com.safecornerscoffee.dto.ArticleResponse">
+    <resultMap id="Article" type="com.safecornerscoffee.medium.dto.ArticleResponse">
         <id property="id" column="article_id"/>
         <result property="title" column="article_title"/>
         <result property="body" column="article_body"/>
@@ -11,7 +11,7 @@
         <result property="username" column="user_username"/>
         <result property="profileName" column="user_profile_name"/>
         <result property="profileImage" column="user_profile_image"/>
-        <collection property="tags" ofType="com.safecornerscoffee.domain.Tag">
+        <collection property="tags" ofType="com.safecornerscoffee.medium.domain.Tag">
             <id property="id" column="tag_id"/>
             <result property="name" column="tag_name"/>
         </collection>

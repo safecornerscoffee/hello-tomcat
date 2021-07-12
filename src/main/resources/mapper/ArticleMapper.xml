@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.safecornerscoffee.mapper.ArticleMapper">
+<mapper namespace="com.safecornerscoffee.medium.mapper.ArticleMapper">
 
-    <resultMap id="Article" type="com.safecornerscoffee.domain.Article">
+    <resultMap id="Article" type="com.safecornerscoffee.medium.domain.Article">
         <id property="id" column="article_id"/>
         <result property="title" column="article_title"/>
         <result property="body" column="article_body"/>
         <result property="userId" column="article_user_id"/>
-        <collection property="tags" ofType="com.safecornerscoffee.domain.Tag">
+        <collection property="tags" ofType="com.safecornerscoffee.medium.domain.Tag">
             <id property="id" column="tag_id"/>
             <result property="name" column="tag_name"/>
         </collection>
@@ -75,17 +75,17 @@
         WHERE T.name = #{tagName};
     </select>
 
-    <insert id="insertArticle" parameterType="com.safecornerscoffee.domain.Article">
+    <insert id="insertArticle" parameterType="com.safecornerscoffee.medium.domain.Article">
         INSERT INTO articles(id, title, body, user_id)
         VALUES (#{id}, #{title}, #{body}, #{userId})
     </insert>
-    <update id="updateArticle" parameterType="com.safecornerscoffee.domain.Article">
+    <update id="updateArticle" parameterType="com.safecornerscoffee.medium.domain.Article">
         UPDATE articles
         SET title = #{title},
             body  = #{body}
         WHERE id = #{id}
     </update>
-    <delete id="deleteArticle" parameterType="com.safecornerscoffee.domain.Article">
+    <delete id="deleteArticle" parameterType="com.safecornerscoffee.medium.domain.Article">
         DELETE
         FROM articles
         WHERE id = #{id}
@@ -94,21 +94,21 @@
     <select id="nextTagId" resultType="Long" useCache="false" flushCache="true">
         SELECT nextval('tags_id_seq')
     </select>
-    <select id="selectTagById" parameterType="Long" resultType="com.safecornerscoffee.domain.Tag">
+    <select id="selectTagById" parameterType="Long" resultType="com.safecornerscoffee.medium.domain.Tag">
         SELECT id, name
         FROM tags
         WHERE id = #{id}
     </select>
-    <select id="selectTagByName" parameterType="String" resultType="com.safecornerscoffee.domain.Tag">
+    <select id="selectTagByName" parameterType="String" resultType="com.safecornerscoffee.medium.domain.Tag">
         SELECT id, name
         FROM tags
         WHERE name = #{name}
     </select>
-    <insert id="insertTag" parameterType="com.safecornerscoffee.domain.Tag">
+    <insert id="insertTag" parameterType="com.safecornerscoffee.medium.domain.Tag">
         INSERT INTO tags (id, name)
         VALUES (#{id}, #{name})
     </insert>
-    <delete id="deleteTag" parameterType="com.safecornerscoffee.domain.Tag">
+    <delete id="deleteTag" parameterType="com.safecornerscoffee.medium.domain.Tag">
         DELETE
         FROM tags
         WHERE id = #{id}
@@ -116,18 +116,18 @@
 
     <select id="selectTagsByArticleId"
             parameterType="Long"
-            resultType="com.safecornerscoffee.domain.Tag">
+            resultType="com.safecornerscoffee.medium.domain.Tag">
         SELECT T.id   as id,
                T.name as name
         FROM articles_tags R
                  LEFT OUTER JOIN tags T on R.tag_id = T.id
         WHERE R.article_id = #{articleId}
     </select>
-    <insert id="insertArticleTagRelation" parameterType="com.safecornerscoffee.domain.ArticleTagRelation">
+    <insert id="insertArticleTagRelation" parameterType="com.safecornerscoffee.medium.domain.ArticleTagRelation">
         INSERT INTO articles_tags (article_id, tag_id)
         VALUES (#{articleId}, #{tagId})
     </insert>
-    <delete id="deleteArticleTagRelation" parameterType="com.safecornerscoffee.domain.ArticleTagRelation">
+    <delete id="deleteArticleTagRelation" parameterType="com.safecornerscoffee.medium.domain.ArticleTagRelation">
         DELETE
         FROM articles_tags
         WHERE article_id = #{articleId}

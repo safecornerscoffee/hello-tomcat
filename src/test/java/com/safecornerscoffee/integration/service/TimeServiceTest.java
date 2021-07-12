@@ -1,6 +1,6 @@
 package com.safecornerscoffee.integration.service;
 
-import com.safecornerscoffee.service.TimeService;
+import com.safecornerscoffee.medium.service.TimeService;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;

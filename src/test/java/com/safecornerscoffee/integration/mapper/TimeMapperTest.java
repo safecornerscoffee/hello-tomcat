@@ -1,6 +1,6 @@
 package com.safecornerscoffee.integration.mapper;
 
-import com.safecornerscoffee.mapper.TimeMapper;
+import com.safecornerscoffee.medium.mapper.TimeMapper;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;

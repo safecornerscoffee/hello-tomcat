@@ -1,16 +1,16 @@
 package com.safecornerscoffee.integration.service;
 
-import com.safecornerscoffee.assembler.ArticleAssembler;
-import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.domain.Profile;
-import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.dto.ArticleCommand;
-import com.safecornerscoffee.exception.NotFoundArticleException;
-import com.safecornerscoffee.factory.ArticleFactory;
-import com.safecornerscoffee.factory.TagFactory;
-import com.safecornerscoffee.mapper.UserMapper;
-import com.safecornerscoffee.repository.ArticleRepository;
-import com.safecornerscoffee.service.ArticleCommandService;
+import com.safecornerscoffee.medium.assembler.ArticleAssembler;
+import com.safecornerscoffee.medium.domain.Article;
+import com.safecornerscoffee.medium.domain.Profile;
+import com.safecornerscoffee.medium.domain.User;
+import com.safecornerscoffee.medium.dto.ArticleCommand;
+import com.safecornerscoffee.medium.exception.NotFoundArticleException;
+import com.safecornerscoffee.medium.factory.ArticleFactory;
+import com.safecornerscoffee.medium.factory.TagFactory;
+import com.safecornerscoffee.medium.mapper.UserMapper;
+import com.safecornerscoffee.medium.repository.ArticleRepository;
+import com.safecornerscoffee.medium.service.ArticleCommandService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

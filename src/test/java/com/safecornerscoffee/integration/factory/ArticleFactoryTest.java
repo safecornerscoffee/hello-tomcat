@@ -1,9 +1,9 @@
 package com.safecornerscoffee.integration.factory;
 
-import com.safecornerscoffee.domain.Article;
-import com.safecornerscoffee.domain.Tag;
-import com.safecornerscoffee.domain.User;
-import com.safecornerscoffee.factory.ArticleFactory;
+import com.safecornerscoffee.medium.domain.Article;
+import com.safecornerscoffee.medium.domain.Tag;
+import com.safecornerscoffee.medium.domain.User;
+import com.safecornerscoffee.medium.factory.ArticleFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

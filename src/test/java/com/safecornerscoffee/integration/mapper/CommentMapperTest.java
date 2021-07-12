@@ -1,11 +1,11 @@
 package com.safecornerscoffee.integration.mapper;
 
-import com.safecornerscoffee.domain.*;
-import com.safecornerscoffee.factory.ArticleFactory;
-import com.safecornerscoffee.factory.TagFactory;
-import com.safecornerscoffee.mapper.CommentMapper;
-import com.safecornerscoffee.mapper.UserMapper;
-import com.safecornerscoffee.repository.ArticleRepository;
+import com.safecornerscoffee.medium.domain.*;
+import com.safecornerscoffee.medium.factory.ArticleFactory;
+import com.safecornerscoffee.medium.factory.TagFactory;
+import com.safecornerscoffee.medium.mapper.CommentMapper;
+import com.safecornerscoffee.medium.mapper.UserMapper;
+import com.safecornerscoffee.medium.repository.ArticleRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
